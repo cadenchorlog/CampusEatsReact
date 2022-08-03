@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Campus Eats",
+    "slug": "campus-eats",
+    "scheme": "campus-eats",
+    "description": "Campus Eats, powered by Draftbit",
+    "privacy": "unlisted",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1B1B40"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.draftbit.untitledapp",
+      "supportsTablet": false,
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to review rich media previously added.",
+        "NSPhotoLibraryAddUsageDescription": "This app uses the photo library to add rich media shared from others.",
+        "NSLocationWhenInUseUsageDescription": "This app uses the location to create a list of local services."
+      },
+      "usesIcloudStorage": false
+    },
+    "android": {
+      "versionCode": 1,
+      "package": "com.draftbit.untitledapp",
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "themeColor": "#000000"
+    },
+    "notification": {
+      "androidMode": "default"
+    }
+  }
+}
