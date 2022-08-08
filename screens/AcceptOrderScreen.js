@@ -23,19 +23,19 @@ const AcceptOrderScreen = props => {
 
   return (
     <ScreenContainer scrollable={false} hasSafeArea={true}>
-      <View style={styles.View_7e} />
-      <View style={styles.Viewpz}>
+      <View style={styles.View0bb8b0a3} />
+      <View style={styles.View19e468f9}>
         <Icon name={'FontAwesome/angle-double-down'} size={80} />
-        <Text style={[styles.Text_4a, { color: theme.colors.strong }]}>
+        <Text style={[styles.Text0e732d29, { color: theme.colors.strong }]}>
           {'Accept this order?'}
         </Text>
 
-        <Text style={[styles.Textrp, { color: theme.colors.medium }]}>
+        <Text style={[styles.Text30c802d7, { color: theme.colors.medium }]}>
           {'You cannot undo this action.'}
         </Text>
       </View>
 
-      <View style={styles.ViewlE}>
+      <View style={styles.Viewb1d9ece6}>
         <Touchable
           onPress={() => {
             try {
@@ -45,7 +45,7 @@ const AcceptOrderScreen = props => {
             }
           }}
         >
-          <Text style={[styles.TextSf, { color: theme.colors.light }]}>
+          <Text style={[styles.Text1b7e3f61, { color: theme.colors.light }]}>
             {'Cancel'}
           </Text>
         </Touchable>
@@ -73,7 +73,7 @@ const AcceptOrderScreen = props => {
             }
           }}
           style={[
-            styles.ButtonSolidhr,
+            styles.ButtonSolid1a5f45df,
             { backgroundColor: theme.colors.primary },
           ]}
           title={'Accept'}
@@ -84,37 +84,37 @@ const AcceptOrderScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  View_7e: {
+  View0bb8b0a3: {
     flexGrow: 1,
     flexShrink: 0,
     minHeight: '33%',
     maxHeight: 33,
   },
-  Text_4a: {
+  Text0e732d29: {
     fontSize: 24,
     lineHeight: 32,
     fontFamily: 'System',
     fontWeight: '700',
   },
-  Textrp: {
+  Text30c802d7: {
     fontSize: 16,
     lineHeight: 24,
   },
-  Viewpz: {
+  View19e468f9: {
     alignItems: 'center',
     flexGrow: 1,
     flexShrink: 0,
     minHeight: '33%',
     maxHeight: '34%',
   },
-  TextSf: {
+  Text1b7e3f61: {
     textAlign: 'center',
     textTransform: 'none',
     lineHeight: 24,
     fontFamily: 'System',
     fontWeight: '600',
   },
-  ButtonSolidhr: {
+  ButtonSolid1a5f45df: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 16,
   },
-  ViewlE: {
+  Viewb1d9ece6: {
     paddingLeft: 12,
     paddingRight: 12,
     flexGrow: 1,

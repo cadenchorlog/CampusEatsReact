@@ -10,7 +10,7 @@ import { useIsFocused } from '@react-navigation/native';
 import usePrevious from '../utils/usePrevious';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 
-export const setPricePOST = (Constants, { price }) =>
+export const setPricePOST = (Constants, { price, priceID }) =>
   fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:RRs79kGr/prices`, {
     body: JSON.stringify({
       price: {
@@ -18,7 +18,7 @@ export const setPricePOST = (Constants, { price }) =>
         unit_amount: price,
         active: null,
         nickname: '',
-        product: price,
+        product: priceID,
         recurring: {
           interval: null,
           aggregate_usage: null,

@@ -1,9 +1,9 @@
 import React from 'react';
 import * as AddCostApi from '../apis/AddCostApi.js';
 import * as CheckoutApi from '../apis/CheckoutApi.js';
-import * as TestServiceDraftbitApi from '../apis/TestServiceDraftbitApi.js';
+import * as XanoApi from '../apis/XanoApi.js';
+import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
-import Images from '../config/Images';
 import {
   ButtonOutline,
   ButtonSolid,
@@ -22,7 +22,7 @@ import { useIsFocused } from '@react-navigation/native';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
+  ImageBackground,
   Modal,
   ScrollView,
   StyleSheet,
@@ -37,6 +37,17 @@ const BaggageCartScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
 
+  const multiplyTotal = total => {
+    const totalF = total * 100;
+
+    return totalF; // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
   const { theme } = props;
   const { navigation } = props;
 
@@ -48,25 +59,26 @@ const BaggageCartScreen = props => {
   const [showModal, setShowModal] = React.useState(false);
   const [styledTextFieldValue, setStyledTextFieldValue] = React.useState('');
   const [textInputValue, setTextInputValue] = React.useState('');
+  const [totalPrice, setTotalPrice] = React.useState(0);
 
   return (
     <ScreenContainer hasTopSafeArea={false}>
-      <View style={styles.ViewUk}>
+      <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
-          <Text style={[styles.Texth3, { color: theme.colors.strong }]}>
+          <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Your Bag'}
           </Text>
         </Row>
       </View>
 
       <ScrollView
-        style={styles.ScrollViewTm}
-        contentContainerStyle={styles.ScrollViewTmContent}
+        style={styles.ScrollViewf26042a5}
+        contentContainerStyle={styles.ScrollViewf26042a5Content}
         showsVerticalScrollIndicator={true}
         bounces={true}
       >
-        <TestServiceDraftbitApi.FetchGetProductsGET>
-          {({ loading, error, data, refetchGetProducts }) => {
+        <XanoApi.FetchGetUserCartGET UID={Constants['user_id']}>
+          {({ loading, error, data, refetchGetUserCart }) => {
             const fetchData = data;
             if (!fetchData || loading) {
               return <ActivityIndicator />;
@@ -89,49 +101,60 @@ const BaggageCartScreen = props => {
                   const listData = item;
                   return (
                     <>
-                      <View style={styles.View_3q}>
+                      <View style={styles.View12a773c5}>
                         <View
                           style={[
-                            styles.ViewXO,
+                            styles.View6e2b01f9,
                             {
                               backgroundColor:
                                 theme.colors.custom_rgb245_245_247,
-                              borderRadius: 10,
                             },
                           ]}
                         >
-                          <Image
-                            style={styles.ImagexF}
-                            source={Images.ShoppingCart}
-                            resizeMode={'contain'}
+                          <ImageBackground
+                            style={[
+                              styles.ImageBackground25e3d6ef,
+                              { borderRadius: 15 },
+                            ]}
+                            source={{ uri: `${listData?.itemImage}` }}
+                            resizeMode={'cover'}
                           />
                         </View>
 
-                        <View style={styles.View_7z}>
+                        <View style={styles.Viewc46b8fec}>
                           <Text
                             style={[
-                              styles.TextwE,
+                              styles.Textbfd3752d,
                               { color: theme.colors.primaryTitleUiBaeg },
                             ]}
                           >
-                            {'Mila Kunista'}
+                            {listData?.itemName}
                           </Text>
 
-                          <View style={styles.ViewpG}>
+                          <View>
                             <Text
                               style={[
-                                styles.TextMH,
+                                styles.Textbfd3df7a,
                                 { color: theme.colors.primaryTitleUiBaeg },
                               ]}
                             >
-                              {'$42'}
+                              {listData?.itemPrice}
+                            </Text>
+
+                            <Text
+                              style={[
+                                styles.Textbffce5db,
+                                { color: theme.colors.primaryTitleUiBaeg },
+                              ]}
+                            >
+                              {listData?.customizations}
                             </Text>
                           </View>
                         </View>
 
-                        <View style={styles.ViewWa}>
+                        <View style={styles.View6ff87234}>
                           <IconButton
-                            style={styles.IconButtonfZ}
+                            style={styles.IconButton27d4405a}
                             icon={'Ionicons/ios-duplicate-outline'}
                             size={32}
                             color={theme.colors.light}
@@ -144,131 +167,170 @@ const BaggageCartScreen = props => {
                         </View>
                       </View>
                       <Divider
-                        style={styles.Divider_4I}
+                        style={styles.Dividerbed2bcba}
                         color={theme.colors.divider}
                       />
                     </>
                   );
                 }}
-                contentContainerStyle={styles.FlatLista7Content}
+                contentContainerStyle={styles.FlatListc992f941Content}
                 numColumns={1}
               />
             );
           }}
-        </TestServiceDraftbitApi.FetchGetProductsGET>
+        </XanoApi.FetchGetUserCartGET>
       </ScrollView>
 
       <View
-        style={[styles.ViewJG, { backgroundColor: theme.colors.background }]}
+        style={[
+          styles.Viewe515c9dd,
+          { backgroundColor: theme.colors.background },
+        ]}
       >
-        <Divider style={styles.DividerRG} color={theme.colors.primary} />
-        <View style={styles.View_1a}>
-          <View style={styles.ViewAi}>
-            <Text
-              style={[
-                styles.Texta2,
-                { color: theme.colors.custom_rgb189_198_212 },
-              ]}
-            >
-              {'Subtotal'}
-            </Text>
+        <Divider style={styles.Dividerde11d607} color={theme.colors.primary} />
+        <XanoApi.FetchGetCartTotalsGET
+          user_id={Constants['user_id']}
+          onData={fetchData => {
+            try {
+              const finalTotal = multiplyTotal(fetchData?.total);
+              setTotalPrice(finalTotal);
+              console.log(finalTotal);
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+        >
+          {({ loading, error, data, refetchGetCartTotals }) => {
+            const fetchData = data;
+            if (!fetchData || loading) {
+              return <ActivityIndicator />;
+            }
 
-            <Text
-              style={[
-                styles.TextWZ,
-                { color: theme.colors.primaryTitleUiBaeg },
-              ]}
-            >
-              {'$420'}
-            </Text>
-          </View>
+            if (error) {
+              return (
+                <Text style={{ textAlign: 'center' }}>
+                  There was a problem fetching this data
+                </Text>
+              );
+            }
 
-          <View style={styles.ViewwP}>
-            <Text
-              style={[
-                styles.Textiv,
-                { color: theme.colors.custom_rgb189_198_212 },
-              ]}
-            >
-              {'Taxes/Fees'}
-            </Text>
+            return (
+              <View style={styles.Viewad2d300f}>
+                <View style={styles.View0ae50d17}>
+                  <Text
+                    style={[
+                      styles.Textf7bbdd1d,
+                      { color: theme.colors.custom_rgb189_198_212 },
+                    ]}
+                  >
+                    {'Items total'}
+                  </Text>
 
-            <Text
-              style={[
-                styles.Textyu,
-                { color: theme.colors.primaryTitleUiBaeg },
-              ]}
-            >
-              {'$420'}
-            </Text>
-          </View>
+                  <Text
+                    style={[
+                      styles.Text86ce3ba5,
+                      { color: theme.colors.primaryTitleUiBaeg },
+                    ]}
+                  >
+                    {'$'}
+                    {fetchData?.subTotal}
+                  </Text>
+                </View>
 
-          <View style={styles.View_9F}>
-            <Text
-              style={[
-                styles.TextYy,
-                { color: theme.colors.custom_rgb189_198_212 },
-              ]}
-            >
-              {'Delivery Fee'}
-            </Text>
+                <View style={styles.View88c44c3e}>
+                  <Text
+                    style={[
+                      styles.Textf7bbdd1d,
+                      { color: theme.colors.custom_rgb189_198_212 },
+                    ]}
+                  >
+                    {'Taxes/Fees'}
+                  </Text>
 
-            <Text
-              style={[
-                styles.Textp9,
-                { color: theme.colors.primaryTitleUiBaeg },
-              ]}
-            >
-              {'$420'}
-            </Text>
-          </View>
-          <Divider style={styles.DividerTh} color={theme.colors.divider} />
-          <View style={styles.ViewHm}>
-            <Text
-              style={[
-                styles.Text_4n,
-                { color: theme.colors.custom_rgb189_198_212 },
-              ]}
-            >
-              {'Total Price'}
-            </Text>
+                  <Text
+                    style={[
+                      styles.Text86ce3ba5,
+                      { color: theme.colors.primaryTitleUiBaeg },
+                    ]}
+                  >
+                    {'Calculated Next'}
+                  </Text>
+                </View>
 
-            <Text
-              style={[
-                styles.Text_69,
-                { color: theme.colors.primaryTitleUiBaeg },
-              ]}
-            >
-              {'$420'}
-            </Text>
-          </View>
+                <View style={styles.View88c44c3e}>
+                  <Text
+                    style={[
+                      styles.Textf7bbdd1d,
+                      { color: theme.colors.custom_rgb189_198_212 },
+                    ]}
+                  >
+                    {'Delivery Fee'}
+                  </Text>
 
-          <View style={styles.ViewXU}>
-            <ButtonSolid
-              onPress={() => {
-                try {
-                  setShowModal(true);
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-              style={[
-                styles.ButtonSolidSw,
-                {
-                  backgroundColor: theme.colors.primary,
-                  borderColor: theme.colors.strongInverse,
-                },
-              ]}
-              title={'Checkout'}
-            />
-          </View>
-        </View>
+                  <Text
+                    style={[
+                      styles.Text86ce3ba5,
+                      { color: theme.colors.primaryTitleUiBaeg },
+                    ]}
+                  >
+                    {'$'}
+                    {fetchData?.deliveryFee}
+                  </Text>
+                </View>
+                <Divider
+                  style={styles.Divider0e02aada}
+                  color={theme.colors.divider}
+                />
+                <View style={styles.Viewddd27fdd}>
+                  <Text
+                    style={[
+                      styles.Text5528eed5,
+                      { color: theme.colors.custom_rgb189_198_212 },
+                    ]}
+                  >
+                    {'Subtotal'}
+                  </Text>
+
+                  <Text
+                    style={[
+                      styles.Text4036ef9a,
+                      { color: theme.colors.primaryTitleUiBaeg },
+                    ]}
+                  >
+                    {'$'}
+                    {fetchData?.total}
+                  </Text>
+                </View>
+
+                <View style={styles.View7bb6e4d9}>
+                  <ButtonSolid
+                    onPress={() => {
+                      try {
+                        setShowModal(true);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    style={[
+                      styles.ButtonSolidf0b1de94,
+                      {
+                        backgroundColor: theme.colors.primary,
+                        borderColor: theme.colors.strongInverse,
+                      },
+                    ]}
+                    title={'Checkout'}
+                  />
+                </View>
+              </View>
+            );
+          }}
+        </XanoApi.FetchGetCartTotalsGET>
       </View>
       <>
         {!showModal ? null : (
           <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
-            <View style={styles.ViewLI}>
-              <View style={styles.Viewx0}>
+            <View style={styles.View2200bac7}>
+              <View style={styles.View7a993fb0}>
                 <Row justifyContent={'flex-start'} alignItems={'center'}>
                   <IconButton
                     onPress={() => {
@@ -278,11 +340,16 @@ const BaggageCartScreen = props => {
                         console.error(err);
                       }
                     }}
-                    style={styles.IconButtonJO}
+                    style={styles.IconButton897c6051}
                     icon={'Ionicons/ios-chevron-back'}
                     size={32}
                   />
-                  <Text style={[styles.TextFG, { color: theme.colors.strong }]}>
+                  <Text
+                    style={[
+                      styles.Textd59ae7c0,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
                     {'Payment'}
                   </Text>
                 </Row>
@@ -295,16 +362,19 @@ const BaggageCartScreen = props => {
                 enableAutomaticScroll={true}
               >
                 <View>
-                  <View style={styles.ViewfM}>
+                  <View style={styles.View12981c6a}>
                     <Text
-                      style={[styles.TextmV, { color: theme.colors.strong }]}
+                      style={[
+                        styles.Textcd71a0f7,
+                        { color: theme.colors.strong },
+                      ]}
                     >
                       {'Choose Payment Method'}
                     </Text>
                   </View>
 
-                  <View style={styles.ViewzA}>
-                    <View style={styles.ViewfZ}>
+                  <View style={styles.View80a9a9a9}>
+                    <View style={styles.Viewb7eaad51}>
                       <Touchable
                         onPress={() => {
                           try {
@@ -317,15 +387,15 @@ const BaggageCartScreen = props => {
                       >
                         <View
                           style={[
-                            styles.ViewCr,
+                            styles.View1957b5f2,
                             {
                               borderColor: theme.colors.internalBorder,
                               borderRadius: 12,
                             },
                           ]}
                         >
-                          <View style={styles.Viewgz}>
-                            <View style={styles.ViewqS}>
+                          <View style={styles.View43b593eb}>
+                            <View style={styles.Viewa521a992}>
                               <Icon
                                 name={'Ionicons/ios-card'}
                                 size={24}
@@ -333,10 +403,10 @@ const BaggageCartScreen = props => {
                               />
                             </View>
 
-                            <View style={styles.Viewqt}>
+                            <View style={styles.Viewfeac12d8}>
                               <Text
                                 style={[
-                                  styles.Text_1r,
+                                  styles.Text14121fc4,
                                   { color: theme.colors.internalPrimaryBold },
                                 ]}
                               >
@@ -345,7 +415,7 @@ const BaggageCartScreen = props => {
                             </View>
                           </View>
 
-                          <View style={styles.ViewuO}>
+                          <View style={styles.View6a955cc3}>
                             <Checkbox
                               onPress={newCheckboxValue => {
                                 try {
@@ -369,7 +439,7 @@ const BaggageCartScreen = props => {
                       </Touchable>
                     </View>
 
-                    <View style={styles.ViewaC}>
+                    <View style={styles.Viewb7eaad51}>
                       <Touchable
                         onPress={() => {
                           try {
@@ -382,15 +452,15 @@ const BaggageCartScreen = props => {
                       >
                         <View
                           style={[
-                            styles.ViewUg,
+                            styles.View1957b5f2,
                             {
                               borderColor: theme.colors.internalBorder,
                               borderRadius: 12,
                             },
                           ]}
                         >
-                          <View style={styles.ViewOK}>
-                            <View style={styles.View_2Q}>
+                          <View style={styles.View43b593eb}>
+                            <View style={styles.Viewa521a992}>
                               <Icon
                                 name={'Ionicons/school'}
                                 size={24}
@@ -398,10 +468,10 @@ const BaggageCartScreen = props => {
                               />
                             </View>
 
-                            <View style={styles.View_8s}>
+                            <View style={styles.Viewfeac12d8}>
                               <Text
                                 style={[
-                                  styles.TextQb,
+                                  styles.Text3e74d306,
                                   { color: theme.colors.internalPrimaryBold },
                                 ]}
                               >
@@ -410,7 +480,7 @@ const BaggageCartScreen = props => {
                             </View>
                           </View>
 
-                          <View style={styles.ViewGE}>
+                          <View style={styles.View6a955cc3}>
                             <Checkbox
                               onPress={newCheckboxValue => {
                                 try {
@@ -436,18 +506,21 @@ const BaggageCartScreen = props => {
                   </View>
 
                   <View>
-                    <View style={styles.Viewmq}>
+                    <View style={styles.View12981c6a}>
                       <Text
-                        style={[styles.TextxW, { color: theme.colors.strong }]}
+                        style={[
+                          styles.Textcd71a0f7,
+                          { color: theme.colors.strong },
+                        ]}
                       >
                         {'Have a coupon code?'}
                       </Text>
                     </View>
 
-                    <View style={styles.Viewbl}>
+                    <View style={styles.View603e5d81}>
                       <View
                         style={[
-                          styles.Viewhv,
+                          styles.Viewb5c2cefd,
                           {
                             borderTopLeftRadius: 24,
                             borderBottomLeftRadius: 24,
@@ -462,7 +535,7 @@ const BaggageCartScreen = props => {
                               console.error(err);
                             }
                           }}
-                          style={styles.TextFieldVn}
+                          style={styles.TextField04c2524d}
                           placeholder={'Voucher Code'}
                           value={styledTextFieldValue}
                           type={'solid'}
@@ -474,7 +547,7 @@ const BaggageCartScreen = props => {
                       </View>
                       <ButtonSolid
                         style={[
-                          styles.ButtonSolidVC,
+                          styles.ButtonSolidce4d6f27,
                           { backgroundColor: theme.colors.primary },
                         ]}
                         title={'Apply'}
@@ -482,13 +555,13 @@ const BaggageCartScreen = props => {
                     </View>
                   </View>
                   <Divider
-                    style={styles.DividerJL}
+                    style={styles.Divider79894792}
                     color={theme.colors.divider}
                   />
-                  <View style={styles.Viewix}>
+                  <View style={styles.View003a266c}>
                     <Text
                       style={[
-                        styles.Text_16,
+                        styles.Texteafa8587,
                         { color: theme.colors.custom_rgb189_198_212 },
                       ]}
                     >
@@ -496,11 +569,11 @@ const BaggageCartScreen = props => {
                     </Text>
                     <Spacer top={8} right={12} bottom={8} left={12} />
                     <ButtonOutline
-                      style={styles.ButtonOutline_9T}
+                      style={styles.ButtonOutline02263c6f}
                       title={'10%'}
                     />
                     <ButtonOutline
-                      style={styles.ButtonOutline_5h}
+                      style={styles.ButtonOutline02263c6f}
                       title={'15%'}
                     />
                     <TextInput
@@ -512,7 +585,7 @@ const BaggageCartScreen = props => {
                         }
                       }}
                       style={[
-                        styles.TextInputs6,
+                        styles.TextInput795812dd,
                         {
                           borderColor: theme.colors.primary,
                           color: theme.colors.medium,
@@ -528,14 +601,15 @@ const BaggageCartScreen = props => {
                 </View>
               </KeyboardAwareScrollView>
 
-              <View style={styles.ViewCE}>
-                <View style={styles.ViewJa}>
+              <View style={styles.View45692adb}>
+                <View style={styles.Viewdbf79098}>
                   <ButtonSolid
                     onPress={async () => {
                       try {
                         setShowModal(false);
                         const cost = await setPricePOST.mutateAsync({
-                          price: 299,
+                          price: totalPrice,
+                          priceID: 299,
                         });
                         const prodID = cost.id;
                         const check = await checkoutPOST.mutateAsync({
@@ -551,7 +625,7 @@ const BaggageCartScreen = props => {
                       }
                     }}
                     style={[
-                      styles.ButtonSolidvc,
+                      styles.ButtonSolid7d2cfd44,
                       { backgroundColor: theme.colors.primary },
                     ]}
                     title={'Place Order'}
@@ -567,40 +641,43 @@ const BaggageCartScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  Texth3: {
+  Textd59ae7c0: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  ViewUk: {
+  Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
   },
-  ImagexF: {
-    width: 52,
-    height: 52,
+  ImageBackground25e3d6ef: {
+    width: '75%',
+    height: '75%',
+    overflow: 'hidden',
   },
-  ViewXO: {
+  View6e2b01f9: {
     width: 75,
     height: 75,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  TextwE: {
+  Textbfd3752d: {
     fontSize: 15,
     textTransform: 'capitalize',
     fontFamily: 'Poppins_400Regular',
   },
-  TextMH: {
+  Textbfd3df7a: {
     fontSize: 12,
     fontFamily: 'Poppins_600SemiBold',
     marginRight: 12,
   },
-  ViewpG: {
-    flexDirection: 'row',
+  Textbffce5db: {
+    fontSize: 12,
+    fontFamily: 'Poppins_300Light',
+    marginRight: 12,
   },
-  View_7z: {
+  Viewc46b8fec: {
     marginLeft: 10,
     justifyContent: 'space-between',
     marginTop: 11,
@@ -609,15 +686,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
   },
-  IconButtonfZ: {
+  IconButton27d4405a: {
     marginRight: 8,
   },
-  ViewWa: {
+  View6ff87234: {
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  View_3q: {
+  View12a773c5: {
     minHeight: 75,
     maxHeight: 75,
     marginLeft: 12,
@@ -625,126 +702,100 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 12,
   },
-  Divider_4I: {
+  Dividerbed2bcba: {
     height: 1,
     marginLeft: '5%',
     marginRight: '5%',
+    marginBottom: 10,
   },
-  FlatLista7Content: {
+  FlatListc992f941Content: {
     flex: 1,
   },
-  Fetchfa: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  ScrollViewTm: {
+  ScrollViewf26042a5: {
     flexGrow: 1,
   },
-  ScrollViewTmContent: {
+  ScrollViewf26042a5Content: {
     marginTop: 21,
     flexShrink: 0,
-    paddingBottom: 21,
-    marginBottom: 200,
+    paddingBottom: 220,
   },
-  DividerRG: {
+  Dividerde11d607: {
     height: 1,
   },
-  Texta2: {
+  Textf7bbdd1d: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 12,
   },
-  TextWZ: {
+  Text86ce3ba5: {
     fontFamily: 'Poppins_700Bold',
     fontSize: 12,
   },
-  ViewAi: {
+  View0ae50d17: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 12,
   },
-  Textiv: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  Textyu: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 12,
-  },
-  ViewwP: {
+  View88c44c3e: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  TextYy: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  Textp9: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 12,
-  },
-  View_9F: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  DividerTh: {
+  Divider0e02aada: {
     height: 1,
     marginTop: 10,
   },
-  Text_4n: {
+  Text5528eed5: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 16,
   },
-  Text_69: {
+  Text4036ef9a: {
     fontFamily: 'Poppins_700Bold',
     fontSize: 16,
   },
-  ViewHm: {
+  Viewddd27fdd: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 12,
   },
-  ButtonSolidSw: {
+  ButtonSolidf0b1de94: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
     textAlign: 'center',
   },
-  ViewXU: {
+  View7bb6e4d9: {
     flexGrow: 1,
     flexShrink: 0,
     marginTop: 18,
   },
-  View_1a: {
+  Viewad2d300f: {
     flexGrow: 1,
     flexShrink: 0,
     marginLeft: 12,
     marginRight: 12,
     justifyContent: 'flex-end',
   },
-  ViewJG: {
+  Viewe515c9dd: {
     paddingBottom: 20,
     bottom: 0,
     position: 'absolute',
     left: 0,
     right: 0,
   },
-  IconButtonJO: {
+  IconButton897c6051: {
     marginLeft: 16,
   },
-  TextFG: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 26,
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  Viewx0: {
+  View7a993fb0: {
     marginTop: 20,
     marginBottom: 20,
   },
-  TextmV: {
+  Textcd71a0f7: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  ViewfM: {
+  View12981c6a: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 12,
@@ -752,30 +803,30 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
   },
-  ViewqS: {
+  Viewa521a992: {
     justifyContent: 'center',
     paddingTop: 8,
     paddingLeft: 8,
     paddingBottom: 8,
     paddingRight: 8,
   },
-  Text_1r: {
+  Text14121fc4: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 13,
   },
-  Viewqt: {
+  Viewfeac12d8: {
     justifyContent: 'center',
     marginLeft: 12,
   },
-  Viewgz: {
+  View43b593eb: {
     flexDirection: 'row',
     flexGrow: 1,
     flexShrink: 0,
   },
-  ViewuO: {
+  View6a955cc3: {
     justifyContent: 'center',
   },
-  ViewCr: {
+  View1957b5f2: {
     flexDirection: 'row',
     flexGrow: 1,
     flexShrink: 0,
@@ -788,83 +839,32 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderRightWidth: 1,
   },
-  ViewfZ: {
+  Viewb7eaad51: {
     flexGrow: 1,
     flexShrink: 0,
     marginLeft: 12,
     marginRight: 12,
     marginBottom: 12,
   },
-  View_2Q: {
-    justifyContent: 'center',
-    paddingTop: 8,
-    paddingLeft: 8,
-    paddingBottom: 8,
-    paddingRight: 8,
-  },
-  TextQb: {
+  Text3e74d306: {
     fontFamily: 'OpenSans_600SemiBold',
     fontSize: 13,
   },
-  View_8s: {
-    justifyContent: 'center',
-    marginLeft: 12,
-  },
-  ViewOK: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  ViewGE: {
-    justifyContent: 'center',
-  },
-  ViewUg: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    flexShrink: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-  },
-  ViewaC: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginLeft: 12,
-    marginRight: 12,
-    marginBottom: 12,
-  },
-  ViewzA: {
+  View80a9a9a9: {
     flexGrow: 1,
     flexShrink: 0,
     justifyContent: 'space-around',
     paddingTop: 12,
     paddingBottom: 12,
   },
-  TextxW: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 16,
-  },
-  Viewmq: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  TextFieldVn: {
+  TextField04c2524d: {
     fontFamily: 'Poppins_400Regular',
   },
-  Viewhv: {
+  Viewb5c2cefd: {
     flexGrow: 1,
     flexShrink: 0,
   },
-  ButtonSolidVC: {
+  ButtonSolidce4d6f27: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -872,25 +872,25 @@ const styles = StyleSheet.create({
     marginLeft: -10,
     width: 120,
   },
-  Viewbl: {
+  View603e5d81: {
     marginLeft: 12,
     flexDirection: 'row',
     flexGrow: 1,
     flexShrink: 0,
     marginRight: 12,
   },
-  DividerJL: {
+  Divider79894792: {
     height: 1,
     marginTop: 12,
     marginBottom: 12,
     marginLeft: 12,
     marginRight: 12,
   },
-  Text_16: {
+  Texteafa8587: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  ButtonOutline_9T: {
+  ButtonOutline02263c6f: {
     backgroundColor: 'transparent',
     borderRadius: 8,
     fontFamily: 'System',
@@ -899,16 +899,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 45,
   },
-  ButtonOutline_5h: {
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    borderWidth: 1,
-    textAlign: 'center',
-    height: 45,
-  },
-  TextInputs6: {
+  TextInput795812dd: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
@@ -921,7 +912,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: 100,
   },
-  Viewix: {
+  View003a266c: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -929,7 +920,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
     marginTop: 12,
   },
-  ButtonSolidvc: {
+  ButtonSolid7d2cfd44: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -937,17 +928,17 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     marginRight: 12,
   },
-  ViewJa: {
+  Viewdbf79098: {
     flexGrow: 0,
     flexShrink: 0,
   },
-  ViewCE: {
+  View45692adb: {
     flexGrow: 1,
     flexShrink: 0,
     justifyContent: 'flex-end',
     paddingBottom: 24,
   },
-  ViewLI: {
+  View2200bac7: {
     height: '100%',
   },
 });

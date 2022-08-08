@@ -18,14 +18,14 @@ const AccountScreen = props => {
 
   return (
     <ScreenContainer scrollable={true} hasSafeArea={false}>
-      <View style={styles.ViewOY}>
+      <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <IconButton
-            style={styles.IconButtonaC}
+            style={styles.IconButton897c6051}
             icon={'Ionicons/ios-chevron-back'}
             size={32}
           />
-          <Text style={[styles.Textbc, { color: theme.colors.strong }]}>
+          <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Hi '}
             {Constants['user_name']}
             {'!'}
@@ -33,11 +33,11 @@ const AccountScreen = props => {
         </Row>
       </View>
 
-      <View style={styles.ViewyF} needsOffscreenAlphaCompositing={false}>
-        <Touchable style={styles.TouchableUg}>
+      <View style={styles.View467c9a69} needsOffscreenAlphaCompositing={false}>
+        <Touchable style={styles.Touchablef4217bc1}>
           <View
             style={[
-              styles.Viewdz,
+              styles.View932db872,
               {
                 borderRadius: theme.roundness,
                 borderColor: theme.colors.divider,
@@ -45,11 +45,11 @@ const AccountScreen = props => {
               },
             ]}
           >
-            <View style={styles.Viewub}>
+            <View style={styles.View2d6d8dcf}>
               <Text
                 style={[
                   theme.typography.headline6,
-                  styles.Text_3f,
+                  styles.Texta242a4cc,
                   { color: theme.colors.strong },
                 ]}
                 allowFontScaling={true}
@@ -60,7 +60,7 @@ const AccountScreen = props => {
               <Text
                 style={[
                   theme.typography.subtitle1,
-                  styles.TextuC,
+                  styles.Textada04eb3,
                   { color: theme.colors.medium },
                 ]}
                 allowFontScaling={true}
@@ -69,9 +69,9 @@ const AccountScreen = props => {
               </Text>
             </View>
 
-            <View style={styles.ViewT1}>
+            <View style={styles.View4b7a0743}>
               <Icon
-                style={styles.IconYe}
+                style={styles.Icon9e5973b7}
                 size={24}
                 color={theme.colors.strong}
                 name={'Entypo/home'}
@@ -80,10 +80,10 @@ const AccountScreen = props => {
           </View>
         </Touchable>
 
-        <Touchable style={styles.TouchablevW}>
+        <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
-              styles.View_55,
+              styles.View3896efdd,
               {
                 borderColor: theme.colors.divider,
                 backgroundColor: theme.colors.background,
@@ -91,11 +91,11 @@ const AccountScreen = props => {
               },
             ]}
           >
-            <View style={styles.ViewrI}>
+            <View style={styles.View2d6d8dcf}>
               <Text
                 style={[
                   theme.typography.headline6,
-                  styles.TextL3,
+                  styles.Text4b62e5ec,
                   { color: theme.colors.strong },
                 ]}
                 allowFontScaling={true}
@@ -106,7 +106,7 @@ const AccountScreen = props => {
               <Text
                 style={[
                   theme.typography.subtitle1,
-                  styles.TextIv,
+                  styles.Textada04eb3,
                   { color: theme.colors.medium },
                 ]}
                 allowFontScaling={true}
@@ -115,9 +115,9 @@ const AccountScreen = props => {
               </Text>
             </View>
 
-            <View style={styles.ViewrK}>
+            <View style={styles.Viewc76bc0e2}>
               <Icon
-                style={styles.Iconbd}
+                style={styles.Icon33b61cb6}
                 color={theme.colors.strong}
                 size={24}
                 name={'Ionicons/school'}
@@ -126,10 +126,10 @@ const AccountScreen = props => {
           </View>
         </Touchable>
 
-        <Touchable style={styles.Touchablexz}>
+        <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
-              styles.ViewUM,
+              styles.View3896efdd,
               {
                 borderColor: theme.colors.divider,
                 backgroundColor: theme.colors.background,
@@ -137,11 +137,11 @@ const AccountScreen = props => {
               },
             ]}
           >
-            <View style={styles.ViewM9}>
+            <View style={styles.View2d6d8dcf}>
               <Text
                 style={[
                   theme.typography.headline6,
-                  styles.TextZt,
+                  styles.Text4b62e5ec,
                   { color: theme.colors.strong },
                 ]}
                 allowFontScaling={true}
@@ -150,9 +150,9 @@ const AccountScreen = props => {
               </Text>
             </View>
 
-            <View style={styles.ViewbY}>
+            <View style={styles.Viewc76bc0e2}>
               <Icon
-                style={styles.IconPZ}
+                style={styles.Icon33b61cb6}
                 color={theme.colors.strong}
                 size={24}
                 name={'MaterialIcons/delivery-dining'}
@@ -161,10 +161,10 @@ const AccountScreen = props => {
           </View>
         </Touchable>
 
-        <Touchable style={styles.Touchablee0}>
+        <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
-              styles.ViewbQ,
+              styles.View63455e03,
               {
                 borderRadius: theme.roundness,
                 backgroundColor: theme.colors.background,
@@ -172,11 +172,11 @@ const AccountScreen = props => {
               },
             ]}
           >
-            <View style={styles.View_5z}>
+            <View style={styles.View2d6d8dcf}>
               <Text
                 style={[
                   theme.typography.headline6,
-                  styles.TextNB,
+                  styles.Textca4d6164,
                   { color: theme.colors.strong },
                 ]}
                 allowFontScaling={true}
@@ -185,9 +185,9 @@ const AccountScreen = props => {
               </Text>
             </View>
 
-            <View style={styles.ViewgI}>
+            <View style={styles.View4b7a0743}>
               <Icon
-                style={styles.IconNs}
+                style={styles.Icon33b61cb6}
                 size={24}
                 name={'MaterialCommunityIcons/card-account-details-outline'}
                 color={theme.colors.strong}
@@ -196,10 +196,10 @@ const AccountScreen = props => {
           </View>
         </Touchable>
 
-        <Touchable style={styles.TouchableZJ}>
+        <Touchable style={styles.Touchable8cc81ad3}>
           <View
             style={[
-              styles.ViewXl,
+              styles.View4fcb54fe,
               {
                 borderRadius: theme.roundness,
                 backgroundColor: theme.colors.background,
@@ -207,11 +207,11 @@ const AccountScreen = props => {
               },
             ]}
           >
-            <View style={styles.ViewUh}>
+            <View style={styles.View2d6d8dcf}>
               <Text
                 style={[
                   theme.typography.headline6,
-                  styles.TextUY,
+                  styles.Text8fd5a47f,
                   { color: theme.colors.error },
                 ]}
                 allowFontScaling={true}
@@ -220,9 +220,9 @@ const AccountScreen = props => {
               </Text>
             </View>
 
-            <View style={styles.Viewfz}>
+            <View style={styles.Viewc76bc0e2}>
               <Icon
-                style={styles.IconXi}
+                style={styles.Icon9e5973b7}
                 size={24}
                 name={'AntDesign/deleteuser'}
                 color={theme.colors.error}
@@ -236,39 +236,39 @@ const AccountScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  IconButtonaC: {
+  IconButton897c6051: {
     marginLeft: 16,
   },
-  Textbc: {
+  Textd59ae7c0: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  ViewOY: {
+  Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
   },
-  Text_3f: {
+  Texta242a4cc: {
     textAlign: 'left',
   },
-  TextuC: {
+  Textada04eb3: {
     textAlign: 'left',
   },
-  Viewub: {
+  View2d6d8dcf: {
     marginBottom: 24,
   },
-  IconYe: {
+  Icon9e5973b7: {
     width: 24,
     height: 24,
   },
-  ViewT1: {
+  View4b7a0743: {
     width: 42,
     justifyContent: 'center',
     alignItems: 'center',
     height: 42,
   },
-  Viewdz: {
+  View932db872: {
     width: '100%',
     height: 140,
     paddingLeft: 14,
@@ -282,32 +282,26 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderRightWidth: 1,
   },
-  TouchableUg: {
+  Touchablef4217bc1: {
     width: '45%',
     marginBottom: 14,
     marginTop: 14,
     alignSelf: 'stretch',
   },
-  TextL3: {
+  Text4b62e5ec: {
     textAlign: 'left',
   },
-  TextIv: {
-    textAlign: 'left',
-  },
-  ViewrI: {
-    marginBottom: 24,
-  },
-  Iconbd: {
+  Icon33b61cb6: {
     height: 24,
     width: 24,
   },
-  ViewrK: {
+  Viewc76bc0e2: {
     justifyContent: 'center',
     width: 42,
     height: 42,
     alignItems: 'center',
   },
-  View_55: {
+  View3896efdd: {
     paddingRight: 14,
     paddingBottom: 14,
     paddingTop: 14,
@@ -321,65 +315,16 @@ const styles = StyleSheet.create({
     height: 140,
     paddingLeft: 14,
   },
-  TouchablevW: {
+  Touchable8f61467f: {
     alignSelf: 'stretch',
     marginTop: 14,
     marginBottom: 14,
     width: '45%',
   },
-  TextZt: {
+  Textca4d6164: {
     textAlign: 'left',
   },
-  ViewM9: {
-    marginBottom: 24,
-  },
-  IconPZ: {
-    height: 24,
-    width: 24,
-  },
-  ViewbY: {
-    justifyContent: 'center',
-    width: 42,
-    height: 42,
-    alignItems: 'center',
-  },
-  ViewUM: {
-    paddingRight: 14,
-    paddingBottom: 14,
-    paddingTop: 14,
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    width: '100%',
-    height: 140,
-    paddingLeft: 14,
-  },
-  Touchablexz: {
-    alignSelf: 'stretch',
-    marginTop: 14,
-    marginBottom: 14,
-    width: '45%',
-  },
-  TextNB: {
-    textAlign: 'left',
-  },
-  View_5z: {
-    marginBottom: 24,
-  },
-  IconNs: {
-    height: 24,
-    width: 24,
-  },
-  ViewgI: {
-    width: 42,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 42,
-  },
-  ViewbQ: {
+  View63455e03: {
     borderRightWidth: 1,
     width: '100%',
     height: 140,
@@ -393,29 +338,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderTopWidth: 1,
   },
-  Touchablee0: {
-    alignSelf: 'stretch',
-    marginTop: 14,
-    marginBottom: 14,
-    width: '45%',
-  },
-  TextUY: {
+  Text8fd5a47f: {
     textAlign: 'left',
   },
-  ViewUh: {
-    marginBottom: 24,
-  },
-  IconXi: {
-    width: 24,
-    height: 24,
-  },
-  Viewfz: {
-    justifyContent: 'center',
-    width: 42,
-    height: 42,
-    alignItems: 'center',
-  },
-  ViewXl: {
+  View4fcb54fe: {
     paddingTop: 14,
     paddingBottom: 14,
     paddingRight: 14,
@@ -429,13 +355,13 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRightWidth: 1,
   },
-  TouchableZJ: {
+  Touchable8cc81ad3: {
     alignSelf: 'stretch',
     marginTop: 14,
     marginBottom: 14,
     width: '95%',
   },
-  ViewyF: {
+  View467c9a69: {
     justifyContent: 'space-evenly',
     paddingLeft: 32,
     alignItems: 'flex-start',

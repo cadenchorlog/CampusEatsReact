@@ -21,13 +21,13 @@ const CheckoutScreen = props => {
             console.error(err);
           }
         }}
-        style={styles.IconButtonHa}
+        style={styles.IconButton04e18c6b}
         icon={'AntDesign/closecircle'}
         size={45}
         color={theme.colors.divider}
       />
       <WebView
-        style={styles.WebViewvt}
+        style={styles.WebView4825887f}
         source={{ uri: `${props.route?.params?.url ?? 'https://google.com'}` }}
       />
     </ScreenContainer>
@@ -35,12 +35,12 @@ const CheckoutScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  IconButtonHa: {
+  IconButton04e18c6b: {
     marginTop: 15,
     marginLeft: 15,
     marginBottom: 15,
   },
-  WebViewvt: {
+  WebView4825887f: {
     flex: 1,
     marginTop: -75,
     marginBottom: -80,

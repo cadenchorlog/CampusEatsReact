@@ -442,6 +442,384 @@ export const FetchCourierOffersGET = ({
   return children({ loading, data, error, refetchCourierOffers: refetch });
 };
 
+export const getAllStoresGET = Constants =>
+  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/stores`, {
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+  })
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetAllStoresGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  return useQuery(['Stores', args], () => getAllStoresGET(Constants, args), {
+    refetchInterval,
+  });
+};
+
+export const FetchGetAllStoresGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetAllStoresGET(
+    {},
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetAllStores: refetch });
+};
+
+export const getCartTotalsGET = (Constants, { user_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/userCartTotal/${
+      user_id ?? ''
+    }`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetCartTotalsGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(['user', args], () => getCartTotalsGET(Constants, args), {
+    refetchInterval,
+    onSuccess: () => queryClient.invalidateQueries(['users']),
+  });
+};
+
+export const FetchGetCartTotalsGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  user_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetCartTotalsGET(
+    { user_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetCartTotals: refetch });
+};
+
+export const getItemListGET = (Constants, { store_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/getStoreItems/${
+      store_id ?? ''
+    }/`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetItemListGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  return useQuery(['Stores', args], () => getItemListGET(Constants, args), {
+    refetchInterval,
+  });
+};
+
+export const FetchGetItemListGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  store_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetItemListGET(
+    { store_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetItemList: refetch });
+};
+
+export const getSpecificItemGET = (Constants, { itemID, stores_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/storesItems/${
+      stores_id ?? ''
+    }/${itemID ?? ''}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetSpecificItemGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(['Store', args], () => getSpecificItemGET(Constants, args), {
+    refetchInterval,
+    onSuccess: () => queryClient.invalidateQueries(['Stores']),
+  });
+};
+
+export const FetchGetSpecificItemGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  itemID,
+  stores_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetSpecificItemGET(
+    { itemID, stores_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetSpecificItem: refetch });
+};
+
+export const getStoreInfoGET = (Constants, { stores_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/stores/${stores_id ?? ''}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetStoreInfoGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(['Store', args], () => getStoreInfoGET(Constants, args), {
+    refetchInterval,
+    onSuccess: () => queryClient.invalidateQueries(['Stores']),
+  });
+};
+
+export const FetchGetStoreInfoGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  stores_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetStoreInfoGET(
+    { stores_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetStoreInfo: refetch });
+};
+
+export const getUserCartGET = (Constants, { UID }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/getCart/${UID ?? ''}/`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetUserCartGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  return useQuery(['users', args], () => getUserCartGET(Constants, args), {
+    refetchInterval,
+  });
+};
+
+export const FetchGetUserCartGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  UID,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetUserCartGET(
+    { UID },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetUserCart: refetch });
+};
+
 export const getUserOrdersGET = (Constants, { UID }) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/session/${
@@ -510,6 +888,70 @@ export const FetchGetUserOrdersGET = ({
   }, [data]);
 
   return children({ loading, data, error, refetchGetUserOrders: refetch });
+};
+
+export const getUserRecordGET = (Constants, { user_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/user/${user_id ?? ''}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetUserRecordGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(['user', args], () => getUserRecordGET(Constants, args), {
+    refetchInterval,
+    onSuccess: () => queryClient.invalidateQueries(['users']),
+  });
+};
+
+export const FetchGetUserRecordGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  user_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetUserRecordGET(
+    { user_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetUserRecord: refetch });
 };
 
 export const markDeliveredPOST = (Constants, { driverID, orderID }) =>
@@ -718,4 +1160,96 @@ export const FetchSpecificOrderViewGET = ({
   }, [data]);
 
   return children({ loading, data, error, refetchSpecificOrderView: refetch });
+};
+
+export const updateCartPOST = (
+  Constants,
+  { UID, cost, itemID, itemName, modsList, storeID, url, user_id }
+) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/cart/${user_id ?? ''}`,
+    {
+      body: JSON.stringify({
+        user_id: UID,
+        storeID: storeID,
+        itemID: itemID,
+        itemName: itemName,
+        modifications: modsList,
+        itemCost: cost,
+        itemImage: url,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useUpdateCartPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => updateCartPOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('user', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('user');
+        queryClient.invalidateQueries('users');
+      },
+    }
+  );
+};
+
+export const userAddressPOST = (Constants, { UID, addressString, lat, long }) =>
+  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/userAddress`, {
+    body: JSON.stringify({
+      user_id: UID,
+      address: addressString,
+      lat: lat,
+      long: long,
+    }),
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    method: 'POST',
+  })
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useUserAddressPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => userAddressPOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('user', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('user');
+        queryClient.invalidateQueries('users');
+      },
+    }
+  );
 };

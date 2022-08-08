@@ -33,6 +33,24 @@ const AvailableOrdersScreen = props => {
   const Variables = Constants;
 
   const setGlobalVariableValue = GlobalVariables.useSetValue();
+  const openMapApplication = (latitude, longitude) => {
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+    const latLng = `${latitude},${longitude}`;
+    const label = 'Address';
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+    return url;
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
   // asfasdf
   const requestLocation = async () => {
     let { status } = await CustomCode.requestForegroundPermissionsAsync();
@@ -121,7 +139,7 @@ const AvailableOrdersScreen = props => {
                 return (
                   <>
                     <Image
-                      style={styles.ImageuB}
+                      style={styles.Image6ba238f9}
                       source={{
                         uri: `${fetchData?.userOrder?.restaurantImage}`,
                       }}
@@ -129,19 +147,25 @@ const AvailableOrdersScreen = props => {
                     />
                     <Surface
                       style={[
-                        styles.SurfaceQB,
+                        styles.Surfacefd5c62b0,
                         { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
                       ]}
                     >
                       <Text
-                        style={[styles.TextxS, { color: theme.colors.strong }]}
+                        style={[
+                          styles.Text9e468f17,
+                          { color: theme.colors.strong },
+                        ]}
                       >
                         {'Delivering order #'}
                         {fetchData?.id}
                       </Text>
 
                       <Text
-                        style={[styles.Textpk, { color: theme.colors.strong }]}
+                        style={[
+                          styles.Textdf7ef565,
+                          { color: theme.colors.strong },
+                        ]}
                       >
                         {'Delivering to user: '}
                         {fetchData?.user_id}
@@ -154,21 +178,17 @@ const AvailableOrdersScreen = props => {
                         <ButtonSolid
                           onPress={() => {
                             try {
-                              Linking.openURL(
-                                'https://goo.gl/maps/RA8T4eq7YKmFaUBK9'
+                              const result = openMapApplication(
+                                fetchData?.userOrder?.storeLat,
+                                fetchData?.userOrder?.storeLong
                               );
-                              if (Platform.OS === 'android') {
-                                return;
-                              }
-                              Linking.openURL(
-                                'https://maps.apple.com/?address=300%20S%20Broadway%20Ave,%20Boise,%20ID%20%2083702,%20United%20States&auid=9221457093882853987&ll=43.608212,-116.193010&lsp=9902&q=Chick-fil-A&_ext=CjMKBQgEEOIBCgQIBRADCgUIBhDRAQoECAoQAAoECFIQAQoECFUQDQoECFkQAQoFCKQBEAESJin2dBr/Rc1FQDFbqb/bvwxdwDl0SkBbbM5FQEElCnqX9AtdwFAD'
-                              );
+                              Linking.openURL(`${result}`);
                             } catch (err) {
                               console.error(err);
                             }
                           }}
                           style={[
-                            styles.ButtonSolidAb,
+                            styles.ButtonSolidb5539f45,
                             { backgroundColor: theme.colors.primary },
                           ]}
                           title={'Pickup'}
@@ -177,21 +197,17 @@ const AvailableOrdersScreen = props => {
                         <ButtonSolid
                           onPress={() => {
                             try {
-                              Linking.openURL(
-                                'https://goo.gl/maps/7uDDo3hhMvQHeXfFA'
+                              const result = openMapApplication(
+                                fetchData?.userOrder?.userLat,
+                                fetchData?.userOrder?.userLong
                               );
-                              if (Platform.OS === 'android') {
-                                return;
-                              }
-                              Linking.openURL(
-                                'https://maps.apple.com/?address=3975%20W%20Farm%20View%20Dr,%20Boise,%20ID%20%2083714,%20United%20States&ll=43.715948,-116.244271&q=Home&_ext=EiYpEeVmBBHbRUAx/qJz8gcQXcA5j7qMYDfcRUBBgEyyUDwPXcBQBA%3D%3D'
-                              );
+                              Linking.openURL(`${result}`);
                             } catch (err) {
                               console.error(err);
                             }
                           }}
                           style={[
-                            styles.ButtonSolidKw,
+                            styles.ButtonSolid3a730fd5,
                             { backgroundColor: theme.colors.primary },
                           ]}
                           title={'Destination'}
@@ -209,7 +225,7 @@ const AvailableOrdersScreen = props => {
                           }
                         }}
                         style={[
-                          styles.ButtonSolidMS,
+                          styles.ButtonSolidc21c4061,
                           { backgroundColor: theme.colors.primary },
                         ]}
                         title={'Message User'}
@@ -229,7 +245,7 @@ const AvailableOrdersScreen = props => {
                               }
                             }}
                             style={[
-                              styles.ButtonSolidb5,
+                              styles.ButtonSolidc21c4061,
                               { backgroundColor: theme.colors.primary },
                             ]}
                             title={'Order Picked Up'}
@@ -254,7 +270,7 @@ const AvailableOrdersScreen = props => {
                               }
                             }}
                             style={[
-                              styles.ButtonSolid_04,
+                              styles.ButtonSolidc21c4061,
                               { backgroundColor: theme.colors.primary },
                             ]}
                             title={'Mark Delivered'}
@@ -262,11 +278,14 @@ const AvailableOrdersScreen = props => {
                         )}
                       </>
                       <Divider
-                        style={styles.DividerWh}
+                        style={styles.Dividerfc046f10}
                         color={theme.colors.divider}
                       />
                       <Text
-                        style={[styles.Texta9, { color: theme.colors.strong }]}
+                        style={[
+                          styles.Text0586d8e1,
+                          { color: theme.colors.strong },
+                        ]}
                       >
                         {'Order Contents:'}
                       </Text>
@@ -300,7 +319,7 @@ const AvailableOrdersScreen = props => {
                                 return (
                                   <Surface
                                     style={[
-                                      styles.Surfacef7,
+                                      styles.Surface8ff00fe3,
                                       {
                                         borderRadius: 10,
                                         borderColor: theme.colors.divider,
@@ -309,7 +328,7 @@ const AvailableOrdersScreen = props => {
                                   >
                                     <Text
                                       style={[
-                                        styles.TextlZ,
+                                        styles.Text91bd8308,
                                         { color: theme.colors.strong },
                                       ]}
                                     >
@@ -318,7 +337,7 @@ const AvailableOrdersScreen = props => {
 
                                     <Text
                                       style={[
-                                        styles.Textma,
+                                        styles.Textddd2e1d3,
                                         { color: theme.colors.strong },
                                       ]}
                                     >
@@ -328,7 +347,9 @@ const AvailableOrdersScreen = props => {
                                   </Surface>
                                 );
                               }}
-                              contentContainerStyle={styles.FlatList_54Content}
+                              contentContainerStyle={
+                                styles.FlatListafd6d09eContent
+                              }
                               numColumns={1}
                             />
                           );
@@ -380,8 +401,8 @@ const AvailableOrdersScreen = props => {
       </>
       <>
         {Constants['courierActive'] ? null : (
-          <View style={styles.ViewBk}>
-            <Text style={[styles.Textzb, { color: theme.colors.strong }]}>
+          <View style={styles.View9900fb05}>
+            <Text style={[styles.Texta195e174, { color: theme.colors.strong }]}>
               {'Available Orders'}
             </Text>
 
@@ -414,7 +435,7 @@ const AvailableOrdersScreen = props => {
                         <>
                           <View
                             style={[
-                              styles.ViewOP,
+                              styles.Viewcabc33e8,
                               {
                                 backgroundColor: theme.colors.surface,
                                 borderRadius: 8,
@@ -433,10 +454,10 @@ const AvailableOrdersScreen = props => {
                                 }
                               }}
                             >
-                              <View style={styles.ViewTY}>
+                              <View style={styles.View769cb23a}>
                                 <ImageBackground
                                   style={[
-                                    styles.ImageBackgroundj4,
+                                    styles.ImageBackground69e94ca6,
                                     { borderRadius: theme.roundness },
                                   ]}
                                   resizeMode={'cover'}
@@ -444,10 +465,10 @@ const AvailableOrdersScreen = props => {
                                     uri: `${listData?.userOrder?.restaurantImage}`,
                                   }}
                                 >
-                                  <View style={styles.ViewKN}>
+                                  <View style={styles.View272ee112}>
                                     <View
                                       style={[
-                                        styles.ViewFt,
+                                        styles.View422f6f32,
                                         {
                                           backgroundColor: theme.colors.primary,
                                           borderBottomLeftRadius: 8,
@@ -457,7 +478,7 @@ const AvailableOrdersScreen = props => {
                                     >
                                       <Text
                                         style={[
-                                          styles.Textaf,
+                                          styles.Textd40b1daa,
                                           { color: theme.colors.surface },
                                         ]}
                                         allowFontScaling={true}
@@ -472,11 +493,11 @@ const AvailableOrdersScreen = props => {
                                 </ImageBackground>
                               </View>
 
-                              <View style={styles.Viewb0}>
+                              <View style={styles.View8db74792}>
                                 <View>
                                   <Text
                                     style={[
-                                      styles.Texttp,
+                                      styles.Text99b56fe5,
                                       { color: theme.colors.strong },
                                     ]}
                                     textBreakStrategy={'highQuality'}
@@ -487,11 +508,11 @@ const AvailableOrdersScreen = props => {
                                     {listData?.userOrder?.restaurantName}
                                   </Text>
                                   <Divider
-                                    style={styles.DividernZ}
+                                    style={styles.Divider22627dc6}
                                     color={theme.colors.divider}
                                   />
-                                  <View style={styles.ViewRH}>
-                                    <View style={styles.ViewXK}>
+                                  <View style={styles.Viewce4accf0}>
+                                    <View style={styles.View7d6a39b7}>
                                       <Icon
                                         name={
                                           'MaterialCommunityIcons/map-marker-distance'
@@ -502,7 +523,7 @@ const AvailableOrdersScreen = props => {
                                       <Spacer right={2} left={2} />
                                       <Text
                                         style={[
-                                          styles.TextlI,
+                                          styles.Textde21574d,
                                           { color: theme.colors.medium },
                                         ]}
                                       >
@@ -532,7 +553,7 @@ const AvailableOrdersScreen = props => {
                         </>
                       );
                     }}
-                    contentContainerStyle={styles.FlatListjHContent}
+                    contentContainerStyle={styles.FlatList8db74792Content}
                   />
                 );
               }}
@@ -545,11 +566,11 @@ const AvailableOrdersScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  ImageuB: {
+  Image6ba238f9: {
     width: '100%',
     height: 250,
   },
-  TextxS: {
+  Text9e468f17: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingTop: 20,
@@ -557,14 +578,14 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 16,
   },
-  Textpk: {
+  Textdf7ef565: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 14,
     paddingLeft: 16,
     paddingRight: 16,
     paddingBottom: 16,
   },
-  ButtonSolidAb: {
+  ButtonSolidb5539f45: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -574,7 +595,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: '42.5%',
   },
-  ButtonSolidKw: {
+  ButtonSolid3a730fd5: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -584,7 +605,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: '42.5%',
   },
-  ButtonSolidMS: {
+  ButtonSolidc21c4061: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -593,49 +614,31 @@ const styles = StyleSheet.create({
     marginRight: 16,
     marginBottom: 10,
   },
-  ButtonSolidb5: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginLeft: 16,
-    marginRight: 16,
-    marginBottom: 10,
-  },
-  ButtonSolid_04: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginLeft: 16,
-    marginRight: 16,
-    marginBottom: 10,
-  },
-  DividerWh: {
+  Dividerfc046f10: {
     height: 1,
     marginBottom: 20,
     marginLeft: 16,
     marginRight: 16,
   },
-  Texta9: {
+  Text0586d8e1: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
     paddingBottom: 16,
   },
-  TextlZ: {
+  Text91bd8308: {
     marginLeft: 16,
     fontFamily: 'Poppins_400Regular',
     fontSize: 20,
   },
-  Textma: {
+  Textddd2e1d3: {
     marginLeft: 16,
     fontFamily: 'Poppins_300Light',
     fontSize: 14,
     marginRight: 16,
   },
-  Surfacef7: {
+  Surface8ff00fe3: {
     minHeight: 60,
     width: '90%',
     marginLeft: 16,
@@ -650,24 +653,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRightWidth: 1,
   },
-  FlatList_54Content: {
+  FlatListafd6d09eContent: {
     flex: 1,
     marginBottom: 20,
   },
-  Fetchil: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  SurfaceQB: {
+  Surfacefd5c62b0: {
     marginTop: -20,
     height: '100%',
   },
-  Fetch_9C: {
-    minHeight: 40,
-  },
-  FetchpI: {
-    minHeight: 40,
-  },
-  Textzb: {
+  Texta195e174: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingTop: 32,
@@ -675,11 +672,11 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 16,
   },
-  Textaf: {
+  Textd40b1daa: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  ViewFt: {
+  View422f6f32: {
     paddingLeft: 8,
     paddingTop: 4,
     paddingRight: 8,
@@ -687,58 +684,58 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ViewKN: {
+  View272ee112: {
     alignItems: 'flex-end',
     marginTop: 16,
   },
-  ImageBackgroundj4: {
+  ImageBackground69e94ca6: {
     width: '100%',
     height: '100%',
   },
-  ViewTY: {
+  View769cb23a: {
     height: 150,
   },
-  Texttp: {
+  Text99b56fe5: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 24,
   },
-  DividernZ: {
+  Divider22627dc6: {
     height: 1,
     marginTop: 12,
     marginBottom: 12,
   },
-  TextlI: {
+  Textde21574d: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 12,
   },
-  ViewXK: {
+  View7d6a39b7: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ViewRH: {
+  Viewce4accf0: {
     alignItems: 'center',
     flexDirection: 'row',
   },
-  Viewb0: {
+  View8db74792: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
     paddingBottom: 16,
   },
-  ViewOP: {
+  Viewcabc33e8: {
     overflow: 'hidden',
     borderLeftWidth: 1,
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
   },
-  FlatListjHContent: {
+  FlatList8db74792Content: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
     paddingBottom: 16,
   },
-  ViewBk: {
+  View9900fb05: {
     marginTop: 45,
   },
 });

@@ -11,6 +11,7 @@ import AcceptOrderScreen from './screens/AcceptOrderScreen';
 import AccountScreen from './screens/AccountScreen';
 import AvailableOrdersScreen from './screens/AvailableOrdersScreen';
 import BaggageCartScreen from './screens/BaggageCartScreen';
+import BlankScreen from './screens/BlankScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
 import DriverChatScreen from './screens/DriverChatScreen';
 import DriverDashboardScreen from './screens/DriverDashboardScreen';
@@ -20,6 +21,7 @@ import LoginScreen from './screens/LoginScreen';
 import MapScreen from './screens/MapScreen';
 import OrderScreen from './screens/OrderScreen';
 import RestaurantItemViewScreen from './screens/RestaurantItemViewScreen';
+import RestaurantViewScreen from './screens/RestaurantViewScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SimpleWelcomeScreen from './screens/SimpleWelcomeScreen';
 import TrackScreen from './screens/TrackScreen';
@@ -279,6 +281,16 @@ export default function RootAppNavigator() {
           name="RestaurantItemViewScreen"
           component={RestaurantItemViewScreen}
           options={{ title: 'Restaurant Item View' }}
+        />
+        <Stack.Screen
+          name="RestaurantViewScreen"
+          component={RestaurantViewScreen}
+          options={{ title: 'restaurantView' }}
+        />
+        <Stack.Screen
+          name="BlankScreen"
+          component={BlankScreen}
+          options={{ title: 'Blank' }}
         />
         <Stack.Screen
           name="BottomTabNavigator"

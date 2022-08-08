@@ -102,7 +102,7 @@ line two` ) and will not work with special characters inside of quotes ( example
       scrollable={true}
     >
       <MapView
-        style={styles.MapViewEj}
+        style={styles.MapView45021330}
         latitude={currentLat}
         longitude={currentLong}
         zoom={12}
@@ -119,18 +119,18 @@ line two` ) and will not work with special characters inside of quotes ( example
       />
       <Surface
         style={[
-          styles.SurfaceYt,
+          styles.Surfacee94f0706,
           { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
         ]}
       >
         <Row justifyContent={'space-around'} alignItems={'center'}>
           <View
             style={[
-              styles.ViewUI,
+              styles.View9deeaf2f,
               { backgroundColor: theme.colors.divider, borderRadius: 12 },
             ]}
           >
-            <View style={styles.View_82}>
+            <View style={styles.Viewc992f941}>
               <TextInput
                 onChangeText={newSearchInputValue => {
                   const textInputValue = newSearchInputValue;
@@ -140,7 +140,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.TextInputlX}
+                style={styles.TextInputbaf7ad36}
                 placeholder={'Search...'}
                 value={textInputValue}
               />
@@ -164,7 +164,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.IconButtonYa}
+                style={styles.IconButtonbcce0fc4}
                 icon={'Ionicons/grid'}
                 size={32}
                 color={theme.colors.light}
@@ -181,7 +181,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.IconButtonPk}
+                style={styles.IconButtonbcce0fc4}
                 icon={'Entypo/chevron-thin-down'}
                 size={32}
                 color={theme.colors.light}
@@ -192,10 +192,10 @@ line two` ) and will not work with special characters inside of quotes ( example
       </Surface>
       <>
         {!drawerOpened ? null : (
-          <View style={styles.ViewgZ}>
+          <View style={styles.Viewac5e8875}>
             <View
               style={[
-                styles.ViewHT,
+                styles.View0a4d6e57,
                 { backgroundColor: theme.colors.strongInverse },
               ]}
               needsOffscreenAlphaCompositing={false}
@@ -208,11 +208,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.TouchablebL}
+                style={styles.Touchableaf6910bf}
               >
                 <View
                   style={[
-                    styles.Viewkb,
+                    styles.View1aef42d9,
                     {
                       borderRadius: theme.roundness,
                       borderColor: theme.colors.divider,
@@ -221,7 +221,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   ]}
                 >
                   <Icon
-                    style={styles.Iconaw}
+                    style={styles.Icon6bf74529}
                     size={40}
                     color={theme.colors.strong}
                     name={'Ionicons/md-person-circle-outline'}
@@ -232,7 +232,10 @@ line two` ) and will not work with special characters inside of quotes ( example
                     alignItems={'flex-start'}
                   >
                     <Text
-                      style={[styles.TextDT, { color: theme.colors.strong }]}
+                      style={[
+                        styles.Text8a1d4f88,
+                        { color: theme.colors.strong },
+                      ]}
                       allowFontScaling={true}
                     >
                       {'Hi '}
@@ -241,7 +244,10 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Text>
 
                     <Text
-                      style={[styles.TextsX, { color: theme.colors.strong }]}
+                      style={[
+                        styles.Text058e2418,
+                        { color: theme.colors.strong },
+                      ]}
                       allowFontScaling={true}
                     >
                       {'View your account'}
@@ -261,11 +267,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.Touchablerl}
+                style={styles.Touchable2e5bf580}
               >
                 <View
                   style={[
-                    styles.View_5k,
+                    styles.View5bdc27e1,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -273,11 +279,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.ViewFd}>
+                  <View style={styles.Viewd8fb5662}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.TextlK,
+                        styles.Text08ca864d,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
@@ -286,9 +292,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Text>
                   </View>
 
-                  <View style={styles.ViewEa}>
+                  <View style={styles.Viewfc2051b8}>
                     <Icon
-                      style={styles.Icon_5C}
+                      style={styles.Icon9e5973b7}
                       name={'MaterialCommunityIcons/truck-delivery'}
                       size={24}
                       color={theme.colors.strong}
@@ -305,11 +311,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.Touchablekk}
+                style={styles.Touchableb3269bed}
               >
                 <View
                   style={[
-                    styles.ViewDg,
+                    styles.View4fcb54fe,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -317,11 +323,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.ViewXx}>
+                  <View style={styles.View2d6d8dcf}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.TextQP,
+                        styles.Text4b62e5ec,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
@@ -330,9 +336,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Text>
                   </View>
 
-                  <View style={styles.ViewSk}>
+                  <View style={styles.Viewc76bc0e2}>
                     <Icon
-                      style={styles.IconrH}
+                      style={styles.Icon9e5973b7}
                       size={24}
                       name={'Ionicons/md-home'}
                       color={theme.colors.strong}
@@ -365,11 +371,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.TouchableQg}
+                style={styles.Touchableb890e5fa}
               >
                 <View
                   style={[
-                    styles.VieweJ,
+                    styles.View5bdc27e1,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -377,11 +383,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.Viewj6}>
+                  <View style={styles.View2d6d8dcf}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.TextR8,
+                        styles.Textca4d6164,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
@@ -390,9 +396,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Text>
                   </View>
 
-                  <View style={styles.ViewVe}>
+                  <View style={styles.Viewfc2051b8}>
                     <Icon
-                      style={styles.IconYO}
+                      style={styles.Icon9e5973b7}
                       name={'MaterialIcons/logout'}
                       size={24}
                       color={theme.colors.error}
@@ -401,10 +407,10 @@ line two` ) and will not work with special characters inside of quotes ( example
                 </View>
               </Touchable>
 
-              <Touchable style={styles.TouchablemW}>
+              <Touchable style={styles.Touchable06a91ba5}>
                 <View
                   style={[
-                    styles.ViewWt,
+                    styles.View4fcb54fe,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -412,11 +418,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.Viewbm}>
+                  <View style={styles.View2d6d8dcf}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.TextGQ,
+                        styles.Text4b62e5ec,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
@@ -427,7 +433,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     <Text
                       style={[
                         theme.typography.subtitle1,
-                        styles.TextX9,
+                        styles.Textada04eb3,
                         { color: theme.colors.medium },
                       ]}
                       allowFontScaling={true}
@@ -436,9 +442,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Text>
                   </View>
 
-                  <View style={styles.View_03}>
+                  <View style={styles.Viewc76bc0e2}>
                     <Icon
-                      style={styles.IconFt}
+                      style={styles.Icon9580a48b}
                       size={30}
                       name={'MaterialIcons/help'}
                       color={theme.colors.strong}
@@ -455,7 +461,7 @@ line two` ) and will not work with special characters inside of quotes ( example
 };
 
 const styles = StyleSheet.create({
-  MapViewEj: {
+  MapView45021330: {
     flex: 1,
     marginBottom: -25,
     bottom: 0,
@@ -463,15 +469,15 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  TextInputlX: {
+  TextInputbaf7ad36: {
     fontFamily: 'System',
     fontWeight: '400',
     fontSize: 18,
   },
-  View_82: {
+  Viewc992f941: {
     flex: 1,
   },
-  ViewUI: {
+  View9deeaf2f: {
     paddingLeft: 12,
     paddingTop: 10,
     paddingRight: 12,
@@ -481,31 +487,28 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
     marginRight: '15%',
   },
-  IconButtonYa: {
+  IconButtonbcce0fc4: {
     right: 25,
   },
-  IconButtonPk: {
-    right: 25,
-  },
-  SurfaceYt: {
+  Surfacee94f0706: {
     minHeight: 70,
     justifyContent: 'space-around',
     alignContent: 'space-around',
     overflow: 'hidden',
   },
-  Iconaw: {
+  Icon6bf74529: {
     width: 40,
     height: 40,
   },
-  TextDT: {
+  Text8a1d4f88: {
     textAlign: 'left',
     fontSize: 20,
   },
-  TextsX: {
+  Text058e2418: {
     textAlign: 'left',
     fontSize: 14,
   },
-  Viewkb: {
+  View1aef42d9: {
     width: '100%',
     height: 90,
     paddingBottom: 14,
@@ -519,31 +522,31 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     paddingRight: 14,
   },
-  TouchablebL: {
+  Touchableaf6910bf: {
     width: '100%',
     marginBottom: 14,
     marginTop: 14,
     alignSelf: 'stretch',
     height: 75,
   },
-  TextlK: {
+  Text08ca864d: {
     textAlign: 'left',
     paddingTop: 8,
   },
-  ViewFd: {
+  Viewd8fb5662: {
     marginBottom: 16,
   },
-  Icon_5C: {
+  Icon9e5973b7: {
     width: 24,
     height: 24,
   },
-  ViewEa: {
+  Viewfc2051b8: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 42,
     width: 42,
   },
-  View_5k: {
+  View5bdc27e1: {
     width: '100%',
     borderRightWidth: 1,
     alignItems: 'flex-start',
@@ -557,29 +560,25 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
     height: 140,
   },
-  Touchablerl: {
+  Touchable2e5bf580: {
     alignSelf: 'stretch',
     marginBottom: 10,
     width: '48%',
     marginTop: 14,
   },
-  TextQP: {
+  Text4b62e5ec: {
     textAlign: 'left',
   },
-  ViewXx: {
+  View2d6d8dcf: {
     marginBottom: 24,
   },
-  IconrH: {
-    width: 24,
-    height: 24,
-  },
-  ViewSk: {
+  Viewc76bc0e2: {
     justifyContent: 'center',
     width: 42,
     height: 42,
     alignItems: 'center',
   },
-  ViewDg: {
+  View4fcb54fe: {
     paddingTop: 14,
     paddingBottom: 14,
     paddingRight: 14,
@@ -593,88 +592,35 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRightWidth: 1,
   },
-  Touchablekk: {
+  Touchableb3269bed: {
     alignSelf: 'stretch',
     marginBottom: 10,
     width: '48%',
     marginTop: 14,
     marginLeft: 10,
   },
-  TextR8: {
+  Textca4d6164: {
     textAlign: 'left',
   },
-  Viewj6: {
-    marginBottom: 24,
-  },
-  IconYO: {
-    width: 24,
-    height: 24,
-  },
-  ViewVe: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 42,
-    width: 42,
-  },
-  VieweJ: {
-    width: '100%',
-    borderRightWidth: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    paddingRight: 14,
-    paddingBottom: 14,
-    paddingTop: 14,
-    borderBottomWidth: 1,
-    paddingLeft: 14,
-    height: 140,
-  },
-  TouchableQg: {
+  Touchableb890e5fa: {
     alignSelf: 'stretch',
     marginBottom: 14,
     width: '48%',
     marginRight: 10,
   },
-  TextGQ: {
+  Textada04eb3: {
     textAlign: 'left',
   },
-  TextX9: {
-    textAlign: 'left',
-  },
-  Viewbm: {
-    marginBottom: 24,
-  },
-  IconFt: {
+  Icon9580a48b: {
     width: 30,
     height: 30,
   },
-  View_03: {
-    justifyContent: 'center',
-    width: 42,
-    height: 42,
-    alignItems: 'center',
-  },
-  ViewWt: {
-    paddingTop: 14,
-    paddingBottom: 14,
-    paddingRight: 14,
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    borderBottomWidth: 1,
-    paddingLeft: 14,
-    height: 140,
-    width: '100%',
-    borderRightWidth: 1,
-  },
-  TouchablemW: {
+  Touchable06a91ba5: {
     alignSelf: 'stretch',
     marginBottom: 14,
     width: '48%',
   },
-  ViewHT: {
+  View0a4d6e57: {
     justifyContent: 'space-evenly',
     paddingLeft: 32,
     alignItems: 'flex-start',
@@ -683,7 +629,7 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     flexDirection: 'row',
   },
-  ViewgZ: {
+  Viewac5e8875: {
     paddingTop: 0,
     marginTop: 0,
   },

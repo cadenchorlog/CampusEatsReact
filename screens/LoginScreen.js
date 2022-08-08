@@ -11,7 +11,7 @@ import {
   withTheme,
 } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const LoginScreen = props => {
@@ -48,174 +48,205 @@ const LoginScreen = props => {
 
   return (
     <ScreenContainer hasTopSafeArea={true}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.KeyboardAwareScrollViewdqContent}
+      <Image
+        style={styles.Image68ea8a71}
+        source={{
+          uri: 'https://images.pexels.com/photos/54539/pexels-photo-54539.jpeg?auto=compress&cs=tinysrgb&w=600',
+        }}
+        resizeMode={'cover'}
+      />
+      <View
+        style={[
+          styles.Viewb8b014cc,
+          {
+            backgroundColor: theme.colors.background,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
+        ]}
       >
-        <View style={styles.Viewbm}>
-          <Divider style={styles.Divider_0C} color={theme.colors.divider} />
-          <Text style={styles.Textwu}>{'Welcome to Campus Eats!'}</Text>
-
-          <Text style={styles.Textl7}>
-            {'Sign in to your account to continue'}
-          </Text>
-        </View>
-
-        <View style={styles.View_1Z}>
-          <>
-            {!Constants['error_message'] ? null : (
-              <Text style={[styles.TextWR, { color: theme.colors.error }]}>
-                {Constants['error_message']}
-              </Text>
-            )}
-          </>
-          <TextInput
-            onChangeText={newEmailInputValue => {
-              try {
-                setEmailValue(newEmailInputValue);
-              } catch (err) {
-                console.error(err);
-              }
-            }}
-            style={[styles.TextInput_4t, { borderColor: theme.colors.divider }]}
-            value={emailValue}
-            placeholder={'Email'}
-            keyboardType={'email-address'}
-            textContentType={'emailAddress'}
-            autoCapitalize={'none'}
-          />
-          <Spacer top={12} right={8} bottom={12} left={8} />
-          <TextInput
-            onChangeText={newPasswordInputValue => {
-              try {
-                setPasswordValue(newPasswordInputValue);
-              } catch (err) {
-                console.error(err);
-              }
-            }}
-            style={[styles.TextInput_87, { borderColor: theme.colors.divider }]}
-            value={passwordValue}
-            placeholder={'Password'}
-            secureTextEntry={true}
-          />
-          <Spacer top={24} right={8} bottom={24} left={8} />
-          <>
-            {Constants['is_loading'] ? null : (
-              <ButtonSolid
-                onPress={async () => {
-                  try {
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: true,
-                    });
-                    const response = await XanoApi.loginPOST(Constants, {
-                      email: emailValue,
-                      password: passwordValue,
-                    });
-                    const authToken = response.authToken;
-                    const message = response.message;
-                    setGlobalVariableValue({
-                      key: 'error_message',
-                      value: message,
-                    });
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: false,
-                    });
-                    if (!authToken) {
-                      return;
-                    }
-                    const id = response.id;
-                    const name = response.name;
-                    const email = response.email;
-                    setGlobalVariableValue({
-                      key: 'auth_header',
-                      value: 'Bearer ' + authToken,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_id',
-                      value: id,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_name',
-                      value: name,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_email',
-                      value: email,
-                    });
-                    setEmailValue('');
-                    setPasswordValue('');
-                    setGlobalVariableValue({
-                      key: 'error_message',
-                      value: '',
-                    });
-                    navigation.navigate('BottomTabNavigator', {
-                      screen: 'MapScreen',
-                    });
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={[
-                  styles.ButtonSoliduw,
-                  { backgroundColor: theme.colors.primary },
-                ]}
-                title={'Sign in'}
-              />
-            )}
-          </>
-          <>
-            {!Constants['is_loading'] ? null : (
-              <ButtonSolid
-                style={[
-                  styles.ButtonSolid_9O,
-                  { backgroundColor: theme.colors.primary },
-                ]}
-                title={''}
-                disabled={true}
-                loading={true}
-              />
-            )}
-          </>
-          <Spacer top={16} right={8} bottom={16} left={8} />
-          <View style={styles.ViewZa}>
-            <Text>{'New User?'}</Text>
-            <Spacer top={8} right={2} bottom={8} left={2} />
-            <Link style={{ color: theme.colors.primary }} title={'Sign up!'} />
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.KeyboardAwareScrollView6a955cc3Content}
+        >
+          <View style={styles.View39912261}>
+            <Divider
+              style={styles.Divider259a88df}
+              color={theme.colors.divider}
+            />
+            <Text style={styles.Textf8b291a4}>
+              {'Sign In to\nCampus Eats.'}
+            </Text>
           </View>
-        </View>
-      </KeyboardAwareScrollView>
+
+          <View style={styles.View1e98c651}>
+            <TextInput
+              onChangeText={newEmailInputValue => {
+                try {
+                  setEmailValue(newEmailInputValue);
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={[
+                styles.TextInputa6e0f828,
+                { borderColor: theme.colors.divider },
+              ]}
+              value={emailValue}
+              placeholder={'Email'}
+              keyboardType={'email-address'}
+              textContentType={'emailAddress'}
+              autoCapitalize={'none'}
+            />
+            <Spacer top={12} right={8} bottom={12} left={8} />
+            <TextInput
+              onChangeText={newPasswordInputValue => {
+                try {
+                  setPasswordValue(newPasswordInputValue);
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={[
+                styles.TextInput34ffd2e4,
+                { borderColor: theme.colors.divider },
+              ]}
+              value={passwordValue}
+              placeholder={'Password'}
+              secureTextEntry={true}
+            />
+            <Spacer top={24} right={8} bottom={24} left={8} />
+            <>
+              {Constants['is_loading'] ? null : (
+                <ButtonSolid
+                  onPress={async () => {
+                    try {
+                      setGlobalVariableValue({
+                        key: 'is_loading',
+                        value: true,
+                      });
+                      const response = await XanoApi.loginPOST(Constants, {
+                        email: emailValue,
+                        password: passwordValue,
+                      });
+                      const authToken = response.authToken;
+                      const message = response.message;
+                      setGlobalVariableValue({
+                        key: 'error_message',
+                        value: message,
+                      });
+                      setGlobalVariableValue({
+                        key: 'is_loading',
+                        value: false,
+                      });
+                      if (!authToken) {
+                        return;
+                      }
+                      const id = response.id;
+                      const name = response.name;
+                      const email = response.email;
+                      setGlobalVariableValue({
+                        key: 'auth_header',
+                        value: 'Bearer ' + authToken,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_id',
+                        value: id,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_name',
+                        value: name,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_email',
+                        value: email,
+                      });
+                      setEmailValue('');
+                      setPasswordValue('');
+                      setGlobalVariableValue({
+                        key: 'error_message',
+                        value: '',
+                      });
+                      navigation.navigate('BottomTabNavigator', {
+                        screen: 'MapScreen',
+                      });
+                      const latitude = response.addressLat;
+                      const longitude = response.addressLong;
+                      setGlobalVariableValue({
+                        key: 'delivLat',
+                        value: latitude,
+                      });
+                      setGlobalVariableValue({
+                        key: 'delivLong',
+                        value: longitude,
+                      });
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={[
+                    styles.ButtonSolid8a5c1755,
+                    {
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.primary,
+                      color: theme.colors.primary,
+                    },
+                  ]}
+                  title={'Sign in'}
+                />
+              )}
+            </>
+            <>
+              {!Constants['is_loading'] ? null : (
+                <ButtonSolid
+                  style={[
+                    styles.ButtonSolidfe5f3af3,
+                    { backgroundColor: theme.colors.primary },
+                  ]}
+                  title={''}
+                  disabled={true}
+                  loading={true}
+                />
+              )}
+            </>
+            <Spacer top={16} right={8} bottom={16} left={8} />
+            <View style={styles.View8bb6a2bc}>
+              <Text>{'New User?'}</Text>
+              <Spacer top={8} right={2} bottom={8} left={2} />
+              <Link
+                style={{ color: theme.colors.primary }}
+                title={'Sign up!'}
+              />
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
     </ScreenContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  Divider_0C: {
-    height: 120,
+  Image68ea8a71: {
+    width: '100%',
+    height: '40%',
   },
-  Textwu: {
+  Divider259a88df: {
+    height: 24,
+  },
+  Textf8b291a4: {
     textAlign: 'center',
     fontSize: 32,
     fontFamily: 'System',
     fontWeight: '600',
-    paddingLeft: 40,
-    paddingRight: 40,
   },
-  Textl7: {
-    fontFamily: 'System',
-    fontWeight: '400',
-    fontSize: 14,
-    marginTop: 4,
-  },
-  Viewbm: {
+  View39912261: {
     alignItems: 'center',
   },
-  TextWR: {
+  Text6789b8ec: {
     fontSize: 12,
     textAlign: 'center',
     marginBottom: 16,
   },
-  TextInput_4t: {
+  TextInputa6e0f828: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
@@ -229,7 +260,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     textTransform: 'lowercase',
   },
-  TextInput_87: {
+  TextInput34ffd2e4: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
@@ -242,7 +273,19 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderBottomWidth: 1,
   },
-  ButtonSoliduw: {
+  ButtonSolid8a5c1755: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
+  },
+  ButtonSolidfe5f3af3: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -250,26 +293,21 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
   },
-  ButtonSolid_9O: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  ViewZa: {
+  View8bb6a2bc: {
     flexDirection: 'row',
     marginBottom: 12,
     justifyContent: 'center',
   },
-  View_1Z: {
+  View1e98c651: {
     paddingLeft: 36,
     paddingRight: 36,
     marginTop: 24,
   },
-  KeyboardAwareScrollViewdqContent: {
+  KeyboardAwareScrollView6a955cc3Content: {
     justifyContent: 'center',
+  },
+  Viewb8b014cc: {
+    marginTop: '-5%',
   },
 });
 

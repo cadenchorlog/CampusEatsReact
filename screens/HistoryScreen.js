@@ -36,9 +36,9 @@ const HistoryScreen = props => {
       scrollable={false}
       hasTopSafeArea={false}
     >
-      <View style={styles.View_3F}>
+      <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
-          <Text style={[styles.TextFg, { color: theme.colors.strong }]}>
+          <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Your History'}
           </Text>
         </Row>
@@ -74,7 +74,7 @@ const HistoryScreen = props => {
                   <>
                     <View
                       style={[
-                        styles.ViewEV,
+                        styles.Viewcabc33e8,
                         {
                           backgroundColor: theme.colors.surface,
                           borderRadius: 8,
@@ -93,10 +93,10 @@ const HistoryScreen = props => {
                           }
                         }}
                       >
-                        <View style={styles.Viewnc}>
+                        <View style={styles.Viewd42e9bbc}>
                           <ImageBackground
                             style={[
-                              styles.ImageBackgroundxC,
+                              styles.ImageBackground69e94ca6,
                               { borderRadius: theme.roundness },
                             ]}
                             resizeMode={'cover'}
@@ -104,12 +104,12 @@ const HistoryScreen = props => {
                               uri: `${listData?.userOrder?.restaurantImage}`,
                             }}
                           >
-                            <View style={styles.ViewsA}>
+                            <View style={styles.View272ee112}>
                               <>
                                 {listData?.completed ? null : (
                                   <View
                                     style={[
-                                      styles.ViewZB,
+                                      styles.View422f6f32,
                                       {
                                         backgroundColor: theme.colors.primary,
                                         borderBottomLeftRadius: 8,
@@ -119,7 +119,7 @@ const HistoryScreen = props => {
                                   >
                                     <Text
                                       style={[
-                                        styles.Textti,
+                                        styles.Textd40b1daa,
                                         { color: theme.colors.surface },
                                       ]}
                                       allowFontScaling={true}
@@ -135,11 +135,11 @@ const HistoryScreen = props => {
                           </ImageBackground>
                         </View>
 
-                        <View style={styles.Viewvr}>
+                        <View style={styles.View8db74792}>
                           <View>
                             <Text
                               style={[
-                                styles.TextwY,
+                                styles.Text99b56fe5,
                                 { color: theme.colors.strong },
                               ]}
                               textBreakStrategy={'highQuality'}
@@ -151,11 +151,11 @@ const HistoryScreen = props => {
                             </Text>
                             <Spacer top={4} right={8} bottom={4} left={8} />
                             <Divider
-                              style={styles.DividerfQ}
+                              style={styles.Divider22627dc6}
                               color={theme.colors.divider}
                             />
-                            <View style={styles.View_7b}>
-                              <View style={styles.ViewCb}>
+                            <View style={styles.Viewce4accf0}>
+                              <View style={styles.View7d6a39b7}>
                                 <Icon
                                   name={'FontAwesome/dollar'}
                                   size={24}
@@ -164,7 +164,7 @@ const HistoryScreen = props => {
                                 <Spacer right={2} left={2} />
                                 <Text
                                   style={[
-                                    styles.Text_47,
+                                    styles.Textde21574d,
                                     { color: theme.colors.medium },
                                   ]}
                                 >
@@ -182,7 +182,7 @@ const HistoryScreen = props => {
                   </>
                 );
               }}
-              contentContainerStyle={styles.FlatListPIContent}
+              contentContainerStyle={styles.FlatList8db74792Content}
             />
           );
         }}
@@ -193,21 +193,21 @@ const HistoryScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  TextFg: {
+  Textd59ae7c0: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  View_3F: {
+  Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
   },
-  Textti: {
+  Textd40b1daa: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  ViewZB: {
+  View422f6f32: {
     paddingLeft: 8,
     paddingTop: 4,
     paddingRight: 8,
@@ -215,52 +215,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ViewsA: {
+  View272ee112: {
     alignItems: 'flex-end',
     marginTop: 16,
   },
-  ImageBackgroundxC: {
+  ImageBackground69e94ca6: {
     width: '100%',
     height: '100%',
   },
-  Viewnc: {
+  Viewd42e9bbc: {
     height: 180,
   },
-  TextwY: {
+  Text99b56fe5: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 24,
   },
-  DividerfQ: {
+  Divider22627dc6: {
     height: 1,
     marginTop: 12,
     marginBottom: 12,
   },
-  Text_47: {
+  Textde21574d: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 12,
   },
-  ViewCb: {
+  View7d6a39b7: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  View_7b: {
+  Viewce4accf0: {
     alignItems: 'center',
     flexDirection: 'row',
   },
-  Viewvr: {
+  View8db74792: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
     paddingBottom: 16,
   },
-  ViewEV: {
+  Viewcabc33e8: {
     overflow: 'hidden',
     borderLeftWidth: 1,
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
   },
-  FlatListPIContent: {
+  FlatList8db74792Content: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,

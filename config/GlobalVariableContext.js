@@ -17,6 +17,8 @@ const AppVariables = {
   is_loading: '',
   PK_TEST:
     'pk_test_51LO2SYBwsDz1it0i7ggJBhk7TxeVTpHgoPeQuk0yl3QE9e02ZdZ4zR30fddiZqTCvqXlLxIXty0RQHNqEP8IybMY00ZlUmG26K',
+  delivLat: '',
+  delivLong: '',
   geocodio_api_key: '672ae72beed94992f4ed75bbd8262e46f529e5f',
 };
 const GlobalVariableContext = React.createContext();

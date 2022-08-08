@@ -50,21 +50,26 @@ const SignUpScreen = props => {
   return (
     <ScreenContainer hasTopSafeArea={true}>
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.KeyboardAwareScrollViewaIContent}
+        contentContainerStyle={styles.KeyboardAwareScrollView6a955cc3Content}
       >
-        <View style={styles.Viewyg}>
-          <Divider style={styles.Divideray} color={theme.colors.divider} />
-          <Text style={styles.TextIb}>{'Welcome to Campus Eats!'}</Text>
+        <View style={styles.View39912261}>
+          <Divider
+            style={styles.Dividere4660988}
+            color={theme.colors.divider}
+          />
+          <Text style={styles.Textdd83da03}>{'Welcome to Campus Eats!'}</Text>
 
-          <Text style={styles.Textr3}>
+          <Text style={styles.Textf51af5e8}>
             {'Sign in to your account to continue'}
           </Text>
         </View>
 
-        <View style={styles.View_1J}>
+        <View style={styles.View1e98c651}>
           <>
             {!Constants['error_message'] ? null : (
-              <Text style={[styles.Text_5K, { color: theme.colors.error }]}>
+              <Text
+                style={[styles.Text6789b8ec, { color: theme.colors.error }]}
+              >
                 {Constants['error_message']}
               </Text>
             )}
@@ -77,7 +82,10 @@ const SignUpScreen = props => {
                 console.error(err);
               }
             }}
-            style={[styles.TextInput_0x, { borderColor: theme.colors.divider }]}
+            style={[
+              styles.TextInputa6e0f828,
+              { borderColor: theme.colors.divider },
+            ]}
             placeholder={'Your Name '}
             value={nameValue}
             keyboardType={'email-address'}
@@ -93,7 +101,10 @@ const SignUpScreen = props => {
                 console.error(err);
               }
             }}
-            style={[styles.TextInputqJ, { borderColor: theme.colors.divider }]}
+            style={[
+              styles.TextInputa6e0f828,
+              { borderColor: theme.colors.divider },
+            ]}
             value={emailValue}
             placeholder={'Email'}
             keyboardType={'email-address'}
@@ -109,7 +120,10 @@ const SignUpScreen = props => {
                 console.error(err);
               }
             }}
-            style={[styles.TextInpute4, { borderColor: theme.colors.divider }]}
+            style={[
+              styles.TextInput34ffd2e4,
+              { borderColor: theme.colors.divider },
+            ]}
             value={passwordValue}
             placeholder={'Password'}
             secureTextEntry={true}
@@ -182,7 +196,7 @@ const SignUpScreen = props => {
                   }
                 }}
                 style={[
-                  styles.ButtonSolidIH,
+                  styles.ButtonSolidfe5f3af3,
                   { backgroundColor: theme.colors.primary },
                 ]}
                 title={'Sign up'}
@@ -193,7 +207,7 @@ const SignUpScreen = props => {
             {!Constants['is_loading'] ? null : (
               <ButtonSolid
                 style={[
-                  styles.ButtonSolidrr,
+                  styles.ButtonSolidfe5f3af3,
                   { backgroundColor: theme.colors.primary },
                 ]}
                 title={''}
@@ -203,7 +217,7 @@ const SignUpScreen = props => {
             )}
           </>
           <Spacer top={16} right={8} bottom={16} left={8} />
-          <View style={styles.Viewi6}>
+          <View style={styles.View8bb6a2bc}>
             <Text>{'Already have an account?'}</Text>
             <Spacer top={8} right={2} bottom={8} left={2} />
             <Link
@@ -225,10 +239,10 @@ const SignUpScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  Divideray: {
+  Dividere4660988: {
     height: 120,
   },
-  TextIb: {
+  Textdd83da03: {
     textAlign: 'center',
     fontSize: 32,
     fontFamily: 'System',
@@ -236,21 +250,21 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
   },
-  Textr3: {
+  Textf51af5e8: {
     fontFamily: 'System',
     fontWeight: '400',
     fontSize: 14,
     marginTop: 4,
   },
-  Viewyg: {
+  View39912261: {
     alignItems: 'center',
   },
-  Text_5K: {
+  Text6789b8ec: {
     fontSize: 12,
     textAlign: 'center',
     marginBottom: 16,
   },
-  TextInput_0x: {
+  TextInputa6e0f828: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
@@ -264,21 +278,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     textTransform: 'lowercase',
   },
-  TextInputqJ: {
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '400',
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    textTransform: 'lowercase',
-  },
-  TextInpute4: {
+  TextInput34ffd2e4: {
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 16,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderBottomWidth: 1,
   },
-  ButtonSolidIH: {
+  ButtonSolidfe5f3af3: {
     borderRadius: 8,
     fontFamily: 'System',
     fontWeight: '700',
@@ -299,25 +299,17 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
   },
-  ButtonSolidrr: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  Viewi6: {
+  View8bb6a2bc: {
     flexDirection: 'row',
     marginBottom: 12,
     justifyContent: 'center',
   },
-  View_1J: {
+  View1e98c651: {
     paddingLeft: 36,
     paddingRight: 36,
     marginTop: 24,
   },
-  KeyboardAwareScrollViewaIContent: {
+  KeyboardAwareScrollView6a955cc3Content: {
     justifyContent: 'center',
   },
 });

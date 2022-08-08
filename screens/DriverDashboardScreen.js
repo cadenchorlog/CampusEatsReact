@@ -29,13 +29,13 @@ const DriverDashboardScreen = props => {
 
   return (
     <ScreenContainer scrollable={true} hasTopSafeArea={true}>
-      <View style={styles.ViewKY}>
-        <View style={styles.ViewvY}>
-          <Text style={[styles.TextUg, { color: theme.colors.light }]}>
+      <View style={styles.Viewc037e9c3}>
+        <View style={styles.View5cf968ba}>
+          <Text style={[styles.Text74c7f382, { color: theme.colors.light }]}>
             {'Welcome,'}
           </Text>
 
-          <Text style={[styles.Text_7Q, { color: theme.colors.strong }]}>
+          <Text style={[styles.Text7caf95ca, { color: theme.colors.strong }]}>
             {Constants['user_name']}
           </Text>
         </View>
@@ -52,11 +52,11 @@ const DriverDashboardScreen = props => {
         </View>
       </View>
       <View />
-      <View style={styles.ViewMx}>
-        <View style={styles.ViewnW}>
+      <View style={styles.Viewf32039c1}>
+        <View style={styles.Viewf734b5f3}>
           <View
             style={[
-              styles.ViewOb,
+              styles.View299f7dc6,
               { backgroundColor: theme.colors.divider, borderRadius: 8 },
             ]}
           >
@@ -67,21 +67,21 @@ const DriverDashboardScreen = props => {
             />
           </View>
           <Spacer right={4} left={4} />
-          <View style={styles.ViewAV}>
-            <Text style={[styles.Text_0i, { color: theme.colors.light }]}>
+          <View style={styles.Viewc992f941}>
+            <Text style={[styles.Textaabf5915, { color: theme.colors.light }]}>
               {'Weekly Earnings'}
             </Text>
 
-            <Text style={[styles.Text_01, { color: theme.colors.strong }]}>
+            <Text style={[styles.Text77c80820, { color: theme.colors.strong }]}>
               {'$3,227'}
             </Text>
           </View>
         </View>
         <Spacer top={8} right={8} bottom={8} left={8} />
-        <View style={styles.ViewC1}>
+        <View style={styles.Viewf734b5f3}>
           <View
             style={[
-              styles.ViewMc,
+              styles.View299f7dc6,
               { backgroundColor: theme.colors.divider, borderRadius: 8 },
             ]}
           >
@@ -92,12 +92,12 @@ const DriverDashboardScreen = props => {
             />
           </View>
           <Spacer right={4} left={4} />
-          <View style={styles.ViewJS}>
-            <Text style={[styles.Textj7, { color: theme.colors.light }]}>
+          <View style={styles.Viewc992f941}>
+            <Text style={[styles.Textaabf5915, { color: theme.colors.light }]}>
               {'Current Balance'}
             </Text>
 
-            <Text style={[styles.TextUE, { color: theme.colors.strong }]}>
+            <Text style={[styles.Text77c80820, { color: theme.colors.strong }]}>
               {'$6,333'}
             </Text>
           </View>
@@ -106,7 +106,7 @@ const DriverDashboardScreen = props => {
 
       <View
         style={[
-          styles.ViewYO,
+          styles.View69fe1f2a,
           {
             borderTopLeftRadius: 48,
             borderTopRightRadius: 48,
@@ -116,12 +116,12 @@ const DriverDashboardScreen = props => {
         ]}
       >
         <View>
-          <View style={styles.ViewTz}>
-            <Text style={[styles.TextvT, { color: theme.colors.strong }]}>
+          <View style={styles.View1de44df9}>
+            <Text style={[styles.Textdc3e6c95, { color: theme.colors.strong }]}>
               {'History'}
             </Text>
             <Link
-              style={[styles.Link_4o, { color: theme.colors.primary }]}
+              style={[styles.Linkd6e8428f, { color: theme.colors.primary }]}
               title={'See all'}
             />
           </View>
@@ -150,11 +150,11 @@ const DriverDashboardScreen = props => {
                     const listData = item;
                     return (
                       <>
-                        <View style={styles.Viewp4}>
+                        <View style={styles.View7d6a39b7}>
                           <Circle size={60} bgColor={theme.colors.divider}>
                             <Circle size={56} bgColor={theme.colors.background}>
                               <Icon
-                                style={styles.Iconpk}
+                                style={styles.Iconbabcec09}
                                 name={'Feather/tag'}
                                 size={24}
                                 color={theme.colors.light}
@@ -162,10 +162,10 @@ const DriverDashboardScreen = props => {
                             </Circle>
                           </Circle>
                           <Spacer right={6} left={6} />
-                          <View style={styles.ViewuC}>
+                          <View style={styles.Viewc992f941}>
                             <Text
                               style={[
-                                styles.Text_5l,
+                                styles.Textaabf5915,
                                 { color: theme.colors.light },
                               ]}
                             >
@@ -174,7 +174,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.Text_8a,
+                                styles.Texta04294cb,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -182,10 +182,10 @@ const DriverDashboardScreen = props => {
                             </Text>
                           </View>
                           <Spacer right={4} left={4} />
-                          <View style={styles.ViewAD}>
+                          <View style={styles.Viewc65acab6}>
                             <Text
                               style={[
-                                styles.Text_71,
+                                styles.Text7b405a32,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -194,7 +194,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextBc,
+                                styles.Text9b56d69d,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -203,11 +203,11 @@ const DriverDashboardScreen = props => {
                           </View>
                         </View>
                         <Spacer top={8} bottom={8} />
-                        <View style={styles.VieweR}>
+                        <View style={styles.View7d6a39b7}>
                           <Circle size={60} bgColor={theme.colors.divider}>
                             <Circle size={56} bgColor={theme.colors.background}>
                               <Icon
-                                style={styles.IconHe}
+                                style={styles.Iconbabcec09}
                                 name={'Feather/shopping-bag'}
                                 size={24}
                                 color={theme.colors.light}
@@ -215,10 +215,10 @@ const DriverDashboardScreen = props => {
                             </Circle>
                           </Circle>
                           <Spacer right={6} left={6} />
-                          <View style={styles.View_8x}>
+                          <View style={styles.Viewc992f941}>
                             <Text
                               style={[
-                                styles.TextfS,
+                                styles.Textaabf5915,
                                 { color: theme.colors.light },
                               ]}
                             >
@@ -227,7 +227,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextFL,
+                                styles.Texta04294cb,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -235,10 +235,10 @@ const DriverDashboardScreen = props => {
                             </Text>
                           </View>
                           <Spacer right={4} left={4} />
-                          <View style={styles.Viewig}>
+                          <View style={styles.Viewc65acab6}>
                             <Text
                               style={[
-                                styles.TextEJ,
+                                styles.Text7b405a32,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -247,7 +247,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextAi,
+                                styles.Text9b56d69d,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -256,11 +256,11 @@ const DriverDashboardScreen = props => {
                           </View>
                         </View>
                         <Spacer top={8} bottom={8} />
-                        <View style={styles.ViewP4}>
+                        <View style={styles.View7d6a39b7}>
                           <Circle size={60} bgColor={theme.colors.divider}>
                             <Circle size={56} bgColor={theme.colors.background}>
                               <Icon
-                                style={styles.IconDB}
+                                style={styles.Iconbabcec09}
                                 name={'Feather/coffee'}
                                 size={24}
                                 color={theme.colors.light}
@@ -268,10 +268,10 @@ const DriverDashboardScreen = props => {
                             </Circle>
                           </Circle>
                           <Spacer right={6} left={6} />
-                          <View style={styles.ViewC0}>
+                          <View style={styles.Viewc992f941}>
                             <Text
                               style={[
-                                styles.Textbo,
+                                styles.Textaabf5915,
                                 { color: theme.colors.light },
                               ]}
                             >
@@ -280,7 +280,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.Text_05,
+                                styles.Texta04294cb,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -288,10 +288,10 @@ const DriverDashboardScreen = props => {
                             </Text>
                           </View>
                           <Spacer right={4} left={4} />
-                          <View style={styles.ViewNZ}>
+                          <View style={styles.Viewc65acab6}>
                             <Text
                               style={[
-                                styles.Textk4,
+                                styles.Text7b405a32,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -300,7 +300,7 @@ const DriverDashboardScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextsK,
+                                styles.Text9b56d69d,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -312,7 +312,7 @@ const DriverDashboardScreen = props => {
                       </>
                     );
                   }}
-                  contentContainerStyle={styles.FlatListZkContent}
+                  contentContainerStyle={styles.FlatListc992f941Content}
                   numColumns={1}
                 />
               );
@@ -325,188 +325,98 @@ const DriverDashboardScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  TextUg: {
+  Text74c7f382: {
     fontFamily: 'Inter_400Regular',
     fontSize: 16,
   },
-  Text_7Q: {
+  Text7caf95ca: {
     fontFamily: 'Inter_600SemiBold',
     fontSize: 20,
     marginTop: 4,
   },
-  ViewvY: {
+  View5cf968ba: {
     flex: 1,
     justifyContent: 'center',
   },
-  ViewKY: {
+  Viewc037e9c3: {
     flexDirection: 'row',
     paddingLeft: 24,
     paddingTop: 32,
     paddingRight: 24,
     paddingBottom: 24,
   },
-  ViewOb: {
+  View299f7dc6: {
     paddingLeft: 12,
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
   },
-  Text_0i: {
+  Textaabf5915: {
     fontFamily: 'Inter_400Regular',
     fontSize: 12,
   },
-  Text_01: {
+  Text77c80820: {
     fontFamily: 'Inter_700Bold',
     fontSize: 22,
     marginTop: 2,
   },
-  ViewAV: {
+  Viewc992f941: {
     flex: 1,
   },
-  ViewnW: {
+  Viewf734b5f3: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  ViewMc: {
-    paddingLeft: 12,
-    paddingTop: 12,
-    paddingRight: 12,
-    paddingBottom: 12,
-  },
-  Textj7: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-  },
-  TextUE: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 22,
-    marginTop: 2,
-  },
-  ViewJS: {
-    flex: 1,
-  },
-  ViewC1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  ViewMx: {
+  Viewf32039c1: {
     flexDirection: 'row',
     paddingLeft: 24,
     paddingRight: 24,
     paddingTop: 16,
     paddingBottom: 32,
   },
-  TextvT: {
+  Textdc3e6c95: {
     fontFamily: 'Inter_600SemiBold',
     fontSize: 18,
   },
-  Link_4o: {
+  Linkd6e8428f: {
     fontFamily: 'Inter_500Medium',
   },
-  ViewTz: {
+  View1de44df9: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  Iconpk: {
+  Iconbabcec09: {
     marginLeft: 4,
   },
-  Text_5l: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-  },
-  Text_8a: {
+  Texta04294cb: {
     fontFamily: 'Inter_600SemiBold',
     fontSize: 16,
     marginTop: 4,
   },
-  ViewuC: {
-    flex: 1,
-  },
-  Text_71: {
+  Text7b405a32: {
     fontFamily: 'Inter_700Bold',
   },
-  TextBc: {
+  Text9b56d69d: {
     fontFamily: 'Inter_400Regular',
     fontSize: 12,
     marginTop: 4,
   },
-  ViewAD: {
+  Viewc65acab6: {
     alignItems: 'flex-end',
   },
-  Viewp4: {
+  View7d6a39b7: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  IconHe: {
-    marginLeft: 4,
-  },
-  TextfS: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-  },
-  TextFL: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 16,
-    marginTop: 4,
-  },
-  View_8x: {
+  FlatListc992f941Content: {
     flex: 1,
   },
-  TextEJ: {
-    fontFamily: 'Inter_700Bold',
-  },
-  TextAi: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  Viewig: {
-    alignItems: 'flex-end',
-  },
-  VieweR: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  IconDB: {
-    marginLeft: 4,
-  },
-  Textbo: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-  },
-  Text_05: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 16,
-    marginTop: 4,
-  },
-  ViewC0: {
-    flex: 1,
-  },
-  Textk4: {
-    fontFamily: 'Inter_700Bold',
-  },
-  TextsK: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  ViewNZ: {
-    alignItems: 'flex-end',
-  },
-  ViewP4: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  FlatListZkContent: {
-    flex: 1,
-  },
-  Fetchgb: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  ViewYO: {
+  View69fe1f2a: {
     paddingLeft: 32,
     paddingTop: 36,
     paddingRight: 32,

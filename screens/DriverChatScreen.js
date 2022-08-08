@@ -43,7 +43,7 @@ const DriverChatScreen = props => {
       scrollable={false}
       hasTopSafeArea={false}
     >
-      <View style={styles.Viewt4}>
+      <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <IconButton
             onPress={() => {
@@ -53,24 +53,24 @@ const DriverChatScreen = props => {
                 console.error(err);
               }
             }}
-            style={styles.IconButtonbC}
+            style={styles.IconButton897c6051}
             icon={'Ionicons/ios-chevron-back'}
             size={32}
           />
-          <Text style={[styles.TextYS, { color: theme.colors.strong }]}>
+          <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Chat'}
           </Text>
         </Row>
       </View>
 
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.KeyboardAwareScrollViewm8Content}
+        contentContainerStyle={styles.KeyboardAwareScrollViewc992f941Content}
         showsVerticalScrollIndicator={true}
         keyboardShouldPersistTaps={'always'}
         extraScrollHeight={15}
       >
         <KeyboardAwareScrollView
-          contentContainerStyle={styles.KeyboardAwareScrollViewrWContent}
+          contentContainerStyle={styles.KeyboardAwareScrollView439aad96Content}
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps={'never'}
         >
@@ -103,10 +103,10 @@ const DriverChatScreen = props => {
                       <>
                         <>
                           {listData?.isDriver ? null : (
-                            <View style={styles.Viewct}>
+                            <View style={styles.View4a298bf0}>
                               <View
                                 style={[
-                                  styles.View_9X,
+                                  styles.View16da829b,
                                   {
                                     backgroundColor: theme.colors.surface,
                                     borderRadius: 12,
@@ -120,7 +120,7 @@ const DriverChatScreen = props => {
 
                               <Text
                                 style={[
-                                  styles.TextZb,
+                                  styles.Text3e6b6036,
                                   { color: theme.colors.medium },
                                 ]}
                               >
@@ -131,12 +131,12 @@ const DriverChatScreen = props => {
                         </>
                         <>
                           {!listData?.isDriver ? null : (
-                            <View style={styles.ViewhY}>
+                            <View style={styles.Viewc65acab6}>
                               <>
                                 {isEven(listData?.userId) ? null : (
                                   <View
                                     style={[
-                                      styles.ViewGa,
+                                      styles.View5ca3917e,
                                       {
                                         backgroundColor: theme.colors.primary,
                                         borderRadius: 12,
@@ -153,7 +153,7 @@ const DriverChatScreen = props => {
                               </>
                               <Text
                                 style={[
-                                  styles.Text_9B,
+                                  styles.Text3e6b6036,
                                   { color: theme.colors.medium },
                                 ]}
                               >
@@ -166,7 +166,7 @@ const DriverChatScreen = props => {
                       </>
                     );
                   }}
-                  contentContainerStyle={styles.FlatListBaContent}
+                  contentContainerStyle={styles.FlatList1d7a6c6bContent}
                   numColumns={1}
                 />
               );
@@ -176,7 +176,7 @@ const DriverChatScreen = props => {
 
         <View
           style={[
-            styles.Viewo9,
+            styles.View99839e42,
             {
               backgroundColor: theme.colors.surface,
               borderColor: theme.colors.divider,
@@ -184,7 +184,7 @@ const DriverChatScreen = props => {
             },
           ]}
         >
-          <View style={styles.ViewuK}>
+          <View style={styles.Viewc992f941}>
             <TextInput
               onChangeText={newTextInputValue => {
                 try {
@@ -194,7 +194,7 @@ const DriverChatScreen = props => {
                 }
               }}
               style={[
-                styles.TextInputHU,
+                styles.TextInput5476f367,
                 { borderColor: theme.colors.divider },
               ]}
               value={textInputValue}
@@ -225,51 +225,48 @@ const DriverChatScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  IconButtonbC: {
+  IconButton897c6051: {
     marginLeft: 16,
   },
-  TextYS: {
+  Textd59ae7c0: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  Viewt4: {
+  Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
   },
-  View_9X: {
+  View16da829b: {
     paddingLeft: 12,
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
   },
-  TextZb: {
+  Text3e6b6036: {
     fontSize: 12,
   },
-  Viewct: {
+  View4a298bf0: {
     alignItems: 'flex-start',
   },
-  ViewGa: {
+  View5ca3917e: {
     paddingLeft: 12,
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
   },
-  Text_9B: {
-    fontSize: 12,
-  },
-  ViewhY: {
+  Viewc65acab6: {
     alignItems: 'flex-end',
   },
-  FlatListBaContent: {
+  FlatList1d7a6c6bContent: {
     flex: 1,
     justifyContent: 'flex-end',
   },
-  FetchIN: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  KeyboardAwareScrollViewrWContent: {
+  KeyboardAwareScrollView439aad96Content: {
     paddingLeft: 16,
     paddingTop: 16,
     paddingRight: 16,
@@ -279,7 +276,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  TextInputHU: {
+  TextInput5476f367: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
@@ -290,10 +287,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderRadius: 8,
   },
-  ViewuK: {
+  Viewc992f941: {
     flex: 1,
   },
-  Viewo9: {
+  View99839e42: {
     paddingLeft: 16,
     paddingTop: 16,
     paddingRight: 16,
@@ -301,7 +298,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  KeyboardAwareScrollViewm8Content: {
+  KeyboardAwareScrollViewc992f941Content: {
     flex: 1,
   },
 });

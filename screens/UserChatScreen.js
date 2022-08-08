@@ -43,7 +43,7 @@ const UserChatScreen = props => {
       scrollable={false}
       hasTopSafeArea={false}
     >
-      <View style={styles.Viewwo}>
+      <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <IconButton
             onPress={() => {
@@ -53,24 +53,24 @@ const UserChatScreen = props => {
                 console.error(err);
               }
             }}
-            style={styles.IconButtonp3}
+            style={styles.IconButton897c6051}
             icon={'Ionicons/ios-chevron-back'}
             size={32}
           />
-          <Text style={[styles.TextAX, { color: theme.colors.strong }]}>
+          <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Chat'}
           </Text>
         </Row>
       </View>
 
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.KeyboardAwareScrollView_6iContent}
+        contentContainerStyle={styles.KeyboardAwareScrollViewc992f941Content}
         showsVerticalScrollIndicator={true}
         keyboardShouldPersistTaps={'always'}
         extraScrollHeight={15}
       >
         <KeyboardAwareScrollView
-          contentContainerStyle={styles.KeyboardAwareScrollViewa6Content}
+          contentContainerStyle={styles.KeyboardAwareScrollView21525df2Content}
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps={'never'}
           enableAutomaticScroll={true}
@@ -104,10 +104,10 @@ const UserChatScreen = props => {
                       <>
                         <>
                           {!listData?.isDriver ? null : (
-                            <View style={styles.ViewK1}>
+                            <View style={styles.View4a298bf0}>
                               <View
                                 style={[
-                                  styles.View_6e,
+                                  styles.View16da829b,
                                   {
                                     backgroundColor: theme.colors.surface,
                                     borderRadius: 12,
@@ -121,7 +121,7 @@ const UserChatScreen = props => {
 
                               <Text
                                 style={[
-                                  styles.TextA2,
+                                  styles.Text3e6b6036,
                                   { color: theme.colors.medium },
                                 ]}
                               >
@@ -132,12 +132,12 @@ const UserChatScreen = props => {
                         </>
                         <>
                           {listData?.isDriver ? null : (
-                            <View style={styles.Viewt8}>
+                            <View style={styles.Viewc65acab6}>
                               <>
                                 {isEven(listData?.userId) ? null : (
                                   <View
                                     style={[
-                                      styles.View_88,
+                                      styles.View5ca3917e,
                                       {
                                         backgroundColor: theme.colors.primary,
                                         borderRadius: 12,
@@ -154,7 +154,7 @@ const UserChatScreen = props => {
                               </>
                               <Text
                                 style={[
-                                  styles.Text_8q,
+                                  styles.Text3e6b6036,
                                   { color: theme.colors.medium },
                                 ]}
                               >
@@ -167,7 +167,7 @@ const UserChatScreen = props => {
                       </>
                     );
                   }}
-                  contentContainerStyle={styles.FlatListDZContent}
+                  contentContainerStyle={styles.FlatList9a8ba39cContent}
                   numColumns={1}
                 />
               );
@@ -177,7 +177,7 @@ const UserChatScreen = props => {
 
         <View
           style={[
-            styles.Viewl8,
+            styles.View99839e42,
             {
               backgroundColor: theme.colors.surface,
               borderColor: theme.colors.divider,
@@ -185,7 +185,7 @@ const UserChatScreen = props => {
             },
           ]}
         >
-          <View style={styles.ViewJI}>
+          <View style={styles.Viewc992f941}>
             <TextInput
               onChangeText={newTextInputValue => {
                 try {
@@ -195,7 +195,7 @@ const UserChatScreen = props => {
                 }
               }}
               style={[
-                styles.TextInputa3,
+                styles.TextInput5476f367,
                 { borderColor: theme.colors.divider },
               ]}
               value={textInputValue}
@@ -226,59 +226,56 @@ const UserChatScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  IconButtonp3: {
+  IconButton897c6051: {
     marginLeft: 16,
   },
-  TextAX: {
+  Textd59ae7c0: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  Viewwo: {
+  Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
   },
-  View_6e: {
+  View16da829b: {
     paddingLeft: 12,
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
   },
-  TextA2: {
+  Text3e6b6036: {
     fontSize: 12,
   },
-  ViewK1: {
+  View4a298bf0: {
     alignItems: 'flex-start',
   },
-  View_88: {
+  View5ca3917e: {
     paddingLeft: 12,
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
   },
-  Text_8q: {
-    fontSize: 12,
-  },
-  Viewt8: {
+  Viewc65acab6: {
     alignItems: 'flex-end',
   },
-  FlatListDZContent: {
+  FlatList9a8ba39cContent: {
     flex: 1,
     justifyContent: 'flex-end',
     marginRight: 16,
     marginLeft: 16,
   },
-  Fetchbv: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  KeyboardAwareScrollViewa6Content: {
+  KeyboardAwareScrollView21525df2Content: {
     position: 'absolute',
     bottom: 0,
     right: 0,
     left: 0,
   },
-  TextInputa3: {
+  TextInput5476f367: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
@@ -289,10 +286,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderRadius: 8,
   },
-  ViewJI: {
+  Viewc992f941: {
     flex: 1,
   },
-  Viewl8: {
+  View99839e42: {
     paddingLeft: 16,
     paddingTop: 16,
     paddingRight: 16,
@@ -300,7 +297,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  KeyboardAwareScrollView_6iContent: {
+  KeyboardAwareScrollViewc992f941Content: {
     flex: 1,
   },
 });

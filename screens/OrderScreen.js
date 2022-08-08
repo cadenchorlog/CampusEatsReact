@@ -1,8 +1,10 @@
 import React from 'react';
 import * as RestaurantListApi from '../apis/RestaurantListApi.js';
+import * as XanoApi from '../apis/XanoApi.js';
+import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
-  IconButton,
   LinearGradient,
+  Row,
   ScreenContainer,
   Spacer,
   StarRating,
@@ -17,16 +19,18 @@ import {
   ImageBackground,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { Fetch } from 'react-request';
 
 const OrderScreen = props => {
+  const Constants = GlobalVariables.useValues();
+  const Variables = Constants;
+
   const { theme } = props;
+  const { navigation } = props;
 
   const [ratingValue, setRatingValue] = React.useState(undefined);
-  const [textInputValue, setTextInputValue] = React.useState('');
 
   return (
     <ScreenContainer
@@ -34,42 +38,17 @@ const OrderScreen = props => {
       scrollable={true}
       hasTopSafeArea={true}
     >
-      <Spacer top={12} right={0} bottom={12} left={0} />
-      <View style={styles.ViewTk}>
-        <View
-          style={[
-            styles.ViewZe,
-            { backgroundColor: theme.colors.divider, borderRadius: 12 },
-          ]}
-        >
-          <View style={styles.ViewRy}>
-            <TextInput
-              onChangeText={newSearchInputValue => {
-                const textInputValue = newSearchInputValue;
-                try {
-                  setTextInputValue(textInputValue);
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-              style={styles.TextInputYc}
-              placeholder={'Search...'}
-              value={textInputValue}
-            />
-          </View>
-          <Spacer top={0} right={3} bottom={0} left={3} />
-          <View>
-            <IconButton
-              icon={'MaterialIcons/search'}
-              size={32}
-              color={theme.colors.light}
-            />
-          </View>
-        </View>
+      <Spacer top={6} right={0} bottom={6} left={0} />
+      <View style={styles.View9fa86917}>
+        <Text style={[styles.Text93742bfd, { color: theme.colors.medium }]}>
+          {'Hi '}
+          {Constants['user_name']}
+          {'!'}
+        </Text>
       </View>
-      <Spacer top={12} right={8} bottom={12} left={8} />
-      <RestaurantListApi.FetchQueryGET limit={6} parameter={'rating'} query={5}>
-        {({ loading, error, data, refetchQuery }) => {
+      <Spacer top={4} right={8} bottom={4} left={8} />
+      <XanoApi.FetchGetAllStoresGET>
+        {({ loading, error, data, refetchGetAllStores }) => {
           const popularPlacesData = data;
           if (!popularPlacesData || loading) {
             return <ActivityIndicator />;
@@ -85,53 +64,85 @@ const OrderScreen = props => {
 
           return (
             <View>
-              <View style={styles.View_4g}>
-                <Text style={[styles.Textmj, { color: theme.colors.strong }]}>
-                  {'Popular Places'}
-                </Text>
+              <View style={styles.View9fa86917}>
+                <Row justifyContent={'space-between'} alignItems={'flex-start'}>
+                  <Text
+                    style={[
+                      styles.Textf90d72c6,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {'Courier Offers'}
+                  </Text>
+
+                  <Touchable>
+                    <Text
+                      style={[
+                        styles.Text34e0cb74,
+                        { color: theme.colors.primary },
+                      ]}
+                    >
+                      {'See All'}
+                    </Text>
+                  </Touchable>
+                </Row>
 
                 <Text style={{ color: theme.colors.strong }}>
-                  {'Five-star restaurants'}
+                  {'Off Campus Options'}
                 </Text>
               </View>
               <FlatList
-                data={data}
+                data={popularPlacesData}
                 listKey={'lnONbxEq'}
                 keyExtractor={({ item }) => item?.id || item?.uuid || item}
                 renderItem={({ item }) => {
                   const listData = item;
                   return (
                     <>
-                      <Touchable>
+                      <Touchable
+                        onPress={() => {
+                          try {
+                            navigation.navigate('RestaurantViewScreen', {
+                              storeID: listData?.id,
+                            });
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                      >
                         <View>
-                          <View style={[styles.Viewr7, { borderRadius: 16 }]}>
+                          <View
+                            style={[styles.View2760cf33, { borderRadius: 16 }]}
+                          >
                             <Image
                               style={[
-                                styles.Imagejz,
+                                styles.Imageb42ed28f,
                                 { borderRadius: theme.roundness },
                               ]}
-                              source={{ uri: `${listData?.image}` }}
+                              source={{ uri: `${listData?.storeImage}` }}
                               resizeMode={'cover'}
                             />
                           </View>
 
-                          <View style={styles.View_8f}>
+                          <View style={styles.View91edb4b3}>
                             <Text
                               style={[
-                                styles.Text_6Y,
+                                styles.Text884ea74f,
                                 { color: theme.colors.strong },
                               ]}
                             >
-                              {listData?.name}
+                              {listData?.storeName}
                             </Text>
 
                             <Text
                               style={[
-                                styles.TextLD,
+                                styles.Textdb189077,
                                 { color: theme.colors.medium },
                               ]}
                             >
-                              {listData?.type}
+                              {'$'}
+                              {listData?.deliveryFee}
+                              {' Delivery Fee'}
                             </Text>
                           </View>
                         </View>
@@ -140,15 +151,14 @@ const OrderScreen = props => {
                     </>
                   );
                 }}
-                contentContainerStyle={styles.FlatListlnContent}
+                contentContainerStyle={styles.FlatListcef0b366Content}
                 numColumns={1}
-                data={data}
                 horizontal={true}
               />
             </View>
           );
         }}
-      </RestaurantListApi.FetchQueryGET>
+      </XanoApi.FetchGetAllStoresGET>
       <Spacer top={8} right={8} bottom={8} left={8} />
       <RestaurantListApi.FetchQueryGET limit={1} parameter={'id'} query={50}>
         {({ loading, error, data, refetchQuery }) => {
@@ -167,13 +177,15 @@ const OrderScreen = props => {
 
           return (
             <View>
-              <View style={styles.ViewkL}>
-                <Text style={[styles.TextVw, { color: theme.colors.strong }]}>
-                  {"Chef's Pick"}
+              <View style={styles.View9fa86917}>
+                <Text
+                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
+                >
+                  {'Campus Offerings'}
                 </Text>
 
                 <Text style={{ color: theme.colors.strong }}>
-                  {'Our recommendation of the week'}
+                  {'Fastest Delivery'}
                 </Text>
               </View>
               <FlatList
@@ -184,17 +196,17 @@ const OrderScreen = props => {
                   const listData = item;
                   return (
                     <Touchable>
-                      <View style={styles.ViewXd}>
+                      <View style={styles.View9fa86917}>
                         <ImageBackground
                           style={[
-                            styles.ImageBackgrounddZ,
+                            styles.ImageBackgroundd0d5dfbd,
                             { borderRadius: 24 },
                           ]}
                           source={{ uri: `${listData?.image}` }}
                           resizeMode={'cover'}
                         >
                           <LinearGradient
-                            style={styles.LinearGradientYB}
+                            style={styles.LinearGradientd132bfba}
                             endY={100}
                             endX={100}
                             color2={theme.colors.transparent}
@@ -205,7 +217,7 @@ const OrderScreen = props => {
                           >
                             <Text
                               style={[
-                                styles.Textwo,
+                                styles.Textc2034d34,
                                 { color: theme.colors.surface },
                               ]}
                               numberOfLines={1}
@@ -214,10 +226,10 @@ const OrderScreen = props => {
                               {listData?.name}
                             </Text>
 
-                            <View style={styles.ViewdX}>
+                            <View style={styles.Viewf78a9190}>
                               <Text
                                 style={[
-                                  styles.Texthv,
+                                  styles.Text76ab12a3,
                                   { color: theme.colors.surface },
                                 ]}
                                 numberOfLines={1}
@@ -247,7 +259,7 @@ const OrderScreen = props => {
                     </Touchable>
                   );
                 }}
-                contentContainerStyle={styles.FlatListbbContent}
+                contentContainerStyle={styles.FlatList6728d304Content}
                 numColumns={1}
               />
             </View>
@@ -272,8 +284,10 @@ const OrderScreen = props => {
 
           return (
             <View>
-              <View style={styles.ViewCt}>
-                <Text style={[styles.TextpG, { color: theme.colors.strong }]}>
+              <View style={styles.View9fa86917}>
+                <Text
+                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
+                >
                   {'Near You'}
                 </Text>
 
@@ -291,10 +305,12 @@ const OrderScreen = props => {
                     <>
                       <Touchable>
                         <View>
-                          <View style={[styles.ViewFu, { borderRadius: 16 }]}>
+                          <View
+                            style={[styles.View2760cf33, { borderRadius: 16 }]}
+                          >
                             <Image
                               style={[
-                                styles.Image_2b,
+                                styles.Imageb42ed28f,
                                 { borderRadius: theme.roundness },
                               ]}
                               source={{ uri: `${listData?.image}` }}
@@ -302,10 +318,10 @@ const OrderScreen = props => {
                             />
                           </View>
 
-                          <View style={styles.View_41}>
+                          <View style={styles.View91edb4b3}>
                             <Text
                               style={[
-                                styles.Textll,
+                                styles.Text884ea74f,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -333,7 +349,7 @@ const OrderScreen = props => {
                     </>
                   );
                 }}
-                contentContainerStyle={styles.FlatListYfContent}
+                contentContainerStyle={styles.FlatListcd3e18ecContent}
                 numColumns={1}
                 data={data}
                 horizontal={true}
@@ -360,8 +376,10 @@ const OrderScreen = props => {
 
           return (
             <View>
-              <View style={styles.Viewzi}>
-                <Text style={[styles.TextkG, { color: theme.colors.strong }]}>
+              <View style={styles.View9fa86917}>
+                <Text
+                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
+                >
                   {'Free Delivery'}
                 </Text>
 
@@ -379,10 +397,12 @@ const OrderScreen = props => {
                     <>
                       <Touchable>
                         <View>
-                          <View style={[styles.ViewQA, { borderRadius: 16 }]}>
+                          <View
+                            style={[styles.View2760cf33, { borderRadius: 16 }]}
+                          >
                             <Image
                               style={[
-                                styles.Image_3l,
+                                styles.Imageb42ed28f,
                                 { borderRadius: theme.roundness },
                               ]}
                               source={{ uri: `${listData?.image}` }}
@@ -390,10 +410,10 @@ const OrderScreen = props => {
                             />
                           </View>
 
-                          <View style={styles.ViewCb}>
+                          <View style={styles.View91edb4b3}>
                             <Text
                               style={[
-                                styles.TextNu,
+                                styles.Text884ea74f,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -402,7 +422,7 @@ const OrderScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextMl,
+                                styles.Textdb189077,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -415,7 +435,7 @@ const OrderScreen = props => {
                     </>
                   );
                 }}
-                contentContainerStyle={styles.FlatListNDContent}
+                contentContainerStyle={styles.FlatListcd3e18ecContent}
                 numColumns={1}
                 data={data}
                 horizontal={true}
@@ -446,8 +466,10 @@ const OrderScreen = props => {
 
           return (
             <View>
-              <View style={styles.Viewbw}>
-                <Text style={[styles.TextiR, { color: theme.colors.strong }]}>
+              <View style={styles.View9fa86917}>
+                <Text
+                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
+                >
                   {'Best French Cuisine'}
                 </Text>
 
@@ -465,10 +487,12 @@ const OrderScreen = props => {
                     <>
                       <Touchable>
                         <View>
-                          <View style={[styles.ViewrR, { borderRadius: 16 }]}>
+                          <View
+                            style={[styles.View2760cf33, { borderRadius: 16 }]}
+                          >
                             <Image
                               style={[
-                                styles.ImageFR,
+                                styles.Imageb42ed28f,
                                 { borderRadius: theme.roundness },
                               ]}
                               source={{ uri: `${listData?.image}` }}
@@ -476,10 +500,10 @@ const OrderScreen = props => {
                             />
                           </View>
 
-                          <View style={styles.Viewub}>
+                          <View style={styles.View91edb4b3}>
                             <Text
                               style={[
-                                styles.Textdr,
+                                styles.Text884ea74f,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -488,7 +512,7 @@ const OrderScreen = props => {
 
                             <Text
                               style={[
-                                styles.TextCr,
+                                styles.Textdb189077,
                                 { color: theme.colors.medium },
                               ]}
                             >
@@ -501,7 +525,7 @@ const OrderScreen = props => {
                     </>
                   );
                 }}
-                contentContainerStyle={styles.FlatListbWContent}
+                contentContainerStyle={styles.FlatListcd3e18ecContent}
                 numColumns={1}
                 data={data}
                 horizontal={true}
@@ -516,81 +540,60 @@ const OrderScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  TextInputYc: {
-    fontFamily: 'System',
-    fontWeight: '400',
+  Text93742bfd: {
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 18,
+    paddingRight: 16,
   },
-  ViewRy: {
-    flex: 1,
-  },
-  ViewZe: {
-    paddingLeft: 12,
-    paddingTop: 10,
-    paddingRight: 12,
-    paddingBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ViewTk: {
+  View9fa86917: {
     paddingLeft: 16,
     paddingRight: 16,
   },
-  Textmj: {
+  Textf90d72c6: {
     fontSize: 24,
     fontFamily: 'System',
     fontWeight: '600',
   },
-  View_4g: {
-    paddingLeft: 16,
-    paddingRight: 16,
+  Text34e0cb74: {
+    marginTop: 10,
   },
-  Imagejz: {
+  Imageb42ed28f: {
     width: 250,
     height: 150,
   },
-  Viewr7: {
+  View2760cf33: {
     overflow: 'hidden',
   },
-  Text_6Y: {
+  Text884ea74f: {
     fontSize: 18,
     fontFamily: 'System',
     fontWeight: '600',
   },
-  TextLD: {
+  Textdb189077: {
     fontSize: 12,
     marginTop: 4,
   },
-  View_8f: {
+  View91edb4b3: {
     marginTop: 8,
   },
-  FlatListlnContent: {
+  FlatListcef0b366Content: {
     flexDirection: 'row',
     paddingLeft: 16,
     marginTop: 16,
     marginBottom: 16,
   },
-  TextVw: {
-    fontSize: 24,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  ViewkL: {
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  Textwo: {
+  Textc2034d34: {
     fontSize: 20,
   },
-  Texthv: {
+  Text76ab12a3: {
     fontSize: 16,
   },
-  ViewdX: {
+  Viewf78a9190: {
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  LinearGradientYB: {
+  LinearGradientd132bfba: {
     width: '100%',
     height: '100%',
     paddingLeft: 16,
@@ -599,114 +602,18 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     justifyContent: 'flex-end',
   },
-  ImageBackgrounddZ: {
+  ImageBackgroundd0d5dfbd: {
     width: '100%',
     height: 240,
     overflow: 'hidden',
   },
-  ViewXd: {
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  FlatListbbContent: {
+  FlatList6728d304Content: {
     marginTop: 16,
   },
-  FetchBY: {
+  Fetch431eb058: {
     minHeight: 40,
   },
-  TextpG: {
-    fontSize: 24,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  ViewCt: {
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  Image_2b: {
-    width: 250,
-    height: 150,
-  },
-  ViewFu: {
-    overflow: 'hidden',
-  },
-  Textll: {
-    fontSize: 18,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  View_41: {
-    marginTop: 8,
-  },
-  FlatListYfContent: {
-    flexDirection: 'row',
-    marginTop: 16,
-    paddingLeft: 16,
-    marginBottom: 16,
-  },
-  TextkG: {
-    fontSize: 24,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  Viewzi: {
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  Image_3l: {
-    width: 250,
-    height: 150,
-  },
-  ViewQA: {
-    overflow: 'hidden',
-  },
-  TextNu: {
-    fontSize: 18,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  TextMl: {
-    fontSize: 12,
-    marginTop: 4,
-  },
-  ViewCb: {
-    marginTop: 8,
-  },
-  FlatListNDContent: {
-    flexDirection: 'row',
-    marginTop: 16,
-    paddingLeft: 16,
-    marginBottom: 16,
-  },
-  TextiR: {
-    fontSize: 24,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  Viewbw: {
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  ImageFR: {
-    width: 250,
-    height: 150,
-  },
-  ViewrR: {
-    overflow: 'hidden',
-  },
-  Textdr: {
-    fontSize: 18,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  TextCr: {
-    fontSize: 12,
-    marginTop: 4,
-  },
-  Viewub: {
-    marginTop: 8,
-  },
-  FlatListbWContent: {
+  FlatListcd3e18ecContent: {
     flexDirection: 'row',
     marginTop: 16,
     paddingLeft: 16,
