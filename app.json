@@ -7,7 +7,8 @@
     "privacy": "unlisted",
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "web"
     ],
     "version": "1.0.0",
     "orientation": "default",
@@ -21,7 +22,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.draftbit.untitledapp",
+      "bundleIdentifier": "net.campusEats.beta",
       "supportsTablet": false,
       "buildNumber": "1.0.0",
       "infoPlist": {
