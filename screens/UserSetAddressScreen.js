@@ -143,6 +143,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               keyboardShouldPersistTaps={'never'}
               enableAutomaticScroll={true}
             >
+              {/* setAddress */}
               <Surface
                 style={[
                   styles.Surfaced2208edb,
@@ -218,66 +219,75 @@ line two` ) and will not work with special characters inside of quotes ( example
                     placeholderTextColor={theme.colors.light}
                   />
                 </Row>
+                {/* checkAddressButton */}
                 <>
                   {didGeocode ? null : (
                     <ButtonOutline
-                      onPress={async () => {
-                        try {
-                          const geocodeResult = await GeocodioApi.geocodeGET(
-                            Constants,
-                            {
-                              api_key: Constants['geocodio_api_key'],
-                              city: cityValue,
-                              state: stateValue,
-                              street: addressValue,
-                              zip: zipValue,
-                            }
-                          );
-                          const latitude = geocodeResult.lat;
-                          const longitude = geocodeResult.lng;
-                          setGeocodeLAT(latitude);
-                          setGeocodeLONG(longitude);
-                          setDidGeocode(true);
-                          mapViewOll6EPzaRef.current.animateToLocation({
-                            latitude: latitude,
-                            longitude: longitude,
-                            zoom: 19,
-                          });
-                        } catch (err) {
-                          console.error(err);
-                        }
+                      onPress={() => {
+                        const handler = async () => {
+                          try {
+                            const geocodeResult = await GeocodioApi.geocodeGET(
+                              Constants,
+                              {
+                                api_key: Constants['geocodio_api_key'],
+                                city: cityValue,
+                                state: stateValue,
+                                street: addressValue,
+                                zip: zipValue,
+                              }
+                            );
+                            const latitude = geocodeResult.lat;
+                            const longitude = geocodeResult.lng;
+                            setGeocodeLAT(latitude);
+                            setGeocodeLONG(longitude);
+                            setDidGeocode(true);
+                            mapViewOll6EPzaRef.current.animateToLocation({
+                              latitude: latitude,
+                              longitude: longitude,
+                              zoom: 19,
+                            });
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        };
+                        handler();
                       }}
                       style={styles.ButtonOutline6b352d80}
                       title={'Check Address'}
                     />
                   )}
                 </>
+                {/* saveAddress */}
                 <>
                   {!didGeocode ? null : (
                     <ButtonOutline
-                      onPress={async () => {
-                        try {
-                          const combined = combineStringAddress(
-                            addressValue,
-                            cityValue,
-                            zipValue,
-                            stateValue
-                          );
-                          await userAddressPOST.mutateAsync({
-                            UID: Constants['user_id'],
-                            addressString: combined,
-                            lat: geocodeLAT,
-                            long: geocodeLONG,
-                          });
-                          Utils.showAlert({
-                            title: 'Success!',
-                            message: 'Address has been saved to your account.',
-                            buttonText: 'OK',
-                          });
-                          navigation.goBack();
-                        } catch (err) {
-                          console.error(err);
-                        }
+                      onPress={() => {
+                        const handler = async () => {
+                          try {
+                            const combined = combineStringAddress(
+                              addressValue,
+                              cityValue,
+                              zipValue,
+                              stateValue
+                            );
+                            await userAddressPOST.mutateAsync({
+                              UID: Constants['user_id'],
+                              addressString: combined,
+                              lat: geocodeLAT,
+                              long: geocodeLONG,
+                            });
+                            Utils.showAlert({
+                              title: 'Success!',
+                              message:
+                                'Address has been saved to your account.',
+                              buttonText: 'OK',
+                            });
+                            navigation.goBack();
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        };
+                        handler();
                       }}
                       style={styles.ButtonOutline6b352d80}
                       title={'Save Address'}

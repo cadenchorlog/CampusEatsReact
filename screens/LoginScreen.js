@@ -17,7 +17,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const LoginScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
-
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const myFunctionName = response => {
     // Type the code for the body of your function or hook here.
@@ -48,37 +47,43 @@ const LoginScreen = props => {
 
   return (
     <ScreenContainer hasTopSafeArea={true}>
-      <Image
-        style={styles.Image68ea8a71}
-        source={{
-          uri: 'https://images.pexels.com/photos/54539/pexels-photo-54539.jpeg?auto=compress&cs=tinysrgb&w=600',
-        }}
-        resizeMode={'cover'}
-      />
-      <View
-        style={[
-          styles.Viewb8b014cc,
-          {
-            backgroundColor: theme.colors.background,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          },
-        ]}
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={true}
+        keyboardShouldPersistTaps={'always'}
+        extraScrollHeight={200}
+        enableAutomaticScroll={true}
       >
-        <KeyboardAwareScrollView
-          contentContainerStyle={styles.KeyboardAwareScrollView6a955cc3Content}
+        <Image
+          style={styles.Imagec8525ce8}
+          source={{
+            uri: 'https://images.pexels.com/photos/54539/pexels-photo-54539.jpeg?auto=compress&cs=tinysrgb&w=600',
+          }}
+          resizeMode={'cover'}
+        />
+        <View
+          style={[
+            styles.Viewb8b014cc,
+            {
+              backgroundColor: theme.colors.background,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            },
+          ]}
         >
+          {/* Header */}
           <View style={styles.View39912261}>
             <Divider
               style={styles.Divider259a88df}
               color={theme.colors.divider}
             />
+            {/* Title */}
             <Text style={styles.Textf8b291a4}>
               {'Sign In to\nCampus Eats.'}
             </Text>
           </View>
-
+          {/* Login Form */}
           <View style={styles.View1e98c651}>
+            {/* Email Input */}
             <TextInput
               onChangeText={newEmailInputValue => {
                 try {
@@ -96,8 +101,10 @@ const LoginScreen = props => {
               keyboardType={'email-address'}
               textContentType={'emailAddress'}
               autoCapitalize={'none'}
+              returnKeyType={'done'}
             />
             <Spacer top={12} right={8} bottom={12} left={8} />
+            {/* Password Input */}
             <TextInput
               onChangeText={newPasswordInputValue => {
                 try {
@@ -115,73 +122,77 @@ const LoginScreen = props => {
               secureTextEntry={true}
             />
             <Spacer top={24} right={8} bottom={24} left={8} />
+            {/* Sign In Button */}
             <>
               {Constants['is_loading'] ? null : (
                 <ButtonSolid
-                  onPress={async () => {
-                    try {
-                      setGlobalVariableValue({
-                        key: 'is_loading',
-                        value: true,
-                      });
-                      const response = await XanoApi.loginPOST(Constants, {
-                        email: emailValue,
-                        password: passwordValue,
-                      });
-                      const authToken = response.authToken;
-                      const message = response.message;
-                      setGlobalVariableValue({
-                        key: 'error_message',
-                        value: message,
-                      });
-                      setGlobalVariableValue({
-                        key: 'is_loading',
-                        value: false,
-                      });
-                      if (!authToken) {
-                        return;
+                  onPress={() => {
+                    const handler = async () => {
+                      try {
+                        setGlobalVariableValue({
+                          key: 'is_loading',
+                          value: true,
+                        });
+                        const response = await XanoApi.loginPOST(Constants, {
+                          email: emailValue,
+                          password: passwordValue,
+                        });
+                        const authToken = response.authToken;
+                        const message = response.message;
+                        setGlobalVariableValue({
+                          key: 'error_message',
+                          value: message,
+                        });
+                        setGlobalVariableValue({
+                          key: 'is_loading',
+                          value: false,
+                        });
+                        if (!authToken) {
+                          return;
+                        }
+                        const id = response.id;
+                        const name = response.name;
+                        const email = response.email;
+                        setGlobalVariableValue({
+                          key: 'auth_header',
+                          value: 'Bearer ' + authToken,
+                        });
+                        setGlobalVariableValue({
+                          key: 'user_id',
+                          value: id,
+                        });
+                        setGlobalVariableValue({
+                          key: 'user_name',
+                          value: name,
+                        });
+                        setGlobalVariableValue({
+                          key: 'user_email',
+                          value: email,
+                        });
+                        setEmailValue('');
+                        setPasswordValue('');
+                        setGlobalVariableValue({
+                          key: 'error_message',
+                          value: '',
+                        });
+                        navigation.navigate('BottomTabNavigator', {
+                          screen: 'OrderScreen',
+                        });
+                        const latitude = response.addressLat;
+                        const longitude = response.addressLong;
+                        setGlobalVariableValue({
+                          key: 'delivLat',
+                          value: latitude,
+                        });
+                        setGlobalVariableValue({
+                          key: 'delivLong',
+                          value: longitude,
+                        });
+                      } catch (err) {
+                        console.error(err);
                       }
-                      const id = response.id;
-                      const name = response.name;
-                      const email = response.email;
-                      setGlobalVariableValue({
-                        key: 'auth_header',
-                        value: 'Bearer ' + authToken,
-                      });
-                      setGlobalVariableValue({
-                        key: 'user_id',
-                        value: id,
-                      });
-                      setGlobalVariableValue({
-                        key: 'user_name',
-                        value: name,
-                      });
-                      setGlobalVariableValue({
-                        key: 'user_email',
-                        value: email,
-                      });
-                      setEmailValue('');
-                      setPasswordValue('');
-                      setGlobalVariableValue({
-                        key: 'error_message',
-                        value: '',
-                      });
-                      navigation.navigate('BottomTabNavigator', {
-                        screen: 'MapScreen',
-                      });
-                      const latitude = response.addressLat;
-                      const longitude = response.addressLong;
-                      setGlobalVariableValue({
-                        key: 'delivLat',
-                        value: latitude,
-                      });
-                      setGlobalVariableValue({
-                        key: 'delivLong',
-                        value: longitude,
-                      });
-                    } catch (err) {
-                      console.error(err);
-                    }
+                    };
+                    handler();
                   }}
                   style={[
                     styles.ButtonSolid8a5c1755,
@@ -195,6 +206,7 @@ const LoginScreen = props => {
                 />
               )}
             </>
+            {/* Sign In Button Loading */}
             <>
               {!Constants['is_loading'] ? null : (
                 <ButtonSolid
@@ -212,22 +224,30 @@ const LoginScreen = props => {
             <View style={styles.View8bb6a2bc}>
               <Text>{'New User?'}</Text>
               <Spacer top={8} right={2} bottom={8} left={2} />
+              {/* Sign Up Link */}
               <Link
+                onPress={() => {
+                  try {
+                    navigation.navigate('SignUpScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
                 style={{ color: theme.colors.primary }}
                 title={'Sign up!'}
               />
             </View>
           </View>
-        </KeyboardAwareScrollView>
-      </View>
+        </View>
+      </KeyboardAwareScrollView>
     </ScreenContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  Image68ea8a71: {
+  Imagec8525ce8: {
     width: '100%',
-    height: '40%',
+    height: '80%',
   },
   Divider259a88df: {
     height: 24,
@@ -302,9 +322,6 @@ const styles = StyleSheet.create({
     paddingLeft: 36,
     paddingRight: 36,
     marginTop: 24,
-  },
-  KeyboardAwareScrollView6a955cc3Content: {
-    justifyContent: 'center',
   },
   Viewb8b014cc: {
     marginTop: '-5%',

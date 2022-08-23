@@ -16,6 +16,7 @@ import {
   withTheme,
 } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
 import {
   ActivityIndicator,
   FlatList,
@@ -47,19 +48,22 @@ const TrackScreen = props => {
       <XanoApi.FetchSpecificOrderViewGET
         refetchInterval={30000}
         session_id={props.route?.params?.orderID ?? 84}
-        onData={async fetchData => {
-          try {
-            setLat(fetchData?.driverCurrentLat);
-            setLong(fetchData?.driverCurrentLong);
-            const currentLocation = await Utils.getLocation();
-            console.log(currentLocation);
-            const lat = currentLocation.latitude;
-            const long = currentLocation.longitude;
-            setUserLat(lat);
-            setUserLong(long);
-          } catch (err) {
-            console.error(err);
-          }
+        onData={fetchData => {
+          const handler = async () => {
+            try {
+              setLat(fetchData?.driverCurrentLat);
+              setLong(fetchData?.driverCurrentLong);
+              const currentLocation = await Utils.getLocation();
+              console.log(currentLocation);
+              const lat = currentLocation.latitude;
+              const long = currentLocation.longitude;
+              setUserLat(lat);
+              setUserLong(long);
+            } catch (err) {
+              console.error(err);
+            }
+          };
+          handler();
         }}
       >
         {({ loading, error, data, refetchSpecificOrderView }) => {
@@ -102,6 +106,7 @@ const TrackScreen = props => {
               <>
                 {fetchData?.completed ? null : (
                   <Surface style={styles.Surface494c0973}>
+                    {/* Map Views */}
                     <MapView
                       style={styles.MapViewc992f941}
                       latitude={userLat}
@@ -306,12 +311,32 @@ const TrackScreen = props => {
                 title={'View Order Contents'}
                 icon={'MaterialCommunityIcons/table-of-contents'}
               />
+              <ButtonSolid
+                onPress={() => {
+                  try {
+                    Linking.openURL('https://direct.lc.chat/14396454/');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={[
+                  styles.ButtonSolidc9daa8c2,
+                  {
+                    backgroundColor: theme.colors.background,
+                    borderColor: theme.colors.primary,
+                    color: theme.colors.primary,
+                  },
+                ]}
+                title={'Contact CampusEats'}
+                icon={'MaterialIcons/support-agent'}
+              />
               <>
                 {!modalOpen ? null : (
                   <Modal
                     animationType={'slide'}
                     presentationStyle={'pageSheet'}
                   >
+                    {/* Header */}
                     <View style={styles.View80c79e26}>
                       <Row justifyContent={'flex-start'} alignItems={'center'}>
                         <IconButton
@@ -513,6 +538,20 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
+  },
+  ButtonSolidc9daa8c2: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+    marginLeft: '25%',
+    marginRight: '25%',
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    width: '50%',
   },
   IconButton897c6051: {
     marginLeft: 16,

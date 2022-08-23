@@ -13,7 +13,6 @@ import { StyleSheet, Text, View } from 'react-native';
 const AcceptOrderScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
-
   const setGlobalVariableValue = GlobalVariables.useSetValue();
 
   const { theme } = props;
@@ -23,19 +22,23 @@ const AcceptOrderScreen = props => {
 
   return (
     <ScreenContainer scrollable={false} hasSafeArea={true}>
+      {/* Header Wrapper */}
       <View style={styles.View0bb8b0a3} />
+      {/* Content Wrapper */}
       <View style={styles.View19e468f9}>
         <Icon name={'FontAwesome/angle-double-down'} size={80} />
+        {/* Permissions Name */}
         <Text style={[styles.Text0e732d29, { color: theme.colors.strong }]}>
           {'Accept this order?'}
         </Text>
-
+        {/* Permissions Description */}
         <Text style={[styles.Text30c802d7, { color: theme.colors.medium }]}>
           {'You cannot undo this action.'}
         </Text>
       </View>
-
+      {/* Footer Wrapper */}
       <View style={styles.Viewb1d9ece6}>
+        {/* Skip Touchable */}
         <Touchable
           onPress={() => {
             try {
@@ -45,38 +48,43 @@ const AcceptOrderScreen = props => {
             }
           }}
         >
+          {/* goBack */}
           <Text style={[styles.Text1b7e3f61, { color: theme.colors.light }]}>
             {'Cancel'}
           </Text>
         </Touchable>
+        {/* confrim */}
         <ButtonSolid
-          onPress={async () => {
-            try {
-              await addDriverPOST.mutateAsync({
-                orderID: props.route?.params?.orderID ?? '',
-                userID: Constants['user_id'],
-              });
-              setGlobalVariableValue({
-                key: 'courierActive',
-                value: true,
-              });
-              navigation.navigate('StackNavigator', {
-                screen: 'DriverNav',
-                params: { screen: 'AvailableOrdersScreen' },
-              });
-              setGlobalVariableValue({
-                key: 'driverPickupID',
-                value: props.route?.params?.orderID ?? '',
-              });
-            } catch (err) {
-              console.error(err);
-            }
+          onPress={() => {
+            const handler = async () => {
+              try {
+                await addDriverPOST.mutateAsync({
+                  orderID: props.route?.params?.orderID ?? '',
+                  userID: Constants['user_id'],
+                });
+                setGlobalVariableValue({
+                  key: 'courierActive',
+                  value: true,
+                });
+                navigation.navigate('StackNavigator', {
+                  screen: 'DriverNav',
+                  params: { screen: 'AvailableOrdersScreen' },
+                });
+                setGlobalVariableValue({
+                  key: 'driverPickupID',
+                  value: props.route?.params?.orderID ?? '',
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            };
+            handler();
           }}
           style={[
             styles.ButtonSolid1a5f45df,
             { backgroundColor: theme.colors.primary },
           ]}
-          title={'Accept'}
+          title={'Confirm'}
         />
       </View>
     </ScreenContainer>

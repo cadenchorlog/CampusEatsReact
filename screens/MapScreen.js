@@ -16,11 +16,11 @@ import {
 } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
 import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const MapScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
-
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const requestLocation = async () => {
     //let { status } = await CustomCode.requestForegroundPermissionsAsync();
@@ -63,22 +63,25 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { navigation } = props;
 
   const isFocused = useIsFocused();
-  React.useEffect(async () => {
-    try {
-      if (!isFocused) {
-        return;
+  React.useEffect(() => {
+    const handler = async () => {
+      try {
+        if (!isFocused) {
+          return;
+        }
+        const currentLocation = await requestLocation();
+        if (!currentLocation) {
+          return;
+        }
+        const longitude = currentLocation.coords.longitude;
+        const latitude = currentLocation.coords.latitude;
+        setCurrentLat(latitude);
+        setCurrentLong(longitude);
+      } catch (err) {
+        console.error(err);
       }
-      const currentLocation = await requestLocation();
-      if (!currentLocation) {
-        return;
-      }
-      const longitude = currentLocation.coords.longitude;
-      const latitude = currentLocation.coords.latitude;
-      setCurrentLat(latitude);
-      setCurrentLong(longitude);
-    } catch (err) {
-      console.error(err);
-    }
+    };
+    handler();
   }, [isFocused]);
 
   const [currentLat, setCurrentLat] = React.useState(0);
@@ -101,105 +104,122 @@ line two` ) and will not work with special characters inside of quotes ( example
       hasTopSafeArea={false}
       scrollable={true}
     >
-      <MapView
-        style={styles.MapView45021330}
-        latitude={currentLat}
-        longitude={currentLong}
-        zoom={12}
-        zoomEnabled={true}
-        rotateEnabled={true}
-        scrollEnabled={true}
-        loadingEnabled={true}
-        showsPointsOfInterest={true}
-        apiKey={'AIzaSyC53v7BvSuA1yv7Hwf1rC_9kpHMmmYJJhU'}
-        showsUserLocation={true}
-        followsUserLocation={false}
-        showsCompass={true}
-        ref={mapViewEjxxH1YMRef}
-      />
-      <Surface
-        style={[
-          styles.Surfacee94f0706,
-          { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-        ]}
+      <KeyboardAwareScrollView
+        style={styles.KeyboardAwareScrollView6559c7e9}
+        contentContainerStyle={styles.KeyboardAwareScrollView6559c7e9Content}
+        showsVerticalScrollIndicator={true}
+        keyboardShouldPersistTaps={'never'}
       >
-        <Row justifyContent={'space-around'} alignItems={'center'}>
-          <View
-            style={[
-              styles.View9deeaf2f,
-              { backgroundColor: theme.colors.divider, borderRadius: 12 },
-            ]}
-          >
-            <View style={styles.Viewc992f941}>
-              <TextInput
-                onChangeText={newSearchInputValue => {
-                  const textInputValue = newSearchInputValue;
-                  try {
-                    setTextInputValue(textInputValue);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.TextInputbaf7ad36}
-                placeholder={'Search...'}
-                value={textInputValue}
-              />
+        <Surface style={styles.Surface6400fc79}>
+          <MapView
+            style={styles.MapView37c37e1e}
+            latitude={currentLat}
+            longitude={currentLong}
+            zoom={16}
+            zoomEnabled={true}
+            rotateEnabled={true}
+            scrollEnabled={true}
+            loadingEnabled={true}
+            showsPointsOfInterest={true}
+            apiKey={'AIzaSyC53v7BvSuA1yv7Hwf1rC_9kpHMmmYJJhU'}
+            showsUserLocation={true}
+            followsUserLocation={false}
+            showsCompass={true}
+            ref={mapViewEjxxH1YMRef}
+          />
+        </Surface>
+
+        <Surface
+          style={[
+            styles.Surfaceac21182a,
+            { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+          ]}
+        >
+          <Row justifyContent={'space-around'} alignItems={'center'}>
+            {/* Search Field */}
+            <View
+              style={[
+                styles.View9deeaf2f,
+                { backgroundColor: theme.colors.divider, borderRadius: 12 },
+              ]}
+            >
+              <View>
+                {/* Search Button */}
+                <IconButton
+                  icon={'MaterialIcons/search'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              </View>
+              <Spacer top={0} right={3} bottom={0} left={3} />
+              <View style={styles.Viewc992f941}>
+                {/* Search Input */}
+                <TextInput
+                  onChangeText={newSearchInputValue => {
+                    const textInputValue = newSearchInputValue;
+                    try {
+                      setTextInputValue(textInputValue);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.TextInputbaf7ad36}
+                  placeholder={'Search...'}
+                  value={textInputValue}
+                />
+              </View>
             </View>
-            <Spacer top={0} right={3} bottom={0} left={3} />
-            <View>
-              <IconButton
-                icon={'MaterialIcons/search'}
-                size={32}
-                color={theme.colors.light}
-              />
-            </View>
-          </View>
-          <>
-            {drawerOpened ? null : (
-              <IconButton
-                onPress={() => {
-                  try {
-                    setDrawerOpened(true);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.IconButtonbcce0fc4}
-                icon={'Ionicons/grid'}
-                size={32}
-                color={theme.colors.light}
-              />
-            )}
-          </>
-          <>
-            {!parseBoolean(drawerOpened) ? null : (
-              <IconButton
-                onPress={() => {
-                  try {
-                    setDrawerOpened(false);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.IconButtonbcce0fc4}
-                icon={'Entypo/chevron-thin-down'}
-                size={32}
-                color={theme.colors.light}
-              />
-            )}
-          </>
-        </Row>
-      </Surface>
+            {/* showDrawer */}
+            <>
+              {drawerOpened ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setDrawerOpened(true);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButtonbcce0fc4}
+                  icon={'Ionicons/grid'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+            {/* hideDrawer */}
+            <>
+              {!parseBoolean(drawerOpened) ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setDrawerOpened(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButtonbcce0fc4}
+                  icon={'Entypo/chevron-thin-down'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+          </Row>
+        </Surface>
+      </KeyboardAwareScrollView>
       <>
         {!drawerOpened ? null : (
           <View style={styles.Viewac5e8875}>
+            {/* Grid */}
             <View
               style={[
-                styles.View0a4d6e57,
+                styles.View1acef5e2,
                 { backgroundColor: theme.colors.strongInverse },
               ]}
               needsOffscreenAlphaCompositing={false}
             >
+              {/* Profile */}
               <Touchable
                 onPress={() => {
                   try {
@@ -255,7 +275,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   </Stack>
                 </View>
               </Touchable>
-
+              {/* Courier */}
               <Touchable
                 onPress={() => {
                   try {
@@ -271,7 +291,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               >
                 <View
                   style={[
-                    styles.View5bdc27e1,
+                    styles.View0f4451f3,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -279,30 +299,27 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.Viewd8fb5662}>
+                  <View style={styles.View94ee2e18}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.Text08ca864d,
+                        styles.Textca4d6164,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
                     >
                       {'Switch to\nCourier\n'}
                     </Text>
-                  </View>
-
-                  <View style={styles.Viewfc2051b8}>
                     <Icon
-                      style={styles.Icon9e5973b7}
+                      style={styles.Icon84575dc9}
                       name={'MaterialCommunityIcons/truck-delivery'}
-                      size={24}
+                      size={32}
                       color={theme.colors.strong}
                     />
                   </View>
                 </View>
               </Touchable>
-
+              {/* Address */}
               <Touchable
                 onPress={() => {
                   try {
@@ -315,7 +332,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               >
                 <View
                   style={[
-                    styles.View4fcb54fe,
+                    styles.View57ac46a1,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -323,7 +340,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.View2d6d8dcf}>
+                  <View style={styles.View837d8621}>
                     <Text
                       style={[
                         theme.typography.headline6,
@@ -334,19 +351,16 @@ line two` ) and will not work with special characters inside of quotes ( example
                     >
                       {'Delivery\nAddress'}
                     </Text>
-                  </View>
-
-                  <View style={styles.Viewc76bc0e2}>
                     <Icon
-                      style={styles.Icon9e5973b7}
-                      size={24}
+                      style={styles.Icon013300ec}
+                      size={26}
                       name={'Ionicons/md-home'}
                       color={theme.colors.strong}
                     />
                   </View>
                 </View>
               </Touchable>
-
+              {/* Sign Out */}
               <Touchable
                 onPress={() => {
                   try {
@@ -371,11 +385,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                     console.error(err);
                   }
                 }}
-                style={styles.Touchableb890e5fa}
+                style={styles.Touchablec4f3901b}
               >
                 <View
                   style={[
-                    styles.View5bdc27e1,
+                    styles.View075ba974,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -383,7 +397,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.View2d6d8dcf}>
+                  <View style={styles.View3b106cac}>
                     <Text
                       style={[
                         theme.typography.headline6,
@@ -392,11 +406,8 @@ line two` ) and will not work with special characters inside of quotes ( example
                       ]}
                       allowFontScaling={true}
                     >
-                      {'Sign Out\n'}
+                      {'Sign Out'}
                     </Text>
-                  </View>
-
-                  <View style={styles.Viewfc2051b8}>
                     <Icon
                       style={styles.Icon9e5973b7}
                       name={'MaterialIcons/logout'}
@@ -406,11 +417,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                   </View>
                 </View>
               </Touchable>
-
-              <Touchable style={styles.Touchable06a91ba5}>
+              {/* help */}
+              <Touchable style={styles.Touchable1b2cb320}>
                 <View
                   style={[
-                    styles.View4fcb54fe,
+                    styles.View075ba974,
                     {
                       borderRadius: theme.roundness,
                       backgroundColor: theme.colors.background,
@@ -418,36 +429,22 @@ line two` ) and will not work with special characters inside of quotes ( example
                     },
                   ]}
                 >
-                  <View style={styles.View2d6d8dcf}>
+                  <View style={styles.View3b106cac}>
                     <Text
                       style={[
                         theme.typography.headline6,
-                        styles.Text4b62e5ec,
+                        styles.Textca4d6164,
                         { color: theme.colors.strong },
                       ]}
                       allowFontScaling={true}
                     >
-                      {'Need Help?'}
+                      {'Help'}
                     </Text>
-
-                    <Text
-                      style={[
-                        theme.typography.subtitle1,
-                        styles.Textada04eb3,
-                        { color: theme.colors.medium },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {' '}
-                    </Text>
-                  </View>
-
-                  <View style={styles.Viewc76bc0e2}>
                     <Icon
-                      style={styles.Icon9580a48b}
-                      size={30}
-                      name={'MaterialIcons/help'}
-                      color={theme.colors.strong}
+                      style={styles.Icon9e5973b7}
+                      name={'Entypo/help-with-circle'}
+                      size={24}
+                      color={theme.colors.error}
                     />
                   </View>
                 </View>
@@ -461,13 +458,17 @@ line two` ) and will not work with special characters inside of quotes ( example
 };
 
 const styles = StyleSheet.create({
-  MapView45021330: {
+  MapView37c37e1e: {
     flex: 1,
     marginBottom: -25,
     bottom: 0,
     right: 0,
     top: 0,
     left: 0,
+    height: '100%',
+  },
+  Surface6400fc79: {
+    height: '95%',
   },
   TextInputbaf7ad36: {
     fontFamily: 'System',
@@ -490,11 +491,22 @@ const styles = StyleSheet.create({
   IconButtonbcce0fc4: {
     right: 25,
   },
-  Surfacee94f0706: {
+  Surfaceac21182a: {
     minHeight: 70,
     justifyContent: 'space-around',
     alignContent: 'space-around',
     overflow: 'hidden',
+    bottom: 0,
+    position: 'absolute',
+    right: 0,
+    left: 0,
+  },
+  KeyboardAwareScrollView6559c7e9: {
+    height: '100%',
+  },
+  KeyboardAwareScrollView6559c7e9Content: {
+    minHeight: '100%',
+    maxHeight: '100%',
   },
   Icon6bf74529: {
     width: 40,
@@ -529,24 +541,20 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 75,
   },
-  Text08ca864d: {
+  Textca4d6164: {
     textAlign: 'left',
-    paddingTop: 8,
   },
-  Viewd8fb5662: {
-    marginBottom: 16,
+  Icon84575dc9: {
+    width: 32,
+    height: 32,
   },
-  Icon9e5973b7: {
-    width: 24,
-    height: 24,
-  },
-  Viewfc2051b8: {
-    justifyContent: 'center',
+  View94ee2e18: {
+    flexDirection: 'row',
     alignItems: 'center',
-    height: 42,
-    width: 42,
+    justifyContent: 'space-between',
+    width: '100%',
   },
-  View5bdc27e1: {
+  View0f4451f3: {
     width: '100%',
     borderRightWidth: 1,
     alignItems: 'flex-start',
@@ -558,7 +566,7 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     borderBottomWidth: 1,
     paddingLeft: 14,
-    height: 140,
+    height: 80,
   },
   Touchable2e5bf580: {
     alignSelf: 'stretch',
@@ -569,28 +577,29 @@ const styles = StyleSheet.create({
   Text4b62e5ec: {
     textAlign: 'left',
   },
-  View2d6d8dcf: {
-    marginBottom: 24,
+  Icon013300ec: {
+    width: 26,
+    height: 26,
   },
-  Viewc76bc0e2: {
-    justifyContent: 'center',
-    width: 42,
-    height: 42,
+  View837d8621: {
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '100%',
   },
-  View4fcb54fe: {
-    paddingTop: 14,
-    paddingBottom: 14,
-    paddingRight: 14,
+  View57ac46a1: {
     borderLeftWidth: 1,
     borderTopWidth: 1,
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     borderBottomWidth: 1,
-    paddingLeft: 14,
-    height: 140,
+    height: 80,
     width: '100%',
     borderRightWidth: 1,
+    paddingLeft: 14,
+    paddingTop: 14,
+    paddingRight: 14,
+    paddingBottom: 14,
   },
   Touchableb3269bed: {
     alignSelf: 'stretch',
@@ -599,32 +608,48 @@ const styles = StyleSheet.create({
     marginTop: 14,
     marginLeft: 10,
   },
-  Textca4d6164: {
-    textAlign: 'left',
+  Icon9e5973b7: {
+    width: 24,
+    height: 24,
   },
-  Touchableb890e5fa: {
-    alignSelf: 'stretch',
-    marginBottom: 14,
-    width: '48%',
-    marginRight: 10,
+  View3b106cac: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  Textada04eb3: {
-    textAlign: 'left',
-  },
-  Icon9580a48b: {
-    width: 30,
-    height: 30,
-  },
-  Touchable06a91ba5: {
-    alignSelf: 'stretch',
-    marginBottom: 14,
-    width: '48%',
-  },
-  View0a4d6e57: {
-    justifyContent: 'space-evenly',
-    paddingLeft: 32,
+  View075ba974: {
+    width: '100%',
+    borderRightWidth: 1,
     alignItems: 'flex-start',
-    paddingRight: 32,
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    paddingRight: 14,
+    paddingBottom: 14,
+    paddingTop: 14,
+    borderBottomWidth: 1,
+    paddingLeft: 14,
+    height: 60,
+  },
+  Touchablec4f3901b: {
+    alignSelf: 'stretch',
+    marginBottom: 14,
+    width: '48%',
+    marginTop: 4,
+  },
+  Touchable1b2cb320: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 4,
+    marginLeft: 10,
+  },
+  View1acef5e2: {
+    justifyContent: 'space-evenly',
+    paddingLeft: 12,
+    alignItems: 'flex-start',
+    paddingRight: 12,
     flexWrap: 'wrap',
     paddingBottom: 14,
     flexDirection: 'row',

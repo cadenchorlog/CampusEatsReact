@@ -1,16 +1,7 @@
 import React from 'react';
-import * as DraftbitApi from '../apis/DraftbitApi.js';
+import * as XanoApi from '../apis/XanoApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
-import {
-  Circle,
-  CircleImage,
-  Icon,
-  Link,
-  ScreenContainer,
-  Spacer,
-  Touchable,
-  withTheme,
-} from '@draftbit/ui';
+import { Circle, Icon, ScreenContainer, Spacer, withTheme } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -29,6 +20,7 @@ const DriverDashboardScreen = props => {
 
   return (
     <ScreenContainer scrollable={true} hasTopSafeArea={true}>
+      {/* Header */}
       <View style={styles.Viewc037e9c3}>
         <View style={styles.View5cf968ba}>
           <Text style={[styles.Text74c7f382, { color: theme.colors.light }]}>
@@ -40,70 +32,64 @@ const DriverDashboardScreen = props => {
           </Text>
         </View>
         <Spacer top={8} right={8} bottom={8} left={8} />
-        <View>
-          <Touchable>
-            <CircleImage
-              source={{
-                uri: 'https://global-uploads.webflow.com/5e740d74e6787687577e9b38/5e826ae4a89f421c3a363704_Donald-Hruska.png',
-              }}
-              size={48}
-            />
-          </Touchable>
-        </View>
       </View>
+      {/* Cards */}
       <View />
+      {/* Trends */}
       <View style={styles.Viewf32039c1}>
-        <View style={styles.Viewf734b5f3}>
-          <View
-            style={[
-              styles.View299f7dc6,
-              { backgroundColor: theme.colors.divider, borderRadius: 8 },
-            ]}
-          >
-            <Icon
-              name={'FontAwesome/dollar'}
-              size={26}
-              color={theme.colors.light}
-            />
-          </View>
-          <Spacer right={4} left={4} />
-          <View style={styles.Viewc992f941}>
-            <Text style={[styles.Textaabf5915, { color: theme.colors.light }]}>
-              {'Weekly Earnings'}
-            </Text>
+        <XanoApi.FetchGetUserRecordGET user_id={Constants['user_id']}>
+          {({ loading, error, data, refetchGetUserRecord }) => {
+            const fetchData = data;
+            if (!fetchData || loading) {
+              return <ActivityIndicator />;
+            }
 
-            <Text style={[styles.Text77c80820, { color: theme.colors.strong }]}>
-              {'$3,227'}
-            </Text>
-          </View>
-        </View>
-        <Spacer top={8} right={8} bottom={8} left={8} />
-        <View style={styles.Viewf734b5f3}>
-          <View
-            style={[
-              styles.View299f7dc6,
-              { backgroundColor: theme.colors.divider, borderRadius: 8 },
-            ]}
-          >
-            <Icon
-              name={'FontAwesome/bank'}
-              size={26}
-              color={theme.colors.light}
-            />
-          </View>
-          <Spacer right={4} left={4} />
-          <View style={styles.Viewc992f941}>
-            <Text style={[styles.Textaabf5915, { color: theme.colors.light }]}>
-              {'Current Balance'}
-            </Text>
+            if (error) {
+              return (
+                <Text style={{ textAlign: 'center' }}>
+                  There was a problem fetching this data
+                </Text>
+              );
+            }
 
-            <Text style={[styles.Text77c80820, { color: theme.colors.strong }]}>
-              {'$6,333'}
-            </Text>
-          </View>
-        </View>
+            return (
+              <View style={styles.Viewf734b5f3}>
+                <View
+                  style={[
+                    styles.View299f7dc6,
+                    { backgroundColor: theme.colors.divider, borderRadius: 8 },
+                  ]}
+                >
+                  <Icon
+                    name={'FontAwesome/bank'}
+                    size={26}
+                    color={theme.colors.light}
+                  />
+                </View>
+                <Spacer right={4} left={4} />
+                <View style={styles.Viewc992f941}>
+                  <Text
+                    style={[styles.Textaabf5915, { color: theme.colors.light }]}
+                  >
+                    {'Current Balance'}
+                  </Text>
+
+                  <Text
+                    style={[
+                      styles.Text77c80820,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {'$'}
+                    {fetchData?.driverBalance}
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
+        </XanoApi.FetchGetUserRecordGET>
       </View>
-
+      {/* Transactions */}
       <View
         style={[
           styles.View69fe1f2a,
@@ -118,16 +104,12 @@ const DriverDashboardScreen = props => {
         <View>
           <View style={styles.View1de44df9}>
             <Text style={[styles.Textdc3e6c95, { color: theme.colors.strong }]}>
-              {'History'}
+              {'Earning History'}
             </Text>
-            <Link
-              style={[styles.Linkd6e8428f, { color: theme.colors.primary }]}
-              title={'See all'}
-            />
           </View>
           <Spacer top={12} bottom={12} />
-          <DraftbitApi.FetchProductsGET limit={5}>
-            {({ loading, error, data, refetchProducts }) => {
+          <XanoApi.FetchGetUserRecordGET user_id={Constants['user_id']}>
+            {({ loading, error, data, refetchGetUserRecord }) => {
               const fetchData = data;
               if (!fetchData || loading) {
                 return <ActivityIndicator />;
@@ -143,7 +125,7 @@ const DriverDashboardScreen = props => {
 
               return (
                 <FlatList
-                  data={fetchData}
+                  data={fetchData?.earningHistory}
                   listKey={'ZkbUG5t3'}
                   keyExtractor={({ item }) => item?.id || item?.uuid || item}
                   renderItem={({ item }) => {
@@ -169,7 +151,7 @@ const DriverDashboardScreen = props => {
                                 { color: theme.colors.light },
                               ]}
                             >
-                              {'Apple Store'}
+                              {'Delivery Earnings'}
                             </Text>
 
                             <Text
@@ -178,7 +160,7 @@ const DriverDashboardScreen = props => {
                                 { color: theme.colors.strong },
                               ]}
                             >
-                              {'iPhone 13 Pro'}
+                              {'Balance Increase'}
                             </Text>
                           </View>
                           <Spacer right={4} left={4} />
@@ -189,122 +171,8 @@ const DriverDashboardScreen = props => {
                                 { color: theme.colors.medium },
                               ]}
                             >
-                              {'$1,227.72'}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Text9b56d69d,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'4/20/2022'}
-                            </Text>
-                          </View>
-                        </View>
-                        <Spacer top={8} bottom={8} />
-                        <View style={styles.View7d6a39b7}>
-                          <Circle size={60} bgColor={theme.colors.divider}>
-                            <Circle size={56} bgColor={theme.colors.background}>
-                              <Icon
-                                style={styles.Iconbabcec09}
-                                name={'Feather/shopping-bag'}
-                                size={24}
-                                color={theme.colors.light}
-                              />
-                            </Circle>
-                          </Circle>
-                          <Spacer right={6} left={6} />
-                          <View style={styles.Viewc992f941}>
-                            <Text
-                              style={[
-                                styles.Textaabf5915,
-                                { color: theme.colors.light },
-                              ]}
-                            >
-                              {'Whole Foods'}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Texta04294cb,
-                                { color: theme.colors.strong },
-                              ]}
-                            >
-                              {'Groceries'}
-                            </Text>
-                          </View>
-                          <Spacer right={4} left={4} />
-                          <View style={styles.Viewc65acab6}>
-                            <Text
-                              style={[
-                                styles.Text7b405a32,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'$314.15'}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Text9b56d69d,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'3/30/2022'}
-                            </Text>
-                          </View>
-                        </View>
-                        <Spacer top={8} bottom={8} />
-                        <View style={styles.View7d6a39b7}>
-                          <Circle size={60} bgColor={theme.colors.divider}>
-                            <Circle size={56} bgColor={theme.colors.background}>
-                              <Icon
-                                style={styles.Iconbabcec09}
-                                name={'Feather/coffee'}
-                                size={24}
-                                color={theme.colors.light}
-                              />
-                            </Circle>
-                          </Circle>
-                          <Spacer right={6} left={6} />
-                          <View style={styles.Viewc992f941}>
-                            <Text
-                              style={[
-                                styles.Textaabf5915,
-                                { color: theme.colors.light },
-                              ]}
-                            >
-                              {'Starbucks'}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Texta04294cb,
-                                { color: theme.colors.strong },
-                              ]}
-                            >
-                              {'Morning Coffee'}
-                            </Text>
-                          </View>
-                          <Spacer right={4} left={4} />
-                          <View style={styles.Viewc65acab6}>
-                            <Text
-                              style={[
-                                styles.Text7b405a32,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'$7.27'}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Text9b56d69d,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'3/30/2022'}
+                              {'$'}
+                              {listData?.Earnings}
                             </Text>
                           </View>
                         </View>
@@ -317,7 +185,7 @@ const DriverDashboardScreen = props => {
                 />
               );
             }}
-          </DraftbitApi.FetchProductsGET>
+          </XanoApi.FetchGetUserRecordGET>
         </View>
       </View>
     </ScreenContainer>
@@ -368,6 +236,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  Fetch431eb058: {
+    minHeight: 40,
+  },
   Viewf32039c1: {
     flexDirection: 'row',
     paddingLeft: 24,
@@ -378,9 +249,6 @@ const styles = StyleSheet.create({
   Textdc3e6c95: {
     fontFamily: 'Inter_600SemiBold',
     fontSize: 18,
-  },
-  Linkd6e8428f: {
-    fontFamily: 'Inter_500Medium',
   },
   View1de44df9: {
     flexDirection: 'row',
@@ -398,11 +266,6 @@ const styles = StyleSheet.create({
   Text7b405a32: {
     fontFamily: 'Inter_700Bold',
   },
-  Text9b56d69d: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-    marginTop: 4,
-  },
   Viewc65acab6: {
     alignItems: 'flex-end',
   },
@@ -412,9 +275,6 @@ const styles = StyleSheet.create({
   },
   FlatListc992f941Content: {
     flex: 1,
-  },
-  Fetch431eb058: {
-    minHeight: 40,
   },
   View69fe1f2a: {
     paddingLeft: 32,

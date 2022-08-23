@@ -2,11 +2,12 @@ import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
-  Divider,
+  CircleImage,
   Icon,
   Row,
   ScreenContainer,
   Spacer,
+  Stack,
   Touchable,
   withTheme,
 } from '@draftbit/ui';
@@ -14,7 +15,6 @@ import { useIsFocused } from '@react-navigation/native';
 import {
   ActivityIndicator,
   FlatList,
-  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -36,6 +36,7 @@ const HistoryScreen = props => {
       scrollable={false}
       hasTopSafeArea={false}
     >
+      {/* Header */}
       <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
@@ -93,23 +94,61 @@ const HistoryScreen = props => {
                           }
                         }}
                       >
-                        <View style={styles.Viewd42e9bbc}>
-                          <ImageBackground
-                            style={[
-                              styles.ImageBackground69e94ca6,
-                              { borderRadius: theme.roundness },
-                            ]}
-                            resizeMode={'cover'}
-                            source={{
-                              uri: `${listData?.userOrder?.restaurantImage}`,
-                            }}
-                          >
-                            <View style={styles.View272ee112}>
+                        <View style={styles.View24b1ad64}>
+                          <View style={styles.View66d94174} />
+                          <View style={styles.View88c44c3e}>
+                            <Row
+                              justifyContent={'flex-start'}
+                              alignItems={'center'}
+                            >
+                              <CircleImage
+                                source={{
+                                  uri: `${listData?.userOrder?.storeIcon}`,
+                                }}
+                                size={60}
+                              />
+                              <Stack
+                                justifyContent={'flex-start'}
+                                alignItems={'flex-start'}
+                              >
+                                <Text
+                                  style={[
+                                    styles.Textaa9d0917,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                  textBreakStrategy={'highQuality'}
+                                  ellipsizeMode={'tail'}
+                                  allowFontScaling={true}
+                                  numberOfLines={2}
+                                >
+                                  {listData?.userOrder?.restaurantName}
+                                </Text>
+
+                                <Text
+                                  style={[
+                                    styles.Text16847c01,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                  textBreakStrategy={'highQuality'}
+                                  ellipsizeMode={'tail'}
+                                  allowFontScaling={true}
+                                  numberOfLines={2}
+                                >
+                                  {'Total: $'}
+                                  {listData?.amount_total}
+                                </Text>
+                              </Stack>
+                            </Row>
+
+                            <Stack
+                              justifyContent={'flex-start'}
+                              alignItems={'flex-end'}
+                            >
                               <>
                                 {listData?.completed ? null : (
                                   <View
                                     style={[
-                                      styles.View422f6f32,
+                                      styles.View617a256a,
                                       {
                                         backgroundColor: theme.colors.primary,
                                         borderBottomLeftRadius: 8,
@@ -131,54 +170,22 @@ const HistoryScreen = props => {
                                   </View>
                                 )}
                               </>
-                            </View>
-                          </ImageBackground>
-                        </View>
-
-                        <View style={styles.View8db74792}>
-                          <View>
-                            <Text
-                              style={[
-                                styles.Text99b56fe5,
-                                { color: theme.colors.strong },
-                              ]}
-                              textBreakStrategy={'highQuality'}
-                              ellipsizeMode={'tail'}
-                              allowFontScaling={true}
-                              numberOfLines={2}
-                            >
-                              {listData?.userOrder?.restaurantName}
-                            </Text>
-                            <Spacer top={4} right={8} bottom={4} left={8} />
-                            <Divider
-                              style={styles.Divider22627dc6}
-                              color={theme.colors.divider}
-                            />
-                            <View style={styles.Viewce4accf0}>
-                              <View style={styles.View7d6a39b7}>
-                                <Icon
-                                  name={'FontAwesome/dollar'}
-                                  size={24}
-                                  color={theme.colors.primary}
-                                />
-                                <Spacer right={2} left={2} />
-                                <Text
-                                  style={[
-                                    styles.Textde21574d,
-                                    { color: theme.colors.medium },
-                                  ]}
-                                >
-                                  {listData?.amount_total}
-                                </Text>
-                              </View>
-                              <Spacer top={8} right={8} bottom={8} left={8} />
-                              <Spacer top={8} right={8} bottom={8} left={8} />
-                            </View>
+                              <>
+                                {listData?.completed ? null : (
+                                  <Icon
+                                    style={styles.Icon12a462a2}
+                                    name={'Ionicons/ios-chevron-forward'}
+                                    size={24}
+                                    color={theme.colors.primary}
+                                  />
+                                )}
+                              </>
+                            </Stack>
                           </View>
                         </View>
                       </Touchable>
                     </View>
-                    <Spacer top={12} right={8} bottom={12} left={8} />
+                    <Spacer top={6} right={8} bottom={6} left={8} />
                   </>
                 );
               }}
@@ -203,54 +210,45 @@ const styles = StyleSheet.create({
     marginTop: 60,
     marginBottom: 20,
   },
+  View66d94174: {
+    alignItems: 'flex-end',
+    marginTop: 8,
+  },
+  Textaa9d0917: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 20,
+    marginLeft: 16,
+  },
+  Text16847c01: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    marginLeft: 16,
+  },
   Textd40b1daa: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  View422f6f32: {
+  View617a256a: {
     paddingLeft: 8,
     paddingTop: 4,
     paddingRight: 8,
     paddingBottom: 4,
     flexDirection: 'row',
     alignItems: 'center',
+    right: 0,
+    height: 30,
   },
-  View272ee112: {
-    alignItems: 'flex-end',
-    marginTop: 16,
+  Icon12a462a2: {
+    marginTop: 10,
+    marginRight: 8,
   },
-  ImageBackground69e94ca6: {
-    width: '100%',
-    height: '100%',
-  },
-  Viewd42e9bbc: {
-    height: 180,
-  },
-  Text99b56fe5: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 24,
-  },
-  Divider22627dc6: {
-    height: 1,
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  Textde21574d: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  View7d6a39b7: {
+  View88c44c3e: {
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  Viewce4accf0: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  View8db74792: {
+  View24b1ad64: {
     paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 16,
   },
   Viewcabc33e8: {

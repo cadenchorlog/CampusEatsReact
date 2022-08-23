@@ -5,15 +5,16 @@ import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
-  ButtonOutline,
   ButtonSolid,
   Checkbox,
   Divider,
   Icon,
   IconButton,
+  NumberInput,
   Row,
   ScreenContainer,
   Spacer,
+  Stack,
   TextField,
   Touchable,
   withTheme,
@@ -22,12 +23,10 @@ import { useIsFocused } from '@react-navigation/native';
 import {
   ActivityIndicator,
   FlatList,
-  ImageBackground,
   Modal,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -36,6 +35,23 @@ import { Fetch } from 'react-request';
 const BaggageCartScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
+  const setGlobalVariableValue = GlobalVariables.useSetValue();
+  const addTipCost = (subTotal, tip) => {
+    if (tip !== undefined && tip !== null) {
+      let floatNumber = parseFloat(tip);
+      var tipMulti = floatNumber * 100;
+      var newTotal = tipMulti + subTotal;
+      return newTotal;
+    } else {
+      return subTotal;
+    }
+    // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
 
   const multiplyTotal = total => {
     const totalF = total * 100;
@@ -51,33 +67,67 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
+  const removeFromCartPOST = XanoApi.useRemoveFromCartPOST();
   const checkoutPOST = CheckoutApi.useCheckoutPOST();
   const setPricePOST = AddCostApi.useSetPricePOST();
+  const addTipPOST = XanoApi.useAddTipPOST();
 
+  const isFocused = useIsFocused();
+  React.useEffect(() => {
+    try {
+      if (!isFocused) {
+        return;
+      }
+      setShowMessage(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [isFocused]);
+
+  const [dashOpen, setDashOpen] = React.useState(false);
   const [isCard, setIsCard] = React.useState(true);
   const [isPlan, setIsPlan] = React.useState(false);
+  const [numberInputValue, setNumberInputValue] = React.useState(' ');
+  const [showMessage, setShowMessage] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [styledTextFieldValue, setStyledTextFieldValue] = React.useState('');
-  const [textInputValue, setTextInputValue] = React.useState('');
+  const [textInputValue, setTextInputValue] = React.useState('0');
   const [totalPrice, setTotalPrice] = React.useState(0);
 
   return (
     <ScreenContainer hasTopSafeArea={false}>
+      {/* Header */}
       <View style={styles.Viewf39cc81f}>
-        <Row justifyContent={'flex-start'} alignItems={'center'}>
+        <Row justifyContent={'space-between'} alignItems={'center'}>
           <Text style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}>
             {'Your Bag'}
           </Text>
+          <IconButton
+            onPress={() => {
+              try {
+                setDashOpen(true);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            style={styles.IconButton2c3e883b}
+            icon={'Ionicons/grid'}
+            size={32}
+            color={theme.colors.light}
+          />
         </Row>
       </View>
-
+      {/* Scrolling Content Frame */}
       <ScrollView
         style={styles.ScrollViewf26042a5}
         contentContainerStyle={styles.ScrollViewf26042a5Content}
         showsVerticalScrollIndicator={true}
         bounces={true}
       >
-        <XanoApi.FetchGetUserCartGET UID={Constants['user_id']}>
+        <XanoApi.FetchGetUserCartGET
+          refetchInterval={250}
+          UID={Constants['user_id']}
+        >
           {({ loading, error, data, refetchGetUserCart }) => {
             const fetchData = data;
             if (!fetchData || loading) {
@@ -101,27 +151,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                   const listData = item;
                   return (
                     <>
-                      <View style={styles.View12a773c5}>
-                        <View
-                          style={[
-                            styles.View6e2b01f9,
-                            {
-                              backgroundColor:
-                                theme.colors.custom_rgb245_245_247,
-                            },
-                          ]}
-                        >
-                          <ImageBackground
-                            style={[
-                              styles.ImageBackground25e3d6ef,
-                              { borderRadius: 15 },
-                            ]}
-                            source={{ uri: `${listData?.itemImage}` }}
-                            resizeMode={'cover'}
-                          />
-                        </View>
-
+                      {/* Shopping Cart List Frame */}
+                      <View style={styles.View00740b37}>
+                        {/* Cart Item Details Frame */}
                         <View style={styles.Viewc46b8fec}>
+                          {/* Cart Item Title */}
                           <Text
                             style={[
                               styles.Textbfd3752d,
@@ -130,8 +164,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                           >
                             {listData?.itemName}
                           </Text>
-
+                          {/* Price Size Frame */}
                           <View>
+                            {/* Cart Item Price */}
                             <Text
                               style={[
                                 styles.Textbfd3df7a,
@@ -140,7 +175,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             >
                               {listData?.itemPrice}
                             </Text>
-
+                            {/* customizations */}
                             <Text
                               style={[
                                 styles.Textbffce5db,
@@ -151,15 +186,26 @@ line two` ) and will not work with special characters inside of quotes ( example
                             </Text>
                           </View>
                         </View>
-
+                        {/* Toggle Frame */}
                         <View style={styles.View6ff87234}>
                           <IconButton
-                            style={styles.IconButton27d4405a}
-                            icon={'Ionicons/ios-duplicate-outline'}
-                            size={32}
-                            color={theme.colors.light}
-                          />
-                          <IconButton
+                            onPress={() => {
+                              const handler = async () => {
+                                try {
+                                  console.log(listData);
+                                  await removeFromCartPOST.mutateAsync({
+                                    UID: Constants['user_id'],
+                                    itemID: listData?.itemID,
+                                    itemMods: listData?.customizations,
+                                  });
+                                  await refetchGetUserCart();
+                                  await refetchGetCartTotals();
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              };
+                              handler();
+                            }}
                             icon={'MaterialCommunityIcons/close'}
                             size={32}
                             color={theme.colors.error}
@@ -179,8 +225,19 @@ line two` ) and will not work with special characters inside of quotes ( example
             );
           }}
         </XanoApi.FetchGetUserCartGET>
+        <>
+          {!showMessage ? null : (
+            <View style={styles.View3316e76b}>
+              <Text
+                style={[styles.Text4c56df9c, { color: theme.colors.strong }]}
+              >
+                {'Your bag is empty. Add some items and check back here later.'}
+              </Text>
+            </View>
+          )}
+        </>
       </ScrollView>
-
+      {/* Footer Frame */}
       <View
         style={[
           styles.Viewe515c9dd,
@@ -189,12 +246,17 @@ line two` ) and will not work with special characters inside of quotes ( example
       >
         <Divider style={styles.Dividerde11d607} color={theme.colors.primary} />
         <XanoApi.FetchGetCartTotalsGET
+          refetchInterval={250}
           user_id={Constants['user_id']}
           onData={fetchData => {
             try {
               const finalTotal = multiplyTotal(fetchData?.total);
               setTotalPrice(finalTotal);
               console.log(finalTotal);
+              if (fetchData?.subTotal !== 0) {
+                return;
+              }
+              setShowMessage(true);
             } catch (err) {
               console.error(err);
             }
@@ -215,121 +277,138 @@ line two` ) and will not work with special characters inside of quotes ( example
             }
 
             return (
-              <View style={styles.Viewad2d300f}>
-                <View style={styles.View0ae50d17}>
-                  <Text
-                    style={[
-                      styles.Textf7bbdd1d,
-                      { color: theme.colors.custom_rgb189_198_212 },
-                    ]}
-                  >
-                    {'Items total'}
-                  </Text>
-
-                  <Text
-                    style={[
-                      styles.Text86ce3ba5,
-                      { color: theme.colors.primaryTitleUiBaeg },
-                    ]}
-                  >
-                    {'$'}
-                    {fetchData?.subTotal}
-                  </Text>
-                </View>
-
-                <View style={styles.View88c44c3e}>
-                  <Text
-                    style={[
-                      styles.Textf7bbdd1d,
-                      { color: theme.colors.custom_rgb189_198_212 },
-                    ]}
-                  >
-                    {'Taxes/Fees'}
-                  </Text>
-
-                  <Text
-                    style={[
-                      styles.Text86ce3ba5,
-                      { color: theme.colors.primaryTitleUiBaeg },
-                    ]}
-                  >
-                    {'Calculated Next'}
-                  </Text>
-                </View>
-
-                <View style={styles.View88c44c3e}>
-                  <Text
-                    style={[
-                      styles.Textf7bbdd1d,
-                      { color: theme.colors.custom_rgb189_198_212 },
-                    ]}
-                  >
-                    {'Delivery Fee'}
-                  </Text>
-
-                  <Text
-                    style={[
-                      styles.Text86ce3ba5,
-                      { color: theme.colors.primaryTitleUiBaeg },
-                    ]}
-                  >
-                    {'$'}
-                    {fetchData?.deliveryFee}
-                  </Text>
-                </View>
-                <Divider
-                  style={styles.Divider0e02aada}
-                  color={theme.colors.divider}
-                />
-                <View style={styles.Viewddd27fdd}>
-                  <Text
-                    style={[
-                      styles.Text5528eed5,
-                      { color: theme.colors.custom_rgb189_198_212 },
-                    ]}
-                  >
-                    {'Subtotal'}
-                  </Text>
-
-                  <Text
-                    style={[
-                      styles.Text4036ef9a,
-                      { color: theme.colors.primaryTitleUiBaeg },
-                    ]}
-                  >
-                    {'$'}
-                    {fetchData?.total}
-                  </Text>
-                </View>
-
-                <View style={styles.View7bb6e4d9}>
-                  <ButtonSolid
-                    onPress={() => {
-                      try {
-                        setShowModal(true);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    style={[
-                      styles.ButtonSolidf0b1de94,
-                      {
-                        backgroundColor: theme.colors.primary,
-                        borderColor: theme.colors.strongInverse,
-                      },
-                    ]}
-                    title={'Checkout'}
-                  />
-                </View>
-              </View>
+              <>
+                {/* Content Frame */}
+                <>
+                  {!(fetchData?.subTotal !== 0) ? null : (
+                    <View style={styles.Viewad2d300f}>
+                      {/* Subtotal View */}
+                      <View style={styles.View0ae50d17}>
+                        {/* Total Price Title */}
+                        <Text
+                          style={[
+                            styles.Textf7bbdd1d,
+                            { color: theme.colors.custom_rgb189_198_212 },
+                          ]}
+                        >
+                          {'Items total'}
+                        </Text>
+                        {/* Total Price */}
+                        <Text
+                          style={[
+                            styles.Text86ce3ba5,
+                            { color: theme.colors.primaryTitleUiBaeg },
+                          ]}
+                        >
+                          {'$'}
+                          {fetchData?.subTotal}
+                        </Text>
+                      </View>
+                      {/* Tax and Fees View */}
+                      <View style={styles.View88c44c3e}>
+                        {/* Total Price Title */}
+                        <Text
+                          style={[
+                            styles.Textf7bbdd1d,
+                            { color: theme.colors.custom_rgb189_198_212 },
+                          ]}
+                        >
+                          {'Taxes/Fees'}
+                        </Text>
+                        {/* Total Price */}
+                        <Text
+                          style={[
+                            styles.Text86ce3ba5,
+                            { color: theme.colors.primaryTitleUiBaeg },
+                          ]}
+                        >
+                          {'Calculated Next'}
+                        </Text>
+                      </View>
+                      {/* Delivery Fee View */}
+                      <View style={styles.View88c44c3e}>
+                        {/* Total Price Title */}
+                        <Text
+                          style={[
+                            styles.Textf7bbdd1d,
+                            { color: theme.colors.custom_rgb189_198_212 },
+                          ]}
+                        >
+                          {'Delivery Fee'}
+                        </Text>
+                        {/* Total Price */}
+                        <Text
+                          style={[
+                            styles.Text86ce3ba5,
+                            { color: theme.colors.primaryTitleUiBaeg },
+                          ]}
+                        >
+                          {'$'}
+                          {fetchData?.deliveryFee}
+                        </Text>
+                      </View>
+                      <Divider
+                        style={styles.Divider0e02aada}
+                        color={theme.colors.divider}
+                      />
+                      {/* Total Price Frame */}
+                      <View style={styles.Viewddd27fdd}>
+                        {/* Total Price Title */}
+                        <Text
+                          style={[
+                            styles.Text5528eed5,
+                            { color: theme.colors.custom_rgb189_198_212 },
+                          ]}
+                        >
+                          {'Subtotal'}
+                        </Text>
+                        {/* Total Price */}
+                        <Text
+                          style={[
+                            styles.Text4036ef9a,
+                            { color: theme.colors.primaryTitleUiBaeg },
+                          ]}
+                        >
+                          {'$'}
+                          {fetchData?.total}
+                        </Text>
+                      </View>
+                      {/* Flex Property Button Frame */}
+                      <View style={styles.View7bb6e4d9}>
+                        <ButtonSolid
+                          onPress={() => {
+                            try {
+                              setShowModal(true);
+                              console.log(numberInputValue);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={[
+                            styles.ButtonSolidf0b1de94,
+                            {
+                              backgroundColor: theme.colors.primary,
+                              borderColor: theme.colors.strongInverse,
+                            },
+                          ]}
+                          title={'Checkout'}
+                        />
+                      </View>
+                    </View>
+                  )}
+                </>
+              </>
             );
           }}
         </XanoApi.FetchGetCartTotalsGET>
       </View>
+      {/* Payment Modal */}
       <>
         {!showModal ? null : (
           <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            {/* Payment */}
             <View style={styles.View2200bac7}>
+              {/* Header */}
               <View style={styles.View7a993fb0}>
                 <Row justifyContent={'flex-start'} alignItems={'center'}>
                   <IconButton
@@ -361,8 +440,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                 extraScrollHeight={-150}
                 enableAutomaticScroll={true}
               >
+                {/* Content Frame */}
                 <View>
+                  {/* List Title Frame  */}
                   <View style={styles.View12981c6a}>
+                    {/* Rich Text Title */}
                     <Text
                       style={[
                         styles.Textcd71a0f7,
@@ -372,8 +454,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                       {'Choose Payment Method'}
                     </Text>
                   </View>
-
+                  {/* Actions Frame */}
                   <View style={styles.View80a9a9a9}>
+                    {/* Card Payment */}
                     <View style={styles.Viewb7eaad51}>
                       <Touchable
                         onPress={() => {
@@ -385,6 +468,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                           }
                         }}
                       >
+                        {/* Button Frame */}
                         <View
                           style={[
                             styles.View1957b5f2,
@@ -394,7 +478,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                             },
                           ]}
                         >
+                          {/* Left Side Frame */}
                           <View style={styles.View43b593eb}>
+                            {/* Icon Flex Frame */}
                             <View style={styles.Viewa521a992}>
                               <Icon
                                 name={'Ionicons/ios-card'}
@@ -402,8 +488,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                                 color={theme.colors.communityMediumBlack}
                               />
                             </View>
-
+                            {/* Option Title Frame */}
                             <View style={styles.Viewfeac12d8}>
+                              {/* Option Title */}
                               <Text
                                 style={[
                                   styles.Text14121fc4,
@@ -414,7 +501,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                               </Text>
                             </View>
                           </View>
-
+                          {/* Right Side Frame */}
                           <View style={styles.View6a955cc3}>
                             <Checkbox
                               onPress={newCheckboxValue => {
@@ -438,7 +525,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         </View>
                       </Touchable>
                     </View>
-
+                    {/* Flex Touchable */}
                     <View style={styles.Viewb7eaad51}>
                       <Touchable
                         onPress={() => {
@@ -450,6 +537,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                           }
                         }}
                       >
+                        {/* Button Frame */}
                         <View
                           style={[
                             styles.View1957b5f2,
@@ -459,7 +547,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                             },
                           ]}
                         >
+                          {/* Left Side Frame */}
                           <View style={styles.View43b593eb}>
+                            {/* Icon Flex Frame */}
                             <View style={styles.Viewa521a992}>
                               <Icon
                                 name={'Ionicons/school'}
@@ -467,8 +557,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                                 color={theme.colors.communityMediumBlack}
                               />
                             </View>
-
+                            {/* Option Title Frame */}
                             <View style={styles.Viewfeac12d8}>
+                              {/* Option Title */}
                               <Text
                                 style={[
                                   styles.Text3e74d306,
@@ -479,7 +570,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                               </Text>
                             </View>
                           </View>
-
+                          {/* Right Side Frame */}
                           <View style={styles.View6a955cc3}>
                             <Checkbox
                               onPress={newCheckboxValue => {
@@ -504,9 +595,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                       </Touchable>
                     </View>
                   </View>
-
+                  {/* Voucher Frame */}
                   <View>
+                    {/* List Title Frame  */}
                     <View style={styles.View12981c6a}>
+                      {/* Rich Text Title */}
                       <Text
                         style={[
                           styles.Textcd71a0f7,
@@ -516,8 +609,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                         {'Have a coupon code?'}
                       </Text>
                     </View>
-
+                    {/* Actions Input Frame */}
                     <View style={styles.View603e5d81}>
+                      {/* Flex for Text Field */}
                       <View
                         style={[
                           styles.Viewb5c2cefd,
@@ -558,7 +652,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                     style={styles.Divider79894792}
                     color={theme.colors.divider}
                   />
+                  {/* Driver Tip */}
                   <View style={styles.View003a266c}>
+                    {/* Total Price Title */}
                     <Text
                       style={[
                         styles.Texteafa8587,
@@ -568,61 +664,62 @@ line two` ) and will not work with special characters inside of quotes ( example
                       {'Driver Tip'}
                     </Text>
                     <Spacer top={8} right={12} bottom={8} left={12} />
-                    <ButtonOutline
-                      style={styles.ButtonOutline02263c6f}
-                      title={'10%'}
-                    />
-                    <ButtonOutline
-                      style={styles.ButtonOutline02263c6f}
-                      title={'15%'}
-                    />
-                    <TextInput
-                      onChangeText={newTextInputValue => {
+                    <NumberInput
+                      onChangeText={newNumberInputValue => {
                         try {
-                          setTextInputValue(newTextInputValue);
+                          setNumberInputValue(newNumberInputValue);
                         } catch (err) {
                           console.error(err);
                         }
                       }}
                       style={[
-                        styles.TextInput795812dd,
-                        {
-                          borderColor: theme.colors.primary,
-                          color: theme.colors.medium,
-                        },
+                        styles.NumberInput03ad5433,
+                        { borderColor: theme.colors.divider },
                       ]}
-                      placeholder={'Custom'}
-                      value={textInputValue}
-                      placeholderTextColor={theme.colors.primary}
-                      spellcheck={true}
-                      keyboardType={'number-pad'}
+                      value={numberInputValue}
+                      placeholder={'$'}
+                      keyboardType={'numeric'}
                     />
                   </View>
                 </View>
               </KeyboardAwareScrollView>
-
+              {/* Footer Frame */}
               <View style={styles.View45692adb}>
+                {/* Flex Touchable */}
                 <View style={styles.Viewdbf79098}>
                   <ButtonSolid
-                    onPress={async () => {
-                      try {
-                        setShowModal(false);
-                        const cost = await setPricePOST.mutateAsync({
-                          price: totalPrice,
-                          priceID: 299,
-                        });
-                        const prodID = cost.id;
-                        const check = await checkoutPOST.mutateAsync({
-                          UID: Constants['user_id'],
-                          priceID: prodID,
-                        });
-                        const url = check.url;
-                        navigation.navigate('CheckoutScreen', { url: url });
-                        console.log(Constants['checkoutURL']);
-                        console.log(url);
-                      } catch (err) {
-                        console.error(err);
-                      }
+                    onPress={() => {
+                      const handler = async () => {
+                        try {
+                          const logAddTip = await addTipPOST.mutateAsync({
+                            tip: textInputValue,
+                            user_id: Constants['user_id'],
+                          });
+                          const newTotalPrice = addTipCost(
+                            totalPrice,
+                            numberInputValue
+                          );
+                          const cost = await setPricePOST.mutateAsync({
+                            price: newTotalPrice,
+                            priceID: 299,
+                          });
+                          const prodID = cost.id;
+                          const check = await checkoutPOST.mutateAsync({
+                            UID: Constants['user_id'],
+                            priceID: prodID,
+                          });
+                          const url = check.url;
+                          navigation.navigate('CheckoutScreen', { url: url });
+                          console.log(Constants['checkoutURL']);
+                          console.log(url);
+                          setShowModal(false);
+                          console.log(logAddTip);
+                          console.log(numberInputValue);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      };
+                      handler();
                     }}
                     style={[
                       styles.ButtonSolid7d2cfd44,
@@ -633,6 +730,291 @@ line two` ) and will not work with special characters inside of quotes ( example
                 </View>
               </View>
             </View>
+          </Modal>
+        )}
+      </>
+      {/* dashboardModal */}
+      <>
+        {!dashOpen ? null : (
+          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            {/* Header */}
+            <View style={styles.View40d56b89}>
+              <Row justifyContent={'flex-start'} alignItems={'center'}>
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setDashOpen(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButton897c6051}
+                  icon={'AntDesign/close'}
+                  size={40}
+                />
+                <Text
+                  style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}
+                >
+                  {'Dashboard'}
+                </Text>
+              </Row>
+            </View>
+            {/* Grid */}
+            <View
+              style={[
+                styles.View1acef5e2,
+                { backgroundColor: theme.colors.strongInverse },
+              ]}
+              needsOffscreenAlphaCompositing={false}
+            >
+              {/* Profile */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('AccountScreen');
+                    setDashOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableaf6910bf}
+              >
+                <View
+                  style={[
+                    styles.View1aef42d9,
+                    {
+                      borderRadius: theme.roundness,
+                      borderColor: theme.colors.divider,
+                      backgroundColor: theme.colors.background,
+                    },
+                  ]}
+                >
+                  <Icon
+                    style={styles.Icon6bf74529}
+                    size={40}
+                    color={theme.colors.strong}
+                    name={'Ionicons/md-person-circle-outline'}
+                  />
+                  <Spacer top={8} right={8} bottom={8} left={8} />
+                  <Stack
+                    justifyContent={'flex-start'}
+                    alignItems={'flex-start'}
+                  >
+                    <Text
+                      style={[
+                        styles.Text8a1d4f88,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Hi '}
+                      {Constants['user_name']}
+                      {'!'}
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.Text058e2418,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'View your account'}
+                    </Text>
+                  </Stack>
+                </View>
+              </Touchable>
+              {/* Courier */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('StackNavigator', {
+                      screen: 'DriverNav',
+                      params: { screen: 'AvailableOrdersScreen' },
+                    });
+                    setDashOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchable2e5bf580}
+              >
+                <View
+                  style={[
+                    styles.View0f4451f3,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View94ee2e18}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Switch to\nCourier\n'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon84575dc9}
+                      name={'MaterialCommunityIcons/truck-delivery'}
+                      size={32}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Address */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('UserSetAddressScreen');
+                    setDashOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableb3269bed}
+              >
+                <View
+                  style={[
+                    styles.View57ac46a1,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View837d8621}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Text4b62e5ec,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Delivery\nAddress'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon013300ec}
+                      size={26}
+                      name={'Ionicons/md-home'}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Sign Out */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('SimpleWelcomeScreen');
+                    setGlobalVariableValue({
+                      key: 'auth_header',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_id',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_name',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_email',
+                      value: '',
+                    });
+                    setDashOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchablec4f3901b}
+              >
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Sign Out'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'MaterialIcons/logout'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* help */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    setDashOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchable1b2cb320}
+              >
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Help'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'Entypo/help-with-circle'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+            </View>
+
+            <Text style={[styles.Textb536ac60, { color: theme.colors.strong }]}>
+              {'Copyright Campus Eats 2022'}
+            </Text>
           </Modal>
         )}
       </>
@@ -647,20 +1029,12 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
+  IconButton2c3e883b: {
+    marginRight: 16,
+  },
   Viewf39cc81f: {
     marginTop: 60,
     marginBottom: 20,
-  },
-  ImageBackground25e3d6ef: {
-    width: '75%',
-    height: '75%',
-    overflow: 'hidden',
-  },
-  View6e2b01f9: {
-    width: 75,
-    height: 75,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   Textbfd3752d: {
     fontSize: 15,
@@ -686,17 +1060,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
   },
-  IconButton27d4405a: {
-    marginRight: 8,
-  },
   View6ff87234: {
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  View12a773c5: {
-    minHeight: 75,
-    maxHeight: 75,
+  View00740b37: {
+    minHeight: 60,
+    maxHeight: 60,
     marginLeft: 12,
     marginRight: 25,
     flexDirection: 'row',
@@ -713,6 +1084,18 @@ const styles = StyleSheet.create({
   },
   Fetch431eb058: {
     minHeight: 40,
+  },
+  Text4c56df9c: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 22,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  View3316e76b: {
+    top: 100,
+    position: 'absolute',
+    left: 0,
+    right: 0,
   },
   ScrollViewf26042a5: {
     flexGrow: 1,
@@ -890,16 +1273,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  ButtonOutline02263c6f: {
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    borderWidth: 1,
-    textAlign: 'center',
-    height: 45,
-  },
-  TextInput795812dd: {
+  NumberInput03ad5433: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
@@ -909,8 +1283,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
     borderRadius: 8,
-    height: 45,
-    width: 100,
   },
   View003a266c: {
     flexDirection: 'row',
@@ -940,6 +1312,159 @@ const styles = StyleSheet.create({
   },
   View2200bac7: {
     height: '100%',
+  },
+  View40d56b89: {
+    marginTop: 20,
+    marginBottom: 16,
+  },
+  Icon6bf74529: {
+    width: 40,
+    height: 40,
+  },
+  Text8a1d4f88: {
+    textAlign: 'left',
+    fontSize: 20,
+  },
+  Text058e2418: {
+    textAlign: 'left',
+    fontSize: 14,
+  },
+  View1aef42d9: {
+    width: '100%',
+    height: 90,
+    paddingBottom: 14,
+    paddingTop: 14,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    flexDirection: 'row',
+    paddingLeft: 14,
+    paddingRight: 14,
+  },
+  Touchableaf6910bf: {
+    width: '100%',
+    marginBottom: 14,
+    marginTop: 14,
+    alignSelf: 'stretch',
+    height: 75,
+  },
+  Textca4d6164: {
+    textAlign: 'left',
+  },
+  Icon84575dc9: {
+    width: 32,
+    height: 32,
+  },
+  View94ee2e18: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  View0f4451f3: {
+    width: '100%',
+    borderRightWidth: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    paddingRight: 14,
+    paddingBottom: 14,
+    paddingTop: 14,
+    borderBottomWidth: 1,
+    paddingLeft: 14,
+    height: 80,
+  },
+  Touchable2e5bf580: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 14,
+  },
+  Text4b62e5ec: {
+    textAlign: 'left',
+  },
+  Icon013300ec: {
+    width: 26,
+    height: 26,
+  },
+  View837d8621: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '100%',
+  },
+  View57ac46a1: {
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    borderBottomWidth: 1,
+    height: 80,
+    width: '100%',
+    borderRightWidth: 1,
+    paddingLeft: 14,
+    paddingTop: 14,
+    paddingRight: 14,
+    paddingBottom: 14,
+  },
+  Touchableb3269bed: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 14,
+    marginLeft: 10,
+  },
+  Icon9e5973b7: {
+    width: 24,
+    height: 24,
+  },
+  View3b106cac: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  View075ba974: {
+    width: '100%',
+    borderRightWidth: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    paddingRight: 14,
+    paddingBottom: 14,
+    paddingTop: 14,
+    borderBottomWidth: 1,
+    paddingLeft: 14,
+    height: 60,
+  },
+  Touchablec4f3901b: {
+    alignSelf: 'stretch',
+    marginBottom: 14,
+    width: '48%',
+    marginTop: 4,
+  },
+  Touchable1b2cb320: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 4,
+    marginLeft: 10,
+  },
+  View1acef5e2: {
+    justifyContent: 'space-evenly',
+    paddingLeft: 12,
+    alignItems: 'flex-start',
+    paddingRight: 12,
+    flexWrap: 'wrap',
+    paddingBottom: 14,
+    flexDirection: 'row',
+  },
+  Textb536ac60: {
+    textAlign: 'center',
   },
 });
 

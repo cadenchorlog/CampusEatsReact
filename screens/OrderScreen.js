@@ -1,540 +1,1028 @@
 import React from 'react';
-import * as RestaurantListApi from '../apis/RestaurantListApi.js';
 import * as XanoApi from '../apis/XanoApi.js';
+import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import { parseBoolean } from '../utils';
+import { MapMarker, MapView } from '@draftbit/maps';
 import {
-  LinearGradient,
+  ButtonSolid,
+  CircleImage,
+  Icon,
+  IconButton,
   Row,
   ScreenContainer,
   Spacer,
+  Stack,
   StarRating,
+  Surface,
   Touchable,
   withTheme,
 } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
 import {
   ActivityIndicator,
   FlatList,
   Image,
-  ImageBackground,
+  Modal,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Fetch } from 'react-request';
 
 const OrderScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
+  const setGlobalVariableValue = GlobalVariables.useSetValue();
+  const openMapApp = (longitude, latitude) => {
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+    const latLng = `${latitude},${longitude}`;
+    const label = 'Address';
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+    return url; // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
 
   const { theme } = props;
   const { navigation } = props;
 
-  const [ratingValue, setRatingValue] = React.useState(undefined);
+  const [mapOpen, setMapOpen] = React.useState(false);
+  const [offersOpen, setOffersOpen] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [storeLat, setStoreLat] = React.useState(0);
+  const [storeLong, setStoreLong] = React.useState(0);
+  const [textInputValue, setTextInputValue] = React.useState('');
+
+  const mapViewgdzxBb5HRef = React.useRef();
 
   return (
     <ScreenContainer
       hasSafeArea={false}
-      scrollable={true}
+      scrollable={false}
       hasTopSafeArea={true}
     >
-      <Spacer top={6} right={0} bottom={6} left={0} />
-      <View style={styles.View9fa86917}>
-        <Text style={[styles.Text93742bfd, { color: theme.colors.medium }]}>
-          {'Hi '}
-          {Constants['user_name']}
-          {'!'}
-        </Text>
-      </View>
-      <Spacer top={4} right={8} bottom={4} left={8} />
-      <XanoApi.FetchGetAllStoresGET>
-        {({ loading, error, data, refetchGetAllStores }) => {
-          const popularPlacesData = data;
-          if (!popularPlacesData || loading) {
-            return <ActivityIndicator />;
-          }
+      <KeyboardAwareScrollView
+        style={styles.KeyboardAwareScrollView6559c7e9}
+        contentContainerStyle={styles.KeyboardAwareScrollView6559c7e9Content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps={'always'}
+        enableAutomaticScroll={true}
+        viewIsInsideTabBar={false}
+      >
+        <ScrollView showsVerticalScrollIndicator={true} bounces={true}>
+          <Spacer top={6} right={0} bottom={6} left={0} />
+          {/* Search */}
+          <View style={styles.View9fa86917}>
+            <Text style={[styles.Text93742bfd, { color: theme.colors.medium }]}>
+              {'Hi '}
+              {Constants['user_name']}
+              {'!'}
+            </Text>
+          </View>
+          <Spacer top={4} right={8} bottom={4} left={8} />
+          {/* Popular Places */}
+          <XanoApi.FetchGetAllStoresGET
+            refetchInterval={1000}
+            UID={Constants['user_id']}
+          >
+            {({ loading, error, data, refetchGetAllStores }) => {
+              const popularPlacesData = data;
+              if (!popularPlacesData || loading) {
+                return <ActivityIndicator />;
+              }
 
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
-              </Text>
-            );
-          }
-
-          return (
-            <View>
-              <View style={styles.View9fa86917}>
-                <Row justifyContent={'space-between'} alignItems={'flex-start'}>
-                  <Text
-                    style={[
-                      styles.Textf90d72c6,
-                      { color: theme.colors.strong },
-                    ]}
-                  >
-                    {'Courier Offers'}
+              if (error) {
+                return (
+                  <Text style={{ textAlign: 'center' }}>
+                    There was a problem fetching this data
                   </Text>
+                );
+              }
 
-                  <Touchable>
-                    <Text
-                      style={[
-                        styles.Text34e0cb74,
-                        { color: theme.colors.primary },
-                      ]}
+              return (
+                <View style={styles.Viewd63bc9bc}>
+                  {/* Heading */}
+                  <View style={styles.View9fa86917}>
+                    <Row
+                      justifyContent={'space-between'}
+                      alignItems={'flex-start'}
                     >
-                      {'See All'}
-                    </Text>
-                  </Touchable>
-                </Row>
+                      {/* Primary */}
+                      <Text
+                        style={[
+                          styles.Textf90d72c6,
+                          { color: theme.colors.strong },
+                        ]}
+                      >
+                        {'Courier Offers'}
+                      </Text>
 
-                <Text style={{ color: theme.colors.strong }}>
-                  {'Off Campus Options'}
-                </Text>
-              </View>
-              <FlatList
-                data={popularPlacesData}
-                listKey={'lnONbxEq'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <>
                       <Touchable
                         onPress={() => {
                           try {
-                            navigation.navigate('RestaurantViewScreen', {
-                              storeID: listData?.id,
-                            });
+                            setOffersOpen(true);
                           } catch (err) {
                             console.error(err);
                           }
                         }}
                       >
-                        <View>
-                          <View
-                            style={[styles.View2760cf33, { borderRadius: 16 }]}
-                          >
-                            <Image
-                              style={[
-                                styles.Imageb42ed28f,
-                                { borderRadius: theme.roundness },
-                              ]}
-                              source={{ uri: `${listData?.storeImage}` }}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-
-                          <View style={styles.View91edb4b3}>
-                            <Text
-                              style={[
-                                styles.Text884ea74f,
-                                { color: theme.colors.strong },
-                              ]}
-                            >
-                              {listData?.storeName}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Textdb189077,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {'$'}
-                              {listData?.deliveryFee}
-                              {' Delivery Fee'}
-                            </Text>
-                          </View>
-                        </View>
-                      </Touchable>
-                      <Spacer top={0} right={10} bottom={0} left={10} />
-                    </>
-                  );
-                }}
-                contentContainerStyle={styles.FlatListcef0b366Content}
-                numColumns={1}
-                horizontal={true}
-              />
-            </View>
-          );
-        }}
-      </XanoApi.FetchGetAllStoresGET>
-      <Spacer top={8} right={8} bottom={8} left={8} />
-      <RestaurantListApi.FetchQueryGET limit={1} parameter={'id'} query={50}>
-        {({ loading, error, data, refetchQuery }) => {
-          const featuredData = data;
-          if (!featuredData || loading) {
-            return <ActivityIndicator />;
-          }
-
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
-              </Text>
-            );
-          }
-
-          return (
-            <View>
-              <View style={styles.View9fa86917}>
-                <Text
-                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
-                >
-                  {'Campus Offerings'}
-                </Text>
-
-                <Text style={{ color: theme.colors.strong }}>
-                  {'Fastest Delivery'}
-                </Text>
-              </View>
-              <FlatList
-                data={featuredData}
-                listKey={'bbWyyyVl'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <Touchable>
-                      <View style={styles.View9fa86917}>
-                        <ImageBackground
+                        <Text
                           style={[
-                            styles.ImageBackgroundd0d5dfbd,
-                            { borderRadius: 24 },
+                            styles.Text34e0cb74,
+                            { color: theme.colors.primary },
                           ]}
-                          source={{ uri: `${listData?.image}` }}
-                          resizeMode={'cover'}
                         >
-                          <LinearGradient
-                            style={styles.LinearGradientd132bfba}
-                            endY={100}
-                            endX={100}
-                            color2={theme.colors.transparent}
-                            color1={theme.colors.transparent}
-                            startX={100}
-                            color3={theme.colors.strong}
-                            startY={0}
+                          {'See All'}
+                        </Text>
+                      </Touchable>
+                    </Row>
+                    {/* Secondary */}
+                    <Text style={{ color: theme.colors.strong }}>
+                      {'Off campus options'}
+                    </Text>
+                  </View>
+                  <FlatList
+                    data={popularPlacesData}
+                    listKey={'HQwHamTL'}
+                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                    renderItem={({ item }) => {
+                      const listData = item;
+                      return (
+                        <Touchable
+                          onPress={() => {
+                            try {
+                              navigation.navigate('RestaurantViewScreen', {
+                                storeID: listData?.id,
+                              });
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                        >
+                          <Surface
+                            style={[
+                              styles.Surface56d97cb4,
+                              { borderRadius: 8 },
+                            ]}
                           >
-                            <Text
+                            <View
                               style={[
-                                styles.Textc2034d34,
-                                { color: theme.colors.surface },
+                                styles.View1b1f79af,
+                                {
+                                  borderTopLeftRadius: 8,
+                                  borderTopRightRadius: 8,
+                                },
                               ]}
-                              numberOfLines={1}
-                              ellipsizeMode={'tail'}
                             >
-                              {listData?.name}
-                            </Text>
-
-                            <View style={styles.Viewf78a9190}>
-                              <Text
-                                style={[
-                                  styles.Text76ab12a3,
-                                  { color: theme.colors.surface },
-                                ]}
-                                numberOfLines={1}
-                                ellipsizeMode={'tail'}
+                              <Image
+                                style={styles.Imagea98db7de}
+                                source={{ uri: `${listData?.storeImage}` }}
+                                resizeMode={'cover'}
+                              />
+                            </View>
+                            <CircleImage
+                              style={styles.CircleImage34352bf1}
+                              source={{ uri: `${listData?.storeIcon}` }}
+                              size={60}
+                            />
+                            <Row
+                              justifyContent={'space-between'}
+                              alignItems={'flex-end'}
+                            >
+                              <Stack
+                                justifyContent={'flex-start'}
+                                alignItems={'flex-start'}
                               >
-                                {listData?.type}
-                              </Text>
-                              <StarRating
-                                onPress={newStarRatingValue => {
-                                  const ratingValue = newStarRatingValue;
+                                {/* Name */}
+                                <Text
+                                  style={[
+                                    styles.Textb73c4ca6,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                >
+                                  {listData?.storeName}
+                                </Text>
+                                {/* Style */}
+                                <Text
+                                  style={[
+                                    styles.Textcd669454,
+                                    { color: theme.colors.medium },
+                                  ]}
+                                >
+                                  {'$'}
+                                  {listData?.deliveryFee}
+                                  {' Delivery Fee'}
+                                </Text>
+                              </Stack>
+
+                              <Stack
+                                justifyContent={'flex-start'}
+                                alignItems={'flex-end'}
+                              >
+                                <StarRating
+                                  style={styles.StarRatinga57a4184}
+                                  starSize={16}
+                                  maxStars={5}
+                                  activeColor={theme.colors.primary}
+                                  inactiveColor={theme.colors.divider}
+                                  defaultValue={listData?.storeRating}
+                                />
+                                {/* Style */}
+                                <Text
+                                  style={[
+                                    styles.Text25694ba4,
+                                    { color: theme.colors.medium },
+                                  ]}
+                                >
+                                  {listData?.storeRating}
+                                  {' Stars'}
+                                </Text>
+                              </Stack>
+                              <IconButton
+                                onPress={() => {
                                   try {
-                                    setRatingValue(ratingValue);
+                                    setStoreLat(listData?.storeLat);
+                                    setStoreLong(listData?.storeLong);
+                                    setMapOpen(true);
                                   } catch (err) {
                                     console.error(err);
                                   }
                                 }}
-                                rating={listData?.rating}
-                                starSize={16}
-                                maxStars={5}
-                                activeColor={theme.colors.background}
-                                inactiveColor={theme.colors.light}
+                                style={styles.IconButton2c3e883b}
+                                icon={'MaterialCommunityIcons/map-marker'}
+                                size={35}
+                                color={theme.colors.primary}
                               />
-                            </View>
-                          </LinearGradient>
-                        </ImageBackground>
-                      </View>
-                    </Touchable>
-                  );
-                }}
-                contentContainerStyle={styles.FlatList6728d304Content}
-                numColumns={1}
-              />
-            </View>
-          );
-        }}
-      </RestaurantListApi.FetchQueryGET>
-      <Spacer top={16} right={8} bottom={16} left={8} />
-      <RestaurantListApi.FetchFastestDeliveryGET>
-        {({ loading, error, data, refetchFastestDelivery }) => {
-          const nearYouData = data;
-          if (!nearYouData || loading) {
-            return <ActivityIndicator />;
-          }
+                            </Row>
+                          </Surface>
+                        </Touchable>
+                      );
+                    }}
+                    contentContainerStyle={styles.FlatListe3f3fa82Content}
+                    numColumns={1}
+                    horizontal={true}
+                  />
+                </View>
+              );
+            }}
+          </XanoApi.FetchGetAllStoresGET>
+          <Spacer top={8} right={8} bottom={8} left={8} />
+          {/* Popular Places */}
+          <XanoApi.FetchGetAllStoresGET
+            refetchInterval={1000}
+            UID={Constants['user_id']}
+          >
+            {({ loading, error, data, refetchGetAllStores }) => {
+              const popularPlacesData = data;
+              if (!popularPlacesData || loading) {
+                return <ActivityIndicator />;
+              }
 
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
-              </Text>
-            );
-          }
+              if (error) {
+                return (
+                  <Text style={{ textAlign: 'center' }}>
+                    There was a problem fetching this data
+                  </Text>
+                );
+              }
 
-          return (
-            <View>
-              <View style={styles.View9fa86917}>
-                <Text
-                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
-                >
-                  {'Near You'}
-                </Text>
-
-                <Text style={{ color: theme.colors.strong }}>
-                  {'Restaurants near your location'}
-                </Text>
-              </View>
-              <FlatList
-                data={data}
-                listKey={'Yft1gOYN'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <>
-                      <Touchable>
-                        <View>
-                          <View
-                            style={[styles.View2760cf33, { borderRadius: 16 }]}
+              return (
+                <View style={styles.Viewfee4bb0e}>
+                  {/* Heading */}
+                  <View style={styles.View9fa86917}>
+                    <Row
+                      justifyContent={'space-between'}
+                      alignItems={'flex-start'}
+                    >
+                      {/* Primary */}
+                      <Text
+                        style={[
+                          styles.Textf90d72c6,
+                          { color: theme.colors.strong },
+                        ]}
+                      >
+                        {'Campus Offers'}
+                      </Text>
+                    </Row>
+                    {/* Secondary */}
+                    <Text style={{ color: theme.colors.strong }}>
+                      {'Places on campus'}
+                    </Text>
+                  </View>
+                  <FlatList
+                    data={popularPlacesData}
+                    listKey={'wB9pCiba'}
+                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                    renderItem={({ item }) => {
+                      const listData = item;
+                      return (
+                        <>
+                          <Touchable
+                            onPress={() => {
+                              try {
+                                navigation.navigate('RestaurantViewScreen', {
+                                  storeID: listData?.id,
+                                });
+                              } catch (err) {
+                                console.error(err);
+                              }
+                            }}
+                            style={styles.Touchable7d2b959f}
                           >
-                            <Image
+                            <Surface
                               style={[
-                                styles.Imageb42ed28f,
-                                { borderRadius: theme.roundness },
-                              ]}
-                              source={{ uri: `${listData?.image}` }}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-
-                          <View style={styles.View91edb4b3}>
-                            <Text
-                              style={[
-                                styles.Text884ea74f,
-                                { color: theme.colors.strong },
+                                styles.Surface8012acab,
+                                { borderRadius: 8 },
                               ]}
                             >
-                              {listData?.name}
-                            </Text>
-                            <StarRating
-                              onPress={newStarRatingValue => {
-                                const ratingValue = newStarRatingValue;
+                              <View
+                                style={[
+                                  styles.View78e61bd0,
+                                  {
+                                    borderTopLeftRadius: 8,
+                                    borderTopRightRadius: 8,
+                                  },
+                                ]}
+                              >
+                                <Image
+                                  style={styles.Imagea98db7de}
+                                  source={{ uri: `${listData?.storeImage}` }}
+                                  resizeMode={'cover'}
+                                />
+                              </View>
+                              <CircleImage
+                                style={styles.CircleImage34352bf1}
+                                source={{ uri: `${listData?.storeIcon}` }}
+                                size={60}
+                              />
+                              <Row
+                                justifyContent={'space-between'}
+                                alignItems={'flex-end'}
+                              >
+                                <Stack
+                                  justifyContent={'flex-start'}
+                                  alignItems={'flex-start'}
+                                >
+                                  {/* Name */}
+                                  <Text
+                                    style={[
+                                      styles.Text26f0ecb9,
+                                      { color: theme.colors.strong },
+                                    ]}
+                                  >
+                                    {listData?.storeName}
+                                  </Text>
+                                  {/* Style */}
+                                  <Text
+                                    style={[
+                                      styles.Textcd669454,
+                                      { color: theme.colors.medium },
+                                    ]}
+                                  >
+                                    {'$'}
+                                    {listData?.deliveryFee}
+                                    {' Delivery Fee'}
+                                  </Text>
+                                </Stack>
+
+                                <Row
+                                  justifyContent={'flex-start'}
+                                  alignItems={'flex-start'}
+                                >
+                                  <Stack
+                                    justifyContent={'flex-start'}
+                                    alignItems={'flex-end'}
+                                  >
+                                    <StarRating
+                                      style={styles.StarRating27d4405a}
+                                      starSize={16}
+                                      maxStars={5}
+                                      activeColor={theme.colors.primary}
+                                      inactiveColor={theme.colors.divider}
+                                      defaultValue={listData?.storeRating}
+                                    />
+                                    {/* Style */}
+                                    <Text
+                                      style={[
+                                        styles.Text23f672fe,
+                                        { color: theme.colors.medium },
+                                      ]}
+                                    >
+                                      {listData?.storeRating}
+                                      {' Stars'}
+                                    </Text>
+                                  </Stack>
+                                  <IconButton
+                                    onPress={() => {
+                                      try {
+                                        setStoreLat(listData?.storeLat);
+                                        setStoreLong(listData?.storeLong);
+                                        setMapOpen(true);
+                                      } catch (err) {
+                                        console.error(err);
+                                      }
+                                    }}
+                                    style={styles.IconButton2c3e883b}
+                                    icon={'MaterialCommunityIcons/map-marker'}
+                                    size={35}
+                                    color={theme.colors.primary}
+                                  />
+                                </Row>
+                              </Row>
+                            </Surface>
+                          </Touchable>
+                          <Spacer top={8} right={10} bottom={8} left={10} />
+                        </>
+                      );
+                    }}
+                    style={styles.FlatList754b2e07}
+                    contentContainerStyle={styles.FlatList754b2e07Content}
+                    numColumns={1}
+                    horizontal={false}
+                  />
+                </View>
+              );
+            }}
+          </XanoApi.FetchGetAllStoresGET>
+        </ScrollView>
+
+        <Surface
+          style={[
+            styles.Surface15b3cc20,
+            { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+          ]}
+        >
+          <Row justifyContent={'space-around'} alignItems={'center'}>
+            {/* Search Field */}
+            <View
+              style={[
+                styles.View9deeaf2f,
+                { backgroundColor: theme.colors.divider, borderRadius: 12 },
+              ]}
+            >
+              <View>
+                {/* Search Button */}
+                <IconButton
+                  icon={'MaterialIcons/search'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              </View>
+              <Spacer top={0} right={3} bottom={0} left={3} />
+              <View style={styles.Viewc992f941}>
+                {/* Search Input */}
+                <TextInput
+                  onChangeText={newSearchInputValue => {
+                    const textInputValue = newSearchInputValue;
+                    try {
+                      setTextInputValue(textInputValue);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.TextInputbaf7ad36}
+                  placeholder={'Search...'}
+                  value={textInputValue}
+                />
+              </View>
+            </View>
+            {/* showDrawer */}
+            <>
+              {openDrawer ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setOpenDrawer(true);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButtonbcce0fc4}
+                  icon={'Ionicons/grid'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+            {/* hideDrawer */}
+            <>
+              {!openDrawer ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setOpenDrawer(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButtonbcce0fc4}
+                  icon={'Entypo/chevron-thin-down'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+          </Row>
+        </Surface>
+      </KeyboardAwareScrollView>
+      <>
+        {!openDrawer ? null : (
+          <View style={styles.Viewac5e8875}>
+            {/* Grid */}
+            <View
+              style={[
+                styles.View1acef5e2,
+                { backgroundColor: theme.colors.strongInverse },
+              ]}
+              needsOffscreenAlphaCompositing={false}
+            >
+              {/* Profile */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('AccountScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableaf6910bf}
+              >
+                <View
+                  style={[
+                    styles.View1aef42d9,
+                    {
+                      borderRadius: theme.roundness,
+                      borderColor: theme.colors.divider,
+                      backgroundColor: theme.colors.background,
+                    },
+                  ]}
+                >
+                  <Icon
+                    style={styles.Icon6bf74529}
+                    size={40}
+                    color={theme.colors.strong}
+                    name={'Ionicons/md-person-circle-outline'}
+                  />
+                  <Spacer top={8} right={8} bottom={8} left={8} />
+                  <Stack
+                    justifyContent={'flex-start'}
+                    alignItems={'flex-start'}
+                  >
+                    <Text
+                      style={[
+                        styles.Text8a1d4f88,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Hi '}
+                      {Constants['user_name']}
+                      {'!'}
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.Text058e2418,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'View your account'}
+                    </Text>
+                  </Stack>
+                </View>
+              </Touchable>
+              {/* Courier */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('StackNavigator', {
+                      screen: 'DriverNav',
+                      params: { screen: 'AvailableOrdersScreen' },
+                    });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchable2e5bf580}
+              >
+                <View
+                  style={[
+                    styles.View0f4451f3,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View94ee2e18}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Switch to\nCourier\n'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon84575dc9}
+                      name={'MaterialCommunityIcons/truck-delivery'}
+                      size={32}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Address */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('UserSetAddressScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableb3269bed}
+              >
+                <View
+                  style={[
+                    styles.View57ac46a1,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View837d8621}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Text4b62e5ec,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Delivery\nAddress'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon013300ec}
+                      size={26}
+                      name={'Ionicons/md-home'}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Sign Out */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('SimpleWelcomeScreen');
+                    setGlobalVariableValue({
+                      key: 'auth_header',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_id',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_name',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_email',
+                      value: '',
+                    });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchablec4f3901b}
+              >
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Sign Out'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'MaterialIcons/logout'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* help */}
+              <Touchable style={styles.Touchable1b2cb320}>
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Help'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'Entypo/help-with-circle'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+            </View>
+          </View>
+        )}
+      </>
+      {/* offerList */}
+      <>
+        {!offersOpen ? null : (
+          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            {/* Popular Places */}
+            <XanoApi.FetchGetAllStoresGET UID={Constants['user_id']}>
+              {({ loading, error, data, refetchGetAllStores }) => {
+                const popularPlacesData = data;
+                if (!popularPlacesData || loading) {
+                  return <ActivityIndicator />;
+                }
+
+                if (error) {
+                  return (
+                    <Text style={{ textAlign: 'center' }}>
+                      There was a problem fetching this data
+                    </Text>
+                  );
+                }
+
+                return (
+                  <View style={styles.Viewbbfb22dd}>
+                    {/* Heading */}
+                    <View style={styles.View9fa86917}>
+                      <Row
+                        justifyContent={'space-between'}
+                        alignItems={'flex-start'}
+                      >
+                        {/* Primary */}
+                        <Text
+                          style={[
+                            styles.Textf90d72c6,
+                            { color: theme.colors.strong },
+                          ]}
+                        >
+                          {'Courier Offers'}
+                        </Text>
+                        <IconButton
+                          onPress={() => {
+                            try {
+                              setOffersOpen(false);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={styles.IconButton5f47a348}
+                          icon={'AntDesign/close'}
+                          size={32}
+                        />
+                      </Row>
+                      {/* Secondary */}
+                      <Text style={{ color: theme.colors.strong }}>
+                        {'Off campus options'}
+                      </Text>
+                    </View>
+                    <FlatList
+                      data={popularPlacesData}
+                      listKey={'38Kv5lnu'}
+                      keyExtractor={({ item }) =>
+                        item?.id || item?.uuid || item
+                      }
+                      renderItem={({ item }) => {
+                        const listData = item;
+                        return (
+                          <>
+                            <Touchable
+                              onPress={() => {
                                 try {
-                                  setRatingValue(ratingValue);
+                                  navigation.navigate('RestaurantViewScreen', {
+                                    storeID: listData?.id,
+                                  });
                                 } catch (err) {
                                   console.error(err);
                                 }
                               }}
-                              rating={listData?.rating}
-                              starSize={16}
-                              maxStars={5}
-                              activeColor={theme.colors.strong}
-                              inactiveColor={theme.colors.divider}
-                            />
-                          </View>
-                        </View>
-                      </Touchable>
-                      <Spacer top={0} right={10} bottom={0} left={10} />
-                    </>
-                  );
-                }}
-                contentContainerStyle={styles.FlatListcd3e18ecContent}
-                numColumns={1}
-                data={data}
-                horizontal={true}
-              />
-            </View>
-          );
-        }}
-      </RestaurantListApi.FetchFastestDeliveryGET>
-      <Spacer top={8} right={8} bottom={8} left={8} />
-      <RestaurantListApi.FetchToday$sOffersGET>
-        {({ loading, error, data, refetchToday$sOffers }) => {
-          const freeDeliveryData = data;
-          if (!freeDeliveryData || loading) {
-            return <ActivityIndicator />;
-          }
+                              style={styles.Touchable7d2b959f}
+                            >
+                              <Surface
+                                style={[
+                                  styles.Surface8012acab,
+                                  { borderRadius: 8 },
+                                ]}
+                              >
+                                <View
+                                  style={[
+                                    styles.View78e61bd0,
+                                    {
+                                      borderTopLeftRadius: 8,
+                                      borderTopRightRadius: 8,
+                                    },
+                                  ]}
+                                >
+                                  <Image
+                                    style={styles.Imagea98db7de}
+                                    source={{ uri: `${listData?.storeImage}` }}
+                                    resizeMode={'cover'}
+                                  />
+                                </View>
+                                <CircleImage
+                                  style={styles.CircleImage34352bf1}
+                                  source={{ uri: `${listData?.storeIcon}` }}
+                                  size={60}
+                                />
+                                <Row
+                                  justifyContent={'space-between'}
+                                  alignItems={'flex-end'}
+                                >
+                                  <Stack
+                                    justifyContent={'flex-start'}
+                                    alignItems={'flex-start'}
+                                  >
+                                    {/* Name */}
+                                    <Text
+                                      style={[
+                                        styles.Text26f0ecb9,
+                                        { color: theme.colors.strong },
+                                      ]}
+                                    >
+                                      {listData?.storeName}
+                                    </Text>
+                                    {/* Style */}
+                                    <Text
+                                      style={[
+                                        styles.Textcd669454,
+                                        { color: theme.colors.medium },
+                                      ]}
+                                    >
+                                      {'$'}
+                                      {listData?.deliveryFee}
+                                      {' Delivery Fee'}
+                                    </Text>
+                                  </Stack>
 
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
+                                  <Stack
+                                    justifyContent={'flex-start'}
+                                    alignItems={'flex-start'}
+                                  >
+                                    <StarRating
+                                      style={styles.StarRating2c3e883b}
+                                      starSize={16}
+                                      maxStars={5}
+                                      activeColor={theme.colors.primary}
+                                      inactiveColor={theme.colors.divider}
+                                      defaultValue={listData?.storeRating}
+                                    />
+                                    {/* Style */}
+                                    <Text
+                                      style={[
+                                        styles.Text621d5cae,
+                                        { color: theme.colors.medium },
+                                      ]}
+                                    >
+                                      {listData?.storeRating}
+                                      {' Stars'}
+                                    </Text>
+                                  </Stack>
+                                </Row>
+                              </Surface>
+                            </Touchable>
+                            <Spacer top={8} right={10} bottom={8} left={10} />
+                          </>
+                        );
+                      }}
+                      style={styles.FlatList754b2e07}
+                      contentContainerStyle={styles.FlatList754b2e07Content}
+                      numColumns={1}
+                      horizontal={false}
+                    />
+                  </View>
+                );
+              }}
+            </XanoApi.FetchGetAllStoresGET>
+          </Modal>
+        )}
+      </>
+      {/* mapView */}
+      <>
+        {!mapOpen ? null : (
+          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            <Surface style={styles.Surfacec0dec774}>
+              <MapView
+                style={styles.MapViewc992f941}
+                latitude={storeLat}
+                longitude={storeLong}
+                zoom={14}
+                zoomEnabled={true}
+                rotateEnabled={true}
+                scrollEnabled={true}
+                loadingEnabled={true}
+                showsPointsOfInterest={true}
+                apiKey={'AIzaSyC53v7BvSuA1yv7Hwf1rC_9kpHMmmYJJhU'}
+                ref={mapViewgdzxBb5HRef}
+              >
+                <MapMarker
+                  latitude={storeLat}
+                  longitude={storeLong}
+                  title={'Store Location'}
+                />
+              </MapView>
+            </Surface>
+
+            <Surface style={[styles.Surface2df1c553, { borderRadius: 16 }]}>
+              <Text
+                style={[styles.Text58d1c036, { color: theme.colors.strong }]}
+              >
+                {'Store Location'}
               </Text>
-            );
-          }
-
-          return (
-            <View>
-              <View style={styles.View9fa86917}>
-                <Text
-                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
-                >
-                  {'Free Delivery'}
-                </Text>
-
-                <Text style={{ color: theme.colors.strong }}>
-                  {'These restaurants offer free delivery'}
-                </Text>
-              </View>
-              <FlatList
-                data={data}
-                listKey={'ND3WxG9b'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <>
-                      <Touchable>
-                        <View>
-                          <View
-                            style={[styles.View2760cf33, { borderRadius: 16 }]}
-                          >
-                            <Image
-                              style={[
-                                styles.Imageb42ed28f,
-                                { borderRadius: theme.roundness },
-                              ]}
-                              source={{ uri: `${listData?.image}` }}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-
-                          <View style={styles.View91edb4b3}>
-                            <Text
-                              style={[
-                                styles.Text884ea74f,
-                                { color: theme.colors.strong },
-                              ]}
-                            >
-                              {listData?.name}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Textdb189077,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {listData?.city}
-                            </Text>
-                          </View>
-                        </View>
-                      </Touchable>
-                      <Spacer top={0} right={10} bottom={0} left={10} />
-                    </>
-                  );
+              <ButtonSolid
+                onPress={() => {
+                  try {
+                    const url = openMapApp(storeLong, storeLat);
+                    Linking.openURL(`${url}`);
+                  } catch (err) {
+                    console.error(err);
+                  }
                 }}
-                contentContainerStyle={styles.FlatListcd3e18ecContent}
-                numColumns={1}
-                data={data}
-                horizontal={true}
+                style={[
+                  styles.ButtonSolidd6d80f99,
+                  { backgroundColor: theme.colors.primary },
+                ]}
+                title={'Open in Maps'}
               />
-            </View>
-          );
-        }}
-      </RestaurantListApi.FetchToday$sOffersGET>
-      <Spacer top={8} right={8} bottom={8} left={8} />
-      <RestaurantListApi.FetchQueryGET
-        limit={6}
-        parameter={'type'}
-        query={'French'}
-      >
-        {({ loading, error, data, refetchQuery }) => {
-          const bestFrenchCuisineData = data;
-          if (!bestFrenchCuisineData || loading) {
-            return <ActivityIndicator />;
-          }
-
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
-              </Text>
-            );
-          }
-
-          return (
-            <View>
-              <View style={styles.View9fa86917}>
-                <Text
-                  style={[styles.Textf90d72c6, { color: theme.colors.strong }]}
-                >
-                  {'Best French Cuisine'}
-                </Text>
-
-                <Text style={{ color: theme.colors.strong }}>
-                  {'The finest French cuisine outside of France'}
-                </Text>
-              </View>
-              <FlatList
-                data={data}
-                listKey={'bWmP1mIX'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <>
-                      <Touchable>
-                        <View>
-                          <View
-                            style={[styles.View2760cf33, { borderRadius: 16 }]}
-                          >
-                            <Image
-                              style={[
-                                styles.Imageb42ed28f,
-                                { borderRadius: theme.roundness },
-                              ]}
-                              source={{ uri: `${listData?.image}` }}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-
-                          <View style={styles.View91edb4b3}>
-                            <Text
-                              style={[
-                                styles.Text884ea74f,
-                                { color: theme.colors.strong },
-                              ]}
-                            >
-                              {listData?.name}
-                            </Text>
-
-                            <Text
-                              style={[
-                                styles.Textdb189077,
-                                { color: theme.colors.medium },
-                              ]}
-                            >
-                              {listData?.city}
-                            </Text>
-                          </View>
-                        </View>
-                      </Touchable>
-                      <Spacer top={0} right={10} bottom={0} left={10} />
-                    </>
-                  );
-                }}
-                contentContainerStyle={styles.FlatListcd3e18ecContent}
-                numColumns={1}
-                data={data}
-                horizontal={true}
-              />
-            </View>
-          );
-        }}
-      </RestaurantListApi.FetchQueryGET>
-      <Spacer top={12} right={0} bottom={12} left={0} />
+            </Surface>
+            <IconButton
+              onPress={() => {
+                try {
+                  setMapOpen(false);
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              style={styles.IconButton007f30a6}
+              icon={'AntDesign/closecircle'}
+              size={32}
+            />
+          </Modal>
+        )}
+      </>
     </ScreenContainer>
   );
 };
@@ -557,67 +1045,350 @@ const styles = StyleSheet.create({
   Text34e0cb74: {
     marginTop: 10,
   },
-  Imageb42ed28f: {
-    width: 250,
-    height: 150,
-  },
-  View2760cf33: {
-    overflow: 'hidden',
-  },
-  Text884ea74f: {
-    fontSize: 18,
-    fontFamily: 'System',
-    fontWeight: '600',
-  },
-  Textdb189077: {
-    fontSize: 12,
-    marginTop: 4,
-  },
-  View91edb4b3: {
-    marginTop: 8,
-  },
-  FlatListcef0b366Content: {
-    flexDirection: 'row',
-    paddingLeft: 16,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  Textc2034d34: {
-    fontSize: 20,
-  },
-  Text76ab12a3: {
-    fontSize: 16,
-  },
-  Viewf78a9190: {
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  LinearGradientd132bfba: {
+  Imagea98db7de: {
     width: '100%',
     height: '100%',
-    paddingLeft: 16,
-    paddingBottom: 16,
-    paddingRight: 16,
-    paddingTop: 16,
-    justifyContent: 'flex-end',
   },
-  ImageBackgroundd0d5dfbd: {
-    width: '100%',
-    height: 240,
+  View1b1f79af: {
+    height: '60%',
+    overflow: 'hidden',
+    alignItems: 'flex-end',
+  },
+  CircleImage34352bf1: {
+    width: 60,
+    height: 60,
+    marginLeft: 16,
+    marginTop: -30,
+  },
+  Textb73c4ca6: {
+    fontSize: 20,
+    fontFamily: 'System',
+    fontWeight: '600',
+    paddingTop: 4,
+    paddingLeft: 16,
+  },
+  Textcd669454: {
+    fontSize: 12,
+    paddingTop: 4,
+    paddingRight: 16,
+    paddingLeft: 16,
+  },
+  StarRatinga57a4184: {
+    marginRight: -10,
+  },
+  Text25694ba4: {
+    fontSize: 12,
+    paddingTop: 4,
+    paddingRight: -5,
+    paddingLeft: 16,
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+  },
+  IconButton2c3e883b: {
+    marginRight: 16,
+  },
+  Surface56d97cb4: {
+    width: 300,
+    height: 220,
+    marginRight: 16,
+  },
+  FlatListe3f3fa82Content: {
+    marginTop: 16,
+    marginBottom: 16,
+    marginLeft: 0,
+    paddingLeft: 16,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  Viewd63bc9bc: {
+    left: 0,
+    right: 0,
+  },
+  View78e61bd0: {
+    height: '65%',
     overflow: 'hidden',
   },
-  FlatList6728d304Content: {
-    marginTop: 16,
-  },
-  Fetch431eb058: {
-    minHeight: 40,
-  },
-  FlatListcd3e18ecContent: {
-    flexDirection: 'row',
-    marginTop: 16,
+  Text26f0ecb9: {
+    fontSize: 22,
+    fontFamily: 'System',
+    fontWeight: '600',
+    paddingTop: 4,
     paddingLeft: 16,
+  },
+  StarRating27d4405a: {
+    marginRight: 8,
+  },
+  Text23f672fe: {
+    fontSize: 12,
+    paddingTop: 4,
+    paddingRight: 10,
+    paddingLeft: 16,
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+  },
+  Surface8012acab: {
+    minHeight: 260,
+    width: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+    maxHeight: 260,
+  },
+  Touchable7d2b959f: {
+    width: '100%',
+    minWidth: '100%',
+  },
+  FlatList754b2e07: {
+    width: '100%',
+  },
+  FlatList754b2e07Content: {
+    paddingLeft: 16,
+    marginTop: 16,
     marginBottom: 16,
+    alignItems: 'center',
+    paddingRight: 16,
+  },
+  Viewfee4bb0e: {
+    width: '100%',
+    marginBottom: 70,
+  },
+  TextInputbaf7ad36: {
+    fontFamily: 'System',
+    fontWeight: '400',
+    fontSize: 18,
+  },
+  Viewc992f941: {
+    flex: 1,
+  },
+  View9deeaf2f: {
+    paddingLeft: 12,
+    paddingTop: 10,
+    paddingRight: 12,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: '5%',
+    marginRight: '15%',
+  },
+  IconButtonbcce0fc4: {
+    right: 25,
+  },
+  Surface15b3cc20: {
+    minHeight: 70,
+    justifyContent: 'space-around',
+    alignContent: 'space-around',
+    overflow: 'hidden',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  KeyboardAwareScrollView6559c7e9: {
+    height: '100%',
+  },
+  KeyboardAwareScrollView6559c7e9Content: {
+    minHeight: '100%',
+    maxHeight: '100%',
+  },
+  Icon6bf74529: {
+    width: 40,
+    height: 40,
+  },
+  Text8a1d4f88: {
+    textAlign: 'left',
+    fontSize: 20,
+  },
+  Text058e2418: {
+    textAlign: 'left',
+    fontSize: 14,
+  },
+  View1aef42d9: {
+    width: '100%',
+    height: 90,
+    paddingBottom: 14,
+    paddingTop: 14,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    flexDirection: 'row',
+    paddingLeft: 14,
+    paddingRight: 14,
+  },
+  Touchableaf6910bf: {
+    width: '100%',
+    marginBottom: 14,
+    marginTop: 14,
+    alignSelf: 'stretch',
+    height: 75,
+  },
+  Textca4d6164: {
+    textAlign: 'left',
+  },
+  Icon84575dc9: {
+    width: 32,
+    height: 32,
+  },
+  View94ee2e18: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  View0f4451f3: {
+    width: '100%',
+    borderRightWidth: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    paddingRight: 14,
+    paddingBottom: 14,
+    paddingTop: 14,
+    borderBottomWidth: 1,
+    paddingLeft: 14,
+    height: 80,
+  },
+  Touchable2e5bf580: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 14,
+  },
+  Text4b62e5ec: {
+    textAlign: 'left',
+  },
+  Icon013300ec: {
+    width: 26,
+    height: 26,
+  },
+  View837d8621: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '100%',
+  },
+  View57ac46a1: {
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    borderBottomWidth: 1,
+    height: 80,
+    width: '100%',
+    borderRightWidth: 1,
+    paddingLeft: 14,
+    paddingTop: 14,
+    paddingRight: 14,
+    paddingBottom: 14,
+  },
+  Touchableb3269bed: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 14,
+    marginLeft: 10,
+  },
+  Icon9e5973b7: {
+    width: 24,
+    height: 24,
+  },
+  View3b106cac: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  View075ba974: {
+    width: '100%',
+    borderRightWidth: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    paddingRight: 14,
+    paddingBottom: 14,
+    paddingTop: 14,
+    borderBottomWidth: 1,
+    paddingLeft: 14,
+    height: 60,
+  },
+  Touchablec4f3901b: {
+    alignSelf: 'stretch',
+    marginBottom: 14,
+    width: '48%',
+    marginTop: 4,
+  },
+  Touchable1b2cb320: {
+    alignSelf: 'stretch',
+    marginBottom: 10,
+    width: '48%',
+    marginTop: 4,
+    marginLeft: 10,
+  },
+  View1acef5e2: {
+    justifyContent: 'space-evenly',
+    paddingLeft: 12,
+    alignItems: 'flex-start',
+    paddingRight: 12,
+    flexWrap: 'wrap',
+    paddingBottom: 14,
+    flexDirection: 'row',
+  },
+  Viewac5e8875: {
+    paddingTop: 0,
+    marginTop: 0,
+  },
+  IconButton5f47a348: {
+    marginRight: 4,
+  },
+  StarRating2c3e883b: {
+    marginRight: 16,
+  },
+  Text621d5cae: {
+    fontSize: 12,
+    paddingTop: 4,
+    paddingRight: 20,
+    paddingLeft: 16,
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+  },
+  Viewbbfb22dd: {
+    width: '100%',
+    marginBottom: 70,
+    marginTop: 20,
+  },
+  MapViewc992f941: {
+    flex: 1,
+  },
+  Surfacec0dec774: {
+    height: '80%',
+    overflow: 'hidden',
+  },
+  Text58d1c036: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 26,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 16,
+  },
+  ButtonSolidd6d80f99: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+    marginLeft: 16,
+    marginTop: 8,
+    marginRight: 16,
+  },
+  Surface2df1c553: {
+    minHeight: '28%',
+    marginTop: '-8%',
+  },
+  IconButton007f30a6: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
   },
 });
 

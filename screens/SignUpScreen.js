@@ -17,7 +17,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const SignUpScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
-
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const myFunctionName = response => {
     // Type the code for the body of your function or hook here.
@@ -52,19 +51,22 @@ const SignUpScreen = props => {
       <KeyboardAwareScrollView
         contentContainerStyle={styles.KeyboardAwareScrollView6a955cc3Content}
       >
+        {/* Header */}
         <View style={styles.View39912261}>
           <Divider
             style={styles.Dividere4660988}
             color={theme.colors.divider}
           />
+          {/* Title */}
           <Text style={styles.Textdd83da03}>{'Welcome to Campus Eats!'}</Text>
-
+          {/* Subtitle */}
           <Text style={styles.Textf51af5e8}>
             {'Sign in to your account to continue'}
           </Text>
         </View>
-
+        {/* Login Form */}
         <View style={styles.View1e98c651}>
+          {/* Error Message */}
           <>
             {!Constants['error_message'] ? null : (
               <Text
@@ -74,6 +76,7 @@ const SignUpScreen = props => {
               </Text>
             )}
           </>
+          {/* Name Input */}
           <TextInput
             onChangeText={newNameInputValue => {
               try {
@@ -93,6 +96,7 @@ const SignUpScreen = props => {
             autoCapitalize={'none'}
           />
           <Spacer top={12} right={8} bottom={12} left={8} />
+          {/* Email Input */}
           <TextInput
             onChangeText={newEmailInputValue => {
               try {
@@ -112,6 +116,7 @@ const SignUpScreen = props => {
             autoCapitalize={'none'}
           />
           <Spacer top={12} right={8} bottom={12} left={8} />
+          {/* Password Input */}
           <TextInput
             onChangeText={newPasswordInputValue => {
               try {
@@ -129,71 +134,75 @@ const SignUpScreen = props => {
             secureTextEntry={true}
           />
           <Spacer top={24} right={8} bottom={24} left={8} />
+          {/* Sign In Button */}
           <>
             {Constants['is_loading'] ? null : (
               <ButtonSolid
-                onPress={async () => {
-                  try {
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: true,
-                    });
-                    const test = await XanoApi.signUpPOST(Constants, {
-                      email: emailValue,
-                      name: nameValue,
-                      password: passwordValue,
-                    });
-                    if (!test) {
-                      return;
+                onPress={() => {
+                  const handler = async () => {
+                    try {
+                      setGlobalVariableValue({
+                        key: 'is_loading',
+                        value: true,
+                      });
+                      const test = await XanoApi.signUpPOST(Constants, {
+                        email: emailValue,
+                        name: nameValue,
+                        password: passwordValue,
+                      });
+                      if (!test) {
+                        return;
+                      }
+                      const response = await XanoApi.loginPOST(Constants, {
+                        email: emailValue,
+                        password: passwordValue,
+                      });
+                      const authToken = response.authToken;
+                      const message = response.message;
+                      setGlobalVariableValue({
+                        key: 'error_message',
+                        value: message,
+                      });
+                      setGlobalVariableValue({
+                        key: 'is_loading',
+                        value: false,
+                      });
+                      if (!authToken) {
+                        return;
+                      }
+                      const id = response.id;
+                      const name = response.name;
+                      const email = response.email;
+                      setGlobalVariableValue({
+                        key: 'auth_header',
+                        value: 'Bearer ' + authToken,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_id',
+                        value: id,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_name',
+                        value: name,
+                      });
+                      setGlobalVariableValue({
+                        key: 'user_email',
+                        value: email,
+                      });
+                      setEmailValue('');
+                      setPasswordValue('');
+                      setGlobalVariableValue({
+                        key: 'error_message',
+                        value: '',
+                      });
+                      navigation.navigate('BottomTabNavigator', {
+                        screen: 'MapScreen',
+                      });
+                    } catch (err) {
+                      console.error(err);
                     }
-                    const response = await XanoApi.loginPOST(Constants, {
-                      email: emailValue,
-                      password: passwordValue,
-                    });
-                    const authToken = response.authToken;
-                    const message = response.message;
-                    setGlobalVariableValue({
-                      key: 'error_message',
-                      value: message,
-                    });
-                    setGlobalVariableValue({
-                      key: 'is_loading',
-                      value: false,
-                    });
-                    if (!authToken) {
-                      return;
-                    }
-                    const id = response.id;
-                    const name = response.name;
-                    const email = response.email;
-                    setGlobalVariableValue({
-                      key: 'auth_header',
-                      value: 'Bearer ' + authToken,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_id',
-                      value: id,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_name',
-                      value: name,
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_email',
-                      value: email,
-                    });
-                    setEmailValue('');
-                    setPasswordValue('');
-                    setGlobalVariableValue({
-                      key: 'error_message',
-                      value: '',
-                    });
-                    navigation.navigate('BottomTabNavigator', {
-                      screen: 'MapScreen',
-                    });
-                  } catch (err) {
-                    console.error(err);
-                  }
+                  };
+                  handler();
                 }}
                 style={[
                   styles.ButtonSolidfe5f3af3,
@@ -203,6 +212,7 @@ const SignUpScreen = props => {
               />
             )}
           </>
+          {/* Sign In Button Loading */}
           <>
             {!Constants['is_loading'] ? null : (
               <ButtonSolid
@@ -220,6 +230,7 @@ const SignUpScreen = props => {
           <View style={styles.View8bb6a2bc}>
             <Text>{'Already have an account?'}</Text>
             <Spacer top={8} right={2} bottom={8} left={2} />
+            {/* Sign Up Link */}
             <Link
               onPress={() => {
                 try {

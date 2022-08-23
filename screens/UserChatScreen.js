@@ -43,6 +43,7 @@ const UserChatScreen = props => {
       scrollable={false}
       hasTopSafeArea={false}
     >
+      {/* Header */}
       <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <IconButton
@@ -204,17 +205,20 @@ const UserChatScreen = props => {
           </View>
           <Spacer top={8} right={8} bottom={8} left={8} />
           <IconButton
-            onPress={async () => {
-              try {
-                await addChatPOST.mutateAsync({
-                  isDriver: false,
-                  message: textInputValue,
-                  session: props.route?.params?.orderID ?? 67,
-                });
-                setTextInputValue(' ');
-              } catch (err) {
-                console.error(err);
-              }
+            onPress={() => {
+              const handler = async () => {
+                try {
+                  await addChatPOST.mutateAsync({
+                    isDriver: false,
+                    message: textInputValue,
+                    session: props.route?.params?.orderID ?? 67,
+                  });
+                  setTextInputValue(' ');
+                } catch (err) {
+                  console.error(err);
+                }
+              };
+              handler();
             }}
             icon={'Ionicons/md-send'}
             size={32}

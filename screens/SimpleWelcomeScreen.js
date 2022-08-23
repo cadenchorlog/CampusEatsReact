@@ -56,6 +56,13 @@ const SimpleWelcomeScreen = props => {
 
         <View>
           <ButtonSolid
+            onPress={() => {
+              try {
+                navigation.navigate('SignUpScreen');
+              } catch (err) {
+                console.error(err);
+              }
+            }}
             style={[
               styles.ButtonSolidb9306319,
               { backgroundColor: theme.colors.primary },

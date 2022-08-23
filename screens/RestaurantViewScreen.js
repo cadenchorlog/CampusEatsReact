@@ -65,7 +65,7 @@ line two` ) and will not work with special characters inside of quotes ( example
 
   return (
     <ScreenContainer hasSafeArea={false} scrollable={false}>
-      <View>
+      <View style={styles.View2200bac7}>
         <XanoApi.FetchGetStoreInfoGET
           stores_id={props.route?.params?.storeID ?? 1}
           onData={fetchData => {
@@ -92,12 +92,15 @@ line two` ) and will not work with special characters inside of quotes ( example
 
             return (
               <>
+                {/* Header */}
                 <View style={styles.View00c37131}>
+                  {/* storeImage */}
                   <ImageBackground
                     style={styles.ImageBackgrounda98db7de}
                     source={{ uri: `${fetchData?.storeImage}` }}
                     resizeMode={'cover'}
                   />
+                  {/* Header */}
                   <View style={styles.View3fd5da9b}>
                     <Row justifyContent={'flex-start'} alignItems={'center'}>
                       <IconButton
@@ -115,9 +118,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     </Row>
                     <CircleImage
                       style={styles.CircleImage18b962a4}
-                      source={{
-                        uri: 'https://static.draftbit.com/images/placeholder-image.png',
-                      }}
+                      source={{ uri: `${fetchData?.storeIcon}` }}
                       size={60}
                     />
                   </View>
@@ -125,6 +126,7 @@ line two` ) and will not work with special characters inside of quotes ( example
 
                 <ScrollView showsVerticalScrollIndicator={true} bounces={true}>
                   <Row justifyContent={'space-between'} alignItems={'center'}>
+                    {/* storeName */}
                     <Text
                       style={[
                         styles.Text22985566,
@@ -150,7 +152,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       size={32}
                     />
                   </Row>
-
+                  {/* deliveryTime */}
                   <Text
                     style={[
                       styles.Text0acea39c,
@@ -191,6 +193,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             size={24}
                             color={theme.colors.primary}
                           />
+                          {/* deliveryTime */}
                           <Text
                             style={[
                               styles.Text51b9e88f,
@@ -204,6 +207,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             style={styles.Dividerd78f213f}
                             color={theme.colors.primary}
                           />
+                          {/* deliveryTime */}
                           <Text style={{ color: theme.colors.strong }}>
                             {fetchData?.storeRating}
                           </Text>
@@ -234,6 +238,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   >
                     <Stack justifyContent={'flex-start'} alignItems={'center'}>
                       <View style={styles.Viewff163501}>
+                        {/* deliveryFee */}
                         <Text
                           style={[
                             styles.Texte6e7dad8,
@@ -242,7 +247,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         >
                           {'2'}
                         </Text>
-
+                        {/* deliveryFee */}
                         <Text
                           style={[
                             styles.Text2f0b40cf,
@@ -259,6 +264,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     />
                     <Stack justifyContent={'flex-start'} alignItems={'center'}>
                       <View style={styles.Viewff163501}>
+                        {/* deliveryFee */}
                         <Text
                           style={[
                             styles.Texte6e7dad8,
@@ -268,7 +274,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                           {'$'}
                           {fetchData?.deliveryFee}
                         </Text>
-
+                        {/* deliveryFee */}
                         <Text
                           style={[
                             styles.Text2f0b40cf,
@@ -280,8 +286,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                       </View>
                     </Stack>
                   </Surface>
-
+                  {/* selector */}
                   <Row justifyContent={'center'} alignItems={'flex-start'}>
+                    {/*  tab1 Solid */}
                     <>
                       {!tabOne ? null : (
                         <ButtonSolid
@@ -298,6 +305,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         />
                       )}
                     </>
+                    {/* tab1 Outline */}
                     <>
                       {tabOne ? null : (
                         <ButtonOutline
@@ -322,6 +330,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         />
                       )}
                     </>
+                    {/* tab2 Solid */}
                     <>
                       {!tabTwo ? null : (
                         <ButtonSolid
@@ -338,6 +347,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         />
                       )}
                     </>
+                    {/* tab2 Outline */}
                     <>
                       {tabTwo ? null : (
                         <ButtonOutline
@@ -363,6 +373,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       )}
                     </>
                   </Row>
+                  {/* tab1 */}
                   <>
                     {!tabOne ? null : (
                       <ScrollView
@@ -389,101 +400,120 @@ line two` ) and will not work with special characters inside of quotes ( example
 
                             return (
                               <>
-                                {null ? null : (
-                                  <FlatList
-                                    data={fetchData}
-                                    listKey={'Y51RbSb4'}
-                                    keyExtractor={({ item }) =>
-                                      item?.id || item?.uuid || item
-                                    }
-                                    renderItem={({ item }) => {
-                                      const gridData = item;
-                                      return (
-                                        <View style={styles.Viewb7efd8d7}>
-                                          <Touchable
-                                            onPress={() => {
-                                              try {
-                                                navigation.navigate(
-                                                  'RestaurantItemViewScreen',
-                                                  {
-                                                    storeID:
-                                                      props.route?.params
-                                                        ?.storeID ?? 1,
-                                                    itemID: gridData?.itemID,
-                                                  }
-                                                );
-                                              } catch (err) {
-                                                console.error(err);
-                                              }
-                                            }}
-                                          >
-                                            <View
-                                              style={[
-                                                styles.Viewa4bdd040,
-                                                {
-                                                  borderRadius: 12,
-                                                  borderColor:
-                                                    theme.colors.divider,
-                                                  backgroundColor:
-                                                    theme.colors.surface,
-                                                },
-                                              ]}
-                                            >
-                                              <View style={styles.View5152e902}>
-                                                <ImageBackground
-                                                  style={
-                                                    styles.ImageBackgrounda98db7de
-                                                  }
-                                                  source={{
-                                                    uri: `${gridData?.itemImage}`,
-                                                  }}
-                                                  resizeMode={'cover'}
-                                                />
-                                              </View>
-
-                                              <View style={styles.Viewd8f97984}>
-                                                <Text
-                                                  style={[
-                                                    styles.Text56ff1cc0,
+                                {/* Grid */}
+                                <>
+                                  {null ? null : (
+                                    <FlatList
+                                      data={fetchData}
+                                      listKey={'Y51RbSb4'}
+                                      keyExtractor={({ item }) =>
+                                        item?.id || item?.uuid || item
+                                      }
+                                      renderItem={({ item }) => {
+                                        const gridData = item;
+                                        return (
+                                          <View style={styles.Viewb7efd8d7}>
+                                            <Touchable
+                                              onPress={() => {
+                                                try {
+                                                  navigation.navigate(
+                                                    'RestaurantItemViewScreen',
                                                     {
-                                                      color:
-                                                        theme.colors.strong,
-                                                    },
-                                                  ]}
-                                                  numberOfLines={1}
-                                                  ellipsizeMode={'tail'}
-                                                >
-                                                  {gridData?.itemName}{' '}
-                                                </Text>
-
+                                                      storeID:
+                                                        props.route?.params
+                                                          ?.storeID ?? 1,
+                                                      itemID: gridData?.itemID,
+                                                    }
+                                                  );
+                                                } catch (err) {
+                                                  console.error(err);
+                                                }
+                                              }}
+                                            >
+                                              <View
+                                                style={[
+                                                  styles.View78167fa7,
+                                                  {
+                                                    borderRadius: 8,
+                                                    borderColor:
+                                                      theme.colors.divider,
+                                                    backgroundColor:
+                                                      theme.colors.surface,
+                                                  },
+                                                ]}
+                                              >
                                                 <View
-                                                  style={styles.View7d6a39b7}
+                                                  style={styles.Viewd2736dc6}
                                                 >
-                                                  <Text
+                                                  <ImageBackground
+                                                    style={
+                                                      styles.ImageBackgrounda98db7de
+                                                    }
+                                                    source={{
+                                                      uri: `${gridData?.itemImage}`,
+                                                    }}
+                                                    resizeMode={'cover'}
+                                                  />
+                                                  <Surface
                                                     style={[
-                                                      styles.Textc3380ce3,
+                                                      styles.Surface7436b239,
                                                       {
-                                                        color:
+                                                        borderBottomRightRadius: 8,
+                                                      },
+                                                    ]}
+                                                  >
+                                                    <Text
+                                                      style={[
+                                                        styles.Text18d354ad,
+                                                        {
+                                                          color:
+                                                            theme.colors.strong,
+                                                        },
+                                                      ]}
+                                                      numberOfLines={1}
+                                                      ellipsizeMode={'tail'}
+                                                    >
+                                                      {gridData?.itemName}{' '}
+                                                    </Text>
+                                                  </Surface>
+
+                                                  <Surface
+                                                    style={[
+                                                      styles.Surfacee3f78cf0,
+                                                      {
+                                                        borderRadius: 8,
+                                                        backgroundColor:
                                                           theme.colors.primary,
                                                       },
                                                     ]}
                                                   >
-                                                    {'$'}
-                                                    {gridData?.itemCost}
-                                                  </Text>
+                                                    <Text
+                                                      style={[
+                                                        styles.Text191b2614,
+                                                        {
+                                                          color:
+                                                            theme.colors
+                                                              .background,
+                                                        },
+                                                      ]}
+                                                    >
+                                                      {'$'}
+                                                      {gridData?.itemCost}
+                                                    </Text>
+                                                  </Surface>
                                                 </View>
                                               </View>
-                                            </View>
-                                          </Touchable>
-                                        </View>
-                                      );
-                                    }}
-                                    contentContainerStyle={
-                                      styles.FlatList7591d95eContent
-                                    }
-                                    numColumns={2}
-                                  />
-                                )}
+                                            </Touchable>
+                                          </View>
+                                        );
+                                      }}
+                                      contentContainerStyle={
+                                        styles.FlatList7591d95eContent
+                                      }
+                                      numColumns={2}
+                                    />
+                                  )}
+                                </>
                               </>
                             );
                           }}
@@ -491,6 +521,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       </ScrollView>
                     )}
                   </>
+                  {/* tab2 */}
                   <>
                     {!tabTwo ? null : (
                       <ScrollView
@@ -514,6 +545,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       </ScrollView>
                     )}
                   </>
+                  {/* tab3 */}
                   <>
                     {!tabThree ? null : (
                       <ScrollView
@@ -542,6 +574,21 @@ line two` ) and will not work with special characters inside of quotes ( example
             );
           }}
         </XanoApi.FetchGetStoreInfoGET>
+        <Surface style={[styles.Surface61551810, { borderRadius: 55 }]}>
+          <IconButton
+            onPress={() => {
+              try {
+                navigation.navigate('BottomTabNavigator', {
+                  screen: 'BaggageCartScreen',
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            icon={'MaterialCommunityIcons/cart'}
+            size={38}
+          />
+        </Surface>
       </View>
     </ScreenContainer>
   );
@@ -676,29 +723,37 @@ const styles = StyleSheet.create({
     marginRight: 20,
     width: 180,
   },
-  View5152e902: {
-    height: 140,
-  },
-  Text56ff1cc0: {
+  Text18d354ad: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 12,
+    paddingLeft: 8,
+    paddingTop: 8,
+    paddingRight: 8,
+    paddingBottom: 8,
   },
-  Textc3380ce3: {
+  Surface7436b239: {
+    minHeight: 25,
+    top: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  Text191b2614: {
     fontFamily: 'Poppins_600SemiBold',
+    paddingBottom: 8,
+    paddingRight: 8,
+    paddingTop: 8,
+    paddingLeft: 8,
   },
-  View7d6a39b7: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  Surfacee3f78cf0: {
+    minHeight: 25,
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
   },
-  Viewd8f97984: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 12,
-    paddingBottom: 12,
-    justifyContent: 'space-between',
-    flex: 1,
+  Viewd2736dc6: {
+    height: 160,
   },
-  Viewa4bdd040: {
+  View78167fa7: {
     overflow: 'hidden',
     borderLeftWidth: 1,
     borderTopWidth: 1,
@@ -723,6 +778,18 @@ const styles = StyleSheet.create({
   },
   FlatListc992f941Content: {
     flex: 1,
+  },
+  Surface61551810: {
+    width: 55,
+    height: 55,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  View2200bac7: {
+    height: '100%',
   },
 });
 

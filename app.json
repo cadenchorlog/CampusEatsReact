@@ -22,7 +22,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "net.campusEats.beta",
+      "bundleIdentifier": "net.campusEats.test",
       "supportsTablet": false,
       "buildNumber": "1.0.0",
       "infoPlist": {

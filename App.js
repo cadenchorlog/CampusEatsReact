@@ -16,7 +16,6 @@ import { GlobalVariableProvider } from './config/GlobalVariableContext';
 import { useFonts } from 'expo-font';
 import {
   Inter_400Regular,
-  Inter_500Medium,
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
@@ -42,12 +41,12 @@ const App = () => {
   const [isReady, setIsReady] = React.useState(false);
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
-    Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
     OpenSans_600SemiBold,
     Poppins_300Light,
     Poppins_300Light,
+    Poppins_400Regular,
     Poppins_400Regular,
     Poppins_400Regular,
     Poppins_400Regular,

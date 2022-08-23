@@ -164,72 +164,6 @@ export const loginPOST = (Constants, { email, password }) =>
     .then(res => res.json())
     .catch(() => {});
 
-export const newEndpointGET = (Constants, { user_id }) =>
-  fetch(
-    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/isDelivering/${
-      user_id ?? ''
-    }`,
-    {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }
-  )
-    .then(res => {
-      if (!res.ok) {
-        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
-      }
-      return res;
-    })
-    .then(res => res.json())
-    .catch(() => {});
-
-export const useNewEndpointGET = (args, { refetchInterval } = {}) => {
-  const Constants = GlobalVariables.useValues();
-  const queryClient = useQueryClient();
-  return useQuery(['userOrder', args], () => newEndpointGET(Constants, args), {
-    refetchInterval,
-    onSuccess: () => queryClient.invalidateQueries(['userOrders']),
-  });
-};
-
-export const FetchNewEndpointGET = ({
-  children,
-  onData = () => {},
-  refetchInterval,
-  user_id,
-}) => {
-  const Constants = GlobalVariables.useValues();
-  const isFocused = useIsFocused();
-  const prevIsFocused = usePrevious(isFocused);
-
-  const { loading, data, error, refetch } = useNewEndpointGET(
-    { user_id },
-    { refetchInterval }
-  );
-
-  React.useEffect(() => {
-    if (!prevIsFocused && isFocused) {
-      refetch();
-    }
-  }, [isFocused, prevIsFocused]);
-
-  React.useEffect(() => {
-    if (error) {
-      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
-      console.error(error);
-    }
-  }, [error]);
-  React.useEffect(() => {
-    if (data) {
-      onData(data);
-    }
-  }, [data]);
-
-  return children({ loading, data, error, refetchNewEndpoint: refetch });
-};
-
 export const signUpPOST = (Constants, { email, name, password }) =>
   fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/auth/signup`, {
     body: JSON.stringify({ name: name, email: email, password: password }),
@@ -319,6 +253,49 @@ export const useAddDriverPOST = initialArgs => {
   );
 };
 
+export const addTipPOST = (Constants, { tip, user_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/user/${
+      user_id ?? ''
+    }/addTip`,
+    {
+      body: JSON.stringify({ tipAmount: tip }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useAddTipPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => addTipPOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('userOrders', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('userOrder');
+        queryClient.invalidateQueries('userOrders');
+      },
+    }
+  );
+};
+
 export const chatGET = (Constants, { session_id }) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/chatSession/${
@@ -383,10 +360,88 @@ export const FetchChatGET = ({
   return children({ loading, data, error, refetchChat: refetch });
 };
 
-export const courierOffersGET = Constants =>
-  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/getOffers`, {
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-  })
+export const checkOfferEnabledGET = (Constants, { courieroffers_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/courieroffers/${
+      courieroffers_id ?? ''
+    }`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useCheckOfferEnabledGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['userOrder', args],
+    () => checkOfferEnabledGET(Constants, args),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['userOrders']),
+    }
+  );
+};
+
+export const FetchCheckOfferEnabledGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  courieroffers_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useCheckOfferEnabledGET(
+    { courieroffers_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchCheckOfferEnabled: refetch });
+};
+
+export const courierOffersGET = (Constants, { driverLat, driverLong }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/getOffers/${
+      driverLat ?? ''
+    }/${driverLong ?? ''}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
     .then(res => {
       if (!res.ok) {
         console.error('Fetch error: ' + res.status + ' ' + res.statusText);
@@ -411,13 +466,15 @@ export const FetchCourierOffersGET = ({
   children,
   onData = () => {},
   refetchInterval,
+  driverLat,
+  driverLong,
 }) => {
   const Constants = GlobalVariables.useValues();
   const isFocused = useIsFocused();
   const prevIsFocused = usePrevious(isFocused);
 
   const { loading, data, error, refetch } = useCourierOffersGET(
-    {},
+    { driverLat, driverLong },
     { refetchInterval }
   );
 
@@ -442,10 +499,132 @@ export const FetchCourierOffersGET = ({
   return children({ loading, data, error, refetchCourierOffers: refetch });
 };
 
-export const getAllStoresGET = Constants =>
-  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/stores`, {
+export const createDriverOfferPOST = (Constants, { storeID, uid }) =>
+  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/session`, {
+    body: JSON.stringify({ storeID: storeID, driverUID: uid }),
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    method: 'POST',
   })
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useCreateDriverOfferPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => createDriverOfferPOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('user', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('user');
+        queryClient.invalidateQueries('users');
+      },
+    }
+  );
+};
+
+export const createOfferSearchStoresGET = (
+  Constants,
+  { driverLat, driverLong, searchTerm }
+) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/getStores/${
+      driverLat ?? ''
+    }/${driverLong ?? ''}/${searchTerm ?? ''}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useCreateOfferSearchStoresGET = (
+  args,
+  { refetchInterval } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  return useQuery(
+    ['Stores', args],
+    () => createOfferSearchStoresGET(Constants, args),
+    {
+      refetchInterval,
+    }
+  );
+};
+
+export const FetchCreateOfferSearchStoresGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  driverLat,
+  driverLong,
+  searchTerm,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useCreateOfferSearchStoresGET(
+    { driverLat, driverLong, searchTerm },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({
+    loading,
+    data,
+    error,
+    refetchCreateOfferSearchStores: refetch,
+  });
+};
+
+export const getAllStoresGET = (Constants, { UID }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/stores/${UID ?? ''}/get`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
     .then(res => {
       if (!res.ok) {
         console.error('Fetch error: ' + res.status + ' ' + res.statusText);
@@ -466,13 +645,14 @@ export const FetchGetAllStoresGET = ({
   children,
   onData = () => {},
   refetchInterval,
+  UID,
 }) => {
   const Constants = GlobalVariables.useValues();
   const isFocused = useIsFocused();
   const prevIsFocused = usePrevious(isFocused);
 
   const { loading, data, error, refetch } = useGetAllStoresGET(
-    {},
+    { UID },
     { refetchInterval }
   );
 
@@ -954,6 +1134,72 @@ export const FetchGetUserRecordGET = ({
   return children({ loading, data, error, refetchGetUserRecord: refetch });
 };
 
+export const isDeliveringGET = (Constants, { user_id }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/isDelivering/${
+      user_id ?? ''
+    }`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useIsDeliveringGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(['userOrder', args], () => isDeliveringGET(Constants, args), {
+    refetchInterval,
+    onSuccess: () => queryClient.invalidateQueries(['userOrders']),
+  });
+};
+
+export const FetchIsDeliveringGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  user_id,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useIsDeliveringGET(
+    { user_id },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchIsDelivering: refetch });
+};
+
 export const markDeliveredPOST = (Constants, { driverID, orderID }) =>
   fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/markDelivered`, {
     body: JSON.stringify({ orderID: orderID, driverID: driverID }),
@@ -1010,6 +1256,41 @@ export const useMarkEnRoutePOST = initialArgs => {
 
   return useMutation(
     args => markEnRoutePOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('userOrders', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('userOrder');
+        queryClient.invalidateQueries('userOrders');
+      },
+    }
+  );
+};
+
+export const removeFromCartPOST = (Constants, { UID, itemID, itemMods }) =>
+  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/cartItem/remove`, {
+    body: JSON.stringify({ user_id: UID, itemID: itemID, itemMods: itemMods }),
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    method: 'POST',
+  })
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useRemoveFromCartPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => removeFromCartPOST(Constants, { ...initialArgs, ...args }),
     {
       onError: (err, variables, { previousValue }) => {
         if (previousValue) {
@@ -1164,7 +1445,7 @@ export const FetchSpecificOrderViewGET = ({
 
 export const updateCartPOST = (
   Constants,
-  { UID, cost, itemID, itemName, modsList, storeID, url, user_id }
+  { UID, cost, itemID, itemName, modsList, quantity, storeID, url, user_id }
 ) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/cart/${user_id ?? ''}`,
@@ -1177,6 +1458,7 @@ export const updateCartPOST = (
         modifications: modsList,
         itemCost: cost,
         itemImage: url,
+        quantity: quantity,
       }),
       headers: {
         Accept: 'application/json',

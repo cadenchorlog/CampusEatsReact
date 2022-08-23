@@ -2,7 +2,6 @@ import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
-import * as Utils from '../utils';
 import {
   CheckboxRow,
   Divider,
@@ -30,6 +29,26 @@ const RestaurantItemViewScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
 
+  const modCostUpdate = (currentPrice, modCost) => {
+    var newPrice = currentPrice + modCost;
+    return newPrice; // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
+  const modRemovePrice = (currentPrice, modPrice) => {
+    var newPrice = currentPrice - modPrice;
+    return newPrice; // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
   const addMod = (mod, currentString) => {
     return currentString + mod + ', ';
     // Hooks are run per ReactJS rules.
@@ -55,6 +74,7 @@ line two` ) and will not work with special characters inside of quotes ( example
 
   const updateCartPOST = XanoApi.useUpdateCartPOST();
 
+  const [addedToCart, setAddedToCart] = React.useState(false);
   const [checkboxRowValue, setCheckboxRowValue] = React.useState(undefined);
   const [customizations, setCustomizations] = React.useState('');
   const [itemCost, setItemCost] = React.useState('');
@@ -163,56 +183,72 @@ line two` ) and will not work with special characters inside of quotes ( example
                       return (
                         <>
                           <Row
-                            justifyContent={'space-around'}
+                            justifyContent={'space-between'}
                             alignItems={'center'}
                           >
-                            <CheckboxRow
-                              onPress={newCheckboxRowValue => {
-                                const checkboxRowValue = newCheckboxRowValue;
-                                try {
-                                  setCheckboxRowValue(checkboxRowValue);
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                              onCheck={() => {
-                                try {
-                                  const result = addMod(
-                                    listData?.modificationName,
-                                    customizations
-                                  );
+                            <View style={styles.View32b332f0}>
+                              <CheckboxRow
+                                onPress={newCheckboxRowValue => {
+                                  const checkboxRowValue = newCheckboxRowValue;
+                                  try {
+                                    setCheckboxRowValue(checkboxRowValue);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                onCheck={() => {
+                                  try {
+                                    const result = addMod(
+                                      listData?.modificationName,
+                                      customizations
+                                    );
 
-                                  const valuexcUnfZ5k = result;
-                                  setCustomizations(valuexcUnfZ5k);
-                                  const resultRemove = valuexcUnfZ5k;
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                              onUncheck={() => {
-                                try {
-                                  const resultMod = removeMod(
-                                    listData?.modificationName,
-                                    customizations
-                                  );
-                                  setCustomizations(resultMod);
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                              style={styles.CheckboxRow3907ce30}
-                              label={listData?.modificationName}
-                              value={checkboxRowValue}
-                            />
+                                    const valuexcUnfZ5k = result;
+                                    setCustomizations(valuexcUnfZ5k);
+                                    const resultRemove = valuexcUnfZ5k;
+                                    const newPrice = modCostUpdate(
+                                      itemCost,
+                                      listData?.modCost
+                                    );
+
+                                    const valueRJY8da1C = newPrice;
+                                    setItemCost(valueRJY8da1C);
+                                    const priceReduction = valueRJY8da1C;
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                onUncheck={() => {
+                                  try {
+                                    const resultMod = removeMod(
+                                      listData?.modificationName,
+                                      customizations
+                                    );
+                                    setCustomizations(resultMod);
+                                    const newCost = modRemovePrice(
+                                      itemCost,
+                                      listData?.modCost
+                                    );
+                                    setItemCost(newCost);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                style={styles.CheckboxRowab815695}
+                                label={listData?.modificationName}
+                                value={checkboxRowValue}
+                              />
+                            </View>
+
                             <Text
                               style={[
                                 theme.typography.button,
-                                styles.Text4ce7da72,
+                                styles.Textbf9dcb36,
                                 { color: theme.colors.primary },
                               ]}
                             >
-                              {'$'}
-                              {itemCost}
+                              {listData?.modCost}
+                              {' USD'}
                             </Text>
                           </Row>
                           <Divider
@@ -269,63 +305,103 @@ line two` ) and will not work with special characters inside of quotes ( example
           {'Quantity'}
         </Text>
       </View>
-
-      <Touchable
-        onPress={async () => {
-          try {
-            await updateCartPOST.mutateAsync({
-              UID: Constants['user_id'],
-              cost: itemCost,
-              itemID: props.route?.params?.itemID ?? 1,
-              itemName: itemName,
-              modsList: customizations,
-              storeID: props.route?.params?.storeID ?? 2,
-              url: itemImage,
-              user_id: Constants['user_id'],
-            });
-            navigation.goBack();
-            Utils.showAlert({
-              title: 'Success!',
-              message: 'Item added to cart',
-              buttonText: 'OK',
-            });
-          } catch (err) {
-            console.error(err);
-          }
-        }}
-        style={styles.Touchablec7f6c404}
-      >
-        <View
-          style={[
-            styles.View63956218,
-            {
-              borderRadius: theme.roundness,
-              backgroundColor: theme.colors.primary,
-            },
-          ]}
-        >
-          <Text
-            style={[
-              theme.typography.button,
-              styles.Textea3071f7,
-              { color: theme.colors.surface },
-            ]}
+      <>
+        {addedToCart ? null : (
+          <Touchable
+            onPress={() => {
+              const handler = async () => {
+                try {
+                  await updateCartPOST.mutateAsync({
+                    UID: Constants['user_id'],
+                    cost: itemCost,
+                    itemID: props.route?.params?.itemID ?? 1,
+                    itemName: itemName,
+                    modsList: customizations,
+                    quantity: stepperValue,
+                    storeID: props.route?.params?.storeID ?? 2,
+                    url: itemImage,
+                    user_id: Constants['user_id'],
+                  });
+                  setAddedToCart(true);
+                } catch (err) {
+                  console.error(err);
+                }
+              };
+              handler();
+            }}
+            style={styles.Touchablec7f6c404}
           >
-            {'Add To Cart'}
-          </Text>
+            <View
+              style={[
+                styles.View63956218,
+                {
+                  borderRadius: theme.roundness,
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  theme.typography.button,
+                  styles.Textea3071f7,
+                  { color: theme.colors.surface },
+                ]}
+              >
+                {'Add To Cart'}
+              </Text>
 
-          <Text
-            style={[
-              theme.typography.button,
-              styles.Textea3071f7,
-              { color: theme.colors.surface },
-            ]}
+              <Text
+                style={[
+                  theme.typography.button,
+                  styles.Textea3071f7,
+                  { color: theme.colors.surface },
+                ]}
+              >
+                {'$'}
+                {itemCost}
+                {' Each'}
+              </Text>
+            </View>
+          </Touchable>
+        )}
+      </>
+      {/* Proceed To Checkout */}
+      <>
+        {!addedToCart ? null : (
+          <Touchable
+            onPress={() => {
+              try {
+                navigation.navigate('BottomTabNavigator', {
+                  screen: 'BaggageCartScreen',
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            style={styles.Touchablec7f6c404}
           >
-            {'$'}
-            {itemCost}
-          </Text>
-        </View>
-      </Touchable>
+            <View
+              style={[
+                styles.View04b5f8ca,
+                {
+                  borderRadius: theme.roundness,
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  theme.typography.button,
+                  styles.Textea3071f7,
+                  { color: theme.colors.surface },
+                ]}
+              >
+                {'Proceed To Checkout'}
+              </Text>
+            </View>
+          </Touchable>
+        )}
+      </>
     </ScreenContainer>
   );
 };
@@ -360,14 +436,15 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 8,
   },
-  CheckboxRow3907ce30: {
+  CheckboxRowab815695: {
     minHeight: 50,
     textAlign: 'left',
-    marginRight: 20,
   },
-  Text4ce7da72: {
+  View32b332f0: {
+    width: '80%',
+  },
+  Textbf9dcb36: {
     textAlign: 'left',
-    paddingRight: 20,
   },
   Dividerde11d607: {
     height: 1,
@@ -427,6 +504,15 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingRight: 16,
     marginTop: 50,
+  },
+  View04b5f8ca: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    alignItems: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
 

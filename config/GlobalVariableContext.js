@@ -11,6 +11,8 @@ const DeviceVariables = {
   checkoutURL: '',
   driverPickupID: '',
   courierActive: '',
+  deviceLat: 0,
+  deviceLong: 0,
 };
 const AppVariables = {
   error_message: 'Please fill in the required fields.',

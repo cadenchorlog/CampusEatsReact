@@ -3,13 +3,16 @@ import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import * as Utils from '../utils';
+import { MapMarker, MapView } from '@draftbit/maps';
 import {
   ButtonSolid,
   Divider,
   Icon,
+  IconButton,
   Row,
   ScreenContainer,
   Spacer,
+  Stack,
   Surface,
   Touchable,
   withTheme,
@@ -21,6 +24,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Modal,
   Platform,
   StyleSheet,
   Text,
@@ -31,7 +35,6 @@ import { Fetch } from 'react-request';
 const AvailableOrdersScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
-
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const openMapApplication = (latitude, longitude) => {
     const scheme = Platform.select({
@@ -71,34 +74,52 @@ line two` ) and will not work with special characters inside of quotes ( example
   const markDeliveredPOST = XanoApi.useMarkDeliveredPOST();
 
   const isFocused = useIsFocused();
-  React.useEffect(async () => {
-    try {
-      if (!isFocused) {
-        return;
+  React.useEffect(() => {
+    const handler = async () => {
+      try {
+        if (!isFocused) {
+          return;
+        }
+        const me = await XanoApi.isDeliveringGET(Constants, {
+          user_id: Constants['user_id'],
+        });
+        const delivID = me.currentDelivery;
+        console.log(me);
+        const location = await Utils.getLocation();
+        const lat = location.latitude;
+        const long = location.longitude;
+        setGlobalVariableValue({
+          key: 'deviceLat',
+          value: lat,
+        });
+        setGlobalVariableValue({
+          key: 'deviceLong',
+          value: long,
+        });
+        if (!delivID) {
+          return;
+        }
+        setGlobalVariableValue({
+          key: 'courierActive',
+          value: true,
+        });
+        setGlobalVariableValue({
+          key: 'driverPickupID',
+          value: delivID,
+        });
+      } catch (err) {
+        console.error(err);
       }
-      const me = await XanoApi.newEndpointGET(Constants, {
-        user_id: Constants['user_id'],
-      });
-      const delivID = me.currentDelivery;
-      console.log(me);
-      if (!delivID) {
-        return;
-      }
-      setGlobalVariableValue({
-        key: 'courierActive',
-        value: true,
-      });
-      setGlobalVariableValue({
-        key: 'driverPickupID',
-        value: delivID,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    };
+    handler();
   }, [isFocused]);
 
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
+  const [previewID, setPreviewID] = React.useState(0);
+  const [previewModal, setPreviewModal] = React.useState(false);
+
+  const mapViewwpaCz5cORef = React.useRef();
 
   return (
     <ScreenContainer
@@ -107,19 +128,23 @@ line two` ) and will not work with special characters inside of quotes ( example
       scrollable={true}
       hasTopSafeArea={false}
     >
+      {/* orderPickedUpView */}
       <>
         {!Constants['courierActive'] ? null : (
           <View>
             <XanoApi.FetchSpecificOrderViewGET
               refetchInterval={1000}
               session_id={Constants['driverPickupID']}
-              onData={async fetchData => {
-                try {
-                  const location = await Utils.getLocation();
-                  console.log('hello');
-                } catch (err) {
-                  console.error(err);
-                }
+              onData={fetchData => {
+                const handler = async () => {
+                  try {
+                    const location = await Utils.getLocation();
+                    console.log('hello');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                };
+                handler();
               }}
             >
               {({ loading, error, data, refetchSpecificOrderView }) => {
@@ -234,15 +259,18 @@ line two` ) and will not work with special characters inside of quotes ( example
                       <>
                         {fetchData?.enRoute ? null : (
                           <ButtonSolid
-                            onPress={async () => {
-                              try {
-                                await markEnRoutePOST.mutateAsync({
-                                  driverUID: Constants['user_id'],
-                                  orderID: Constants['driverPickupID'],
-                                });
-                              } catch (err) {
-                                console.error(err);
-                              }
+                            onPress={() => {
+                              const handler = async () => {
+                                try {
+                                  await markEnRoutePOST.mutateAsync({
+                                    driverUID: Constants['user_id'],
+                                    orderID: Constants['driverPickupID'],
+                                  });
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              };
+                              handler();
                             }}
                             style={[
                               styles.ButtonSolidc21c4061,
@@ -255,19 +283,22 @@ line two` ) and will not work with special characters inside of quotes ( example
                       <>
                         {!fetchData?.enRoute ? null : (
                           <ButtonSolid
-                            onPress={async () => {
-                              try {
-                                await markDeliveredPOST.mutateAsync({
-                                  driverID: Constants['user_id'],
-                                  orderID: Constants['driverPickupID'],
-                                });
-                                setGlobalVariableValue({
-                                  key: 'courierActive',
-                                  value: '',
-                                });
-                              } catch (err) {
-                                console.error(err);
-                              }
+                            onPress={() => {
+                              const handler = async () => {
+                                try {
+                                  await markDeliveredPOST.mutateAsync({
+                                    driverID: Constants['user_id'],
+                                    orderID: Constants['driverPickupID'],
+                                  });
+                                  setGlobalVariableValue({
+                                    key: 'courierActive',
+                                    value: '',
+                                  });
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              };
+                              handler();
                             }}
                             style={[
                               styles.ButtonSolidc21c4061,
@@ -365,18 +396,21 @@ line two` ) and will not work with special characters inside of quotes ( example
               lat={lat}
               long={long}
               session={Constants['driverPickupID']}
-              onData={async fetchData => {
-                try {
-                  const location = await Utils.getLocation();
-                  console.log(location);
-                  const latitude = location.latitude;
-                  const longitude = location.longitude;
-                  setLat(latitude);
-                  setLong(longitude);
-                  await refetchSetLocation();
-                } catch (err) {
-                  console.error(err);
-                }
+              onData={fetchData => {
+                const handler = async () => {
+                  try {
+                    const location = await Utils.getLocation();
+                    console.log(location);
+                    const latitude = location.latitude;
+                    const longitude = location.longitude;
+                    setLat(latitude);
+                    setLong(longitude);
+                    await refetchSetLocation();
+                  } catch (err) {
+                    console.error(err);
+                  }
+                };
+                handler();
               }}
             >
               {({ loading, error, data, refetchSetLocation }) => {
@@ -399,16 +433,35 @@ line two` ) and will not work with special characters inside of quotes ( example
           </View>
         )}
       </>
+      {/* offerView */}
       <>
         {Constants['courierActive'] ? null : (
           <View style={styles.View9900fb05}>
-            <Text style={[styles.Texta195e174, { color: theme.colors.strong }]}>
-              {'Available Orders'}
-            </Text>
+            <Row justifyContent={'space-between'} alignItems={'center'}>
+              <Text
+                style={[styles.Texta195e174, { color: theme.colors.strong }]}
+              >
+                {'Available Orders'}
+              </Text>
+              <IconButton
+                onPress={() => {
+                  try {
+                    navigation.navigate('CreateOrderScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.IconButton03ed04fc}
+                icon={'AntDesign/plus'}
+                size={32}
+              />
+            </Row>
 
             <XanoApi.FetchCourierOffersGET
               method={'GET'}
               refetchInterval={10000}
+              driverLat={Constants['deviceLat']}
+              driverLong={Constants['deviceLong']}
             >
               {({ loading, error, data, refetchCourierOffers }) => {
                 const fetchData = data;
@@ -435,7 +488,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         <>
                           <View
                             style={[
-                              styles.Viewcabc33e8,
+                              styles.View4685c5ed,
                               {
                                 backgroundColor: theme.colors.surface,
                                 borderRadius: 8,
@@ -446,18 +499,22 @@ line two` ) and will not work with special characters inside of quotes ( example
                             <Touchable
                               onPress={() => {
                                 try {
-                                  navigation.navigate('AcceptOrderScreen', {
-                                    orderID: listData?.id,
-                                  });
+                                  setPreviewID(listData?.id);
+                                  setPreviewModal(true);
                                 } catch (err) {
                                   console.error(err);
                                 }
                               }}
                             >
-                              <View style={styles.View769cb23a}>
+                              <View
+                                style={[
+                                  styles.View5cec8edc,
+                                  { backgroundColor: theme.colors.strong },
+                                ]}
+                              >
                                 <ImageBackground
                                   style={[
-                                    styles.ImageBackground69e94ca6,
+                                    styles.ImageBackground2c2160f4,
                                     { borderRadius: theme.roundness },
                                   ]}
                                   resizeMode={'cover'}
@@ -465,87 +522,90 @@ line two` ) and will not work with special characters inside of quotes ( example
                                     uri: `${listData?.userOrder?.restaurantImage}`,
                                   }}
                                 >
-                                  <View style={styles.View272ee112}>
-                                    <View
-                                      style={[
-                                        styles.View422f6f32,
-                                        {
-                                          backgroundColor: theme.colors.primary,
-                                          borderBottomLeftRadius: 8,
-                                          borderTopLeftRadius: 8,
-                                        },
-                                      ]}
-                                    >
-                                      <Text
-                                        style={[
-                                          styles.Textd40b1daa,
-                                          { color: theme.colors.surface },
-                                        ]}
-                                        allowFontScaling={true}
-                                        ellipsizeMode={'tail'}
-                                        textBreakStrategy={'highQuality'}
-                                      >
-                                        {'$'}
-                                        {listData?.earnings}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </ImageBackground>
-                              </View>
-
-                              <View style={styles.View8db74792}>
-                                <View>
-                                  <Text
-                                    style={[
-                                      styles.Text99b56fe5,
-                                      { color: theme.colors.strong },
-                                    ]}
-                                    textBreakStrategy={'highQuality'}
-                                    ellipsizeMode={'tail'}
-                                    allowFontScaling={true}
-                                    numberOfLines={2}
+                                  <Row
+                                    justifyContent={'space-between'}
+                                    alignItems={'center'}
                                   >
-                                    {listData?.userOrder?.restaurantName}
-                                  </Text>
-                                  <Divider
-                                    style={styles.Divider22627dc6}
-                                    color={theme.colors.divider}
-                                  />
-                                  <View style={styles.Viewce4accf0}>
-                                    <View style={styles.View7d6a39b7}>
-                                      <Icon
-                                        name={
-                                          'MaterialCommunityIcons/map-marker-distance'
-                                        }
-                                        size={24}
-                                        color={theme.colors.primary}
-                                      />
-                                      <Spacer right={2} left={2} />
+                                    <View style={styles.View24206b27}>
                                       <Text
                                         style={[
-                                          styles.Textde21574d,
-                                          { color: theme.colors.medium },
+                                          styles.Textfb77ec08,
+                                          { color: theme.colors.background },
+                                        ]}
+                                        textBreakStrategy={'highQuality'}
+                                        ellipsizeMode={'tail'}
+                                        allowFontScaling={true}
+                                        numberOfLines={2}
+                                      >
+                                        {listData?.userOrder?.restaurantName}
+                                      </Text>
+
+                                      <View style={styles.Viewce4accf0}>
+                                        <View style={styles.View7d6a39b7}>
+                                          <Icon
+                                            name={
+                                              'MaterialCommunityIcons/map-marker-distance'
+                                            }
+                                            size={24}
+                                            color={theme.colors.primary}
+                                          />
+                                          <Spacer right={2} left={2} />
+                                          <Text
+                                            style={[
+                                              styles.Text92a50533,
+                                              {
+                                                color: theme.colors.background,
+                                              },
+                                            ]}
+                                          >
+                                            {listData?.distance}
+                                            {' Mi.   OrderID: '}
+                                            {listData?.id}
+                                          </Text>
+                                        </View>
+                                        <Spacer
+                                          top={8}
+                                          right={8}
+                                          bottom={8}
+                                          left={8}
+                                        />
+                                        <Spacer
+                                          top={8}
+                                          right={8}
+                                          bottom={8}
+                                          left={8}
+                                        />
+                                      </View>
+                                    </View>
+
+                                    <View style={styles.View6a670001}>
+                                      <View
+                                        style={[
+                                          styles.View422f6f32,
+                                          {
+                                            backgroundColor:
+                                              theme.colors.primary,
+                                            borderBottomLeftRadius: 8,
+                                            borderTopLeftRadius: 8,
+                                          },
                                         ]}
                                       >
-                                        {listData?.distance}
-                                        {' Mi.   OrderID: '}
-                                        {listData?.id}
-                                      </Text>
+                                        <Text
+                                          style={[
+                                            styles.Textd40b1daa,
+                                            { color: theme.colors.surface },
+                                          ]}
+                                          allowFontScaling={true}
+                                          ellipsizeMode={'tail'}
+                                          textBreakStrategy={'highQuality'}
+                                        >
+                                          {'$'}
+                                          {listData?.earnings}
+                                        </Text>
+                                      </View>
                                     </View>
-                                    <Spacer
-                                      top={8}
-                                      right={8}
-                                      bottom={8}
-                                      left={8}
-                                    />
-                                    <Spacer
-                                      top={8}
-                                      right={8}
-                                      bottom={8}
-                                      left={8}
-                                    />
-                                  </View>
-                                </View>
+                                  </Row>
+                                </ImageBackground>
                               </View>
                             </Touchable>
                           </View>
@@ -561,6 +621,259 @@ line two` ) and will not work with special characters inside of quotes ( example
           </View>
         )}
       </>
+      {/* preAccectDialog */}
+      <>
+        {!previewModal ? null : (
+          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            {/* Header */}
+            <View style={styles.View7a993fb0}>
+              <Row justifyContent={'flex-start'} alignItems={'center'}>
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setPreviewModal(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButton897c6051}
+                  icon={'AntDesign/close'}
+                  size={40}
+                />
+                <Text
+                  style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}
+                >
+                  {'Order #'}
+                  {previewID}
+                </Text>
+              </Row>
+            </View>
+
+            <XanoApi.FetchSpecificOrderViewGET session_id={previewID}>
+              {({ loading, error, data, refetchSpecificOrderView }) => {
+                const fetchData = data;
+                if (!fetchData || loading) {
+                  return <ActivityIndicator />;
+                }
+
+                if (error) {
+                  return (
+                    <Text style={{ textAlign: 'center' }}>
+                      There was a problem fetching this data
+                    </Text>
+                  );
+                }
+
+                return (
+                  <>
+                    <Touchable
+                      onPress={() => {
+                        try {
+                          const url = openMapApplication(
+                            fetchData?.userOrder?.storeLat,
+                            fetchData?.userOrder?.storeLong
+                          );
+                          Linking.openURL(`${url}`);
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                    >
+                      <Surface
+                        style={[styles.Surfacedbd81cab, { borderRadius: 8 }]}
+                      >
+                        <MapView
+                          style={[styles.MapView7f1c84a4, { borderRadius: 8 }]}
+                          latitude={fetchData?.userOrder?.storeLat}
+                          longitude={fetchData?.userOrder?.storeLong}
+                          zoom={15}
+                          zoomEnabled={true}
+                          rotateEnabled={true}
+                          scrollEnabled={true}
+                          loadingEnabled={true}
+                          showsPointsOfInterest={true}
+                          apiKey={'AIzaSyC53v7BvSuA1yv7Hwf1rC_9kpHMmmYJJhU'}
+                          showsUserLocation={true}
+                          ref={mapViewwpaCz5cORef}
+                        >
+                          <MapMarker
+                            latitude={fetchData?.userOrder?.storeLat}
+                            longitude={fetchData?.userOrder?.storeLong}
+                            title={'Pickup Location'}
+                          />
+                        </MapView>
+                      </Surface>
+                    </Touchable>
+                    <FlatList
+                      data={fetchData?.userOrder?.items}
+                      listKey={'Wgjvgo9d'}
+                      keyExtractor={({ item }) =>
+                        item?.id || item?.uuid || item
+                      }
+                      renderItem={({ item }) => {
+                        const listData = item;
+                        return (
+                          <>
+                            <Row
+                              justifyContent={'space-between'}
+                              alignItems={'flex-start'}
+                            >
+                              <Stack
+                                justifyContent={'flex-start'}
+                                alignItems={'flex-start'}
+                              >
+                                <Text
+                                  style={[
+                                    styles.Text0dd45cce,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                >
+                                  {listData?.itemName}
+                                </Text>
+
+                                <Text
+                                  style={[
+                                    styles.Text6ebfd19b,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                >
+                                  {listData?.customizations}
+                                </Text>
+                              </Stack>
+
+                              <Text
+                                style={[
+                                  styles.Text09cd9b42,
+                                  { color: theme.colors.strong },
+                                ]}
+                              >
+                                {'$'}
+                                {listData?.itemPrice}
+                              </Text>
+                            </Row>
+                            <Divider
+                              style={styles.Divider6f17520d}
+                              color={theme.colors.divider}
+                            />
+                          </>
+                        );
+                      }}
+                      contentContainerStyle={styles.FlatList54a9f6e6Content}
+                      numColumns={1}
+                    />
+                    <Surface
+                      style={[
+                        styles.Surface67b2725c,
+                        {
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
+                          backgroundColor: theme.colors.background,
+                        },
+                      ]}
+                      elevation={3}
+                    >
+                      <Row
+                        justifyContent={'space-around'}
+                        alignItems={'flex-start'}
+                      >
+                        <Surface
+                          style={[
+                            styles.Surfaceca163954,
+                            {
+                              backgroundColor: theme.colors.background,
+                              borderColor: theme.colors.primary,
+                              borderRadius: 40,
+                            },
+                          ]}
+                        >
+                          <Row justifyContent={'center'} alignItems={'center'}>
+                            <Icon
+                              name={'FontAwesome/dollar'}
+                              size={24}
+                              color={theme.colors.primary}
+                            />
+                            <Text style={{ color: theme.colors.primary }}>
+                              {fetchData?.earnings}
+                            </Text>
+                          </Row>
+                        </Surface>
+                        <ButtonSolid
+                          onPress={() => {
+                            try {
+                              setPreviewModal(false);
+                              navigation.navigate('AcceptOrderScreen', {
+                                orderID: previewID,
+                              });
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={[
+                            styles.ButtonSolid2ffa6a59,
+                            { backgroundColor: theme.colors.primary },
+                          ]}
+                          title={'Accept Order'}
+                        />
+                      </Row>
+                      <Spacer top={15} right={8} bottom={15} left={8} />
+                      <Text
+                        style={[
+                          styles.Text97a79954,
+                          { color: theme.colors.light },
+                        ]}
+                      >
+                        {'Copyright Campus Eats 2022'}
+                      </Text>
+                    </Surface>
+                  </>
+                );
+              }}
+            </XanoApi.FetchSpecificOrderViewGET>
+          </Modal>
+        )}
+      </>
+      <Surface style={styles.Surface0503a1c6}>
+        <XanoApi.FetchCheckOfferEnabledGET
+          refetchInterval={1000}
+          courieroffers_id={Constants['user_id']}
+        >
+          {({ loading, error, data, refetchCheckOfferEnabled }) => {
+            const fetchData = data;
+            if (!fetchData || loading) {
+              return <ActivityIndicator />;
+            }
+
+            if (error) {
+              return (
+                <Text style={{ textAlign: 'center' }}>
+                  There was a problem fetching this data
+                </Text>
+              );
+            }
+
+            return (
+              <Modal
+                visible={fetchData}
+                animationType={'slide'}
+                presentationStyle={'fullScreen'}
+              >
+                <View style={styles.View45f37179}>
+                  <ActivityIndicator
+                    style={styles.ActivityIndicatord06b86ef}
+                    size={'large'}
+                    animating={true}
+                    hidesWhenStopped={true}
+                    color={theme.colors.primary}
+                  />
+                  <Text style={{ color: theme.colors.strong }}>
+                    {'Awaiting offer pickup.'}
+                  </Text>
+                </View>
+              </Modal>
+            );
+          }}
+        </XanoApi.FetchCheckOfferEnabledGET>
+      </Surface>
     </ScreenContainer>
   );
 };
@@ -672,6 +985,31 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingBottom: 16,
   },
+  IconButton03ed04fc: {
+    marginTop: 16,
+    marginRight: 16,
+  },
+  Textfb77ec08: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 24,
+  },
+  Text92a50533: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 12,
+  },
+  View7d6a39b7: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  Viewce4accf0: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  View24206b27: {
+    paddingLeft: 16,
+    justifyContent: 'center',
+    marginTop: 20,
+  },
   Textd40b1daa: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
@@ -684,50 +1022,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  View272ee112: {
+  View6a670001: {
     alignItems: 'flex-end',
-    marginTop: 16,
+    marginTop: -10,
   },
-  ImageBackground69e94ca6: {
+  ImageBackground2c2160f4: {
     width: '100%',
     height: '100%',
+    opacity: 1,
   },
-  View769cb23a: {
-    height: 150,
+  View5cec8edc: {
+    height: 110,
   },
-  Text99b56fe5: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 24,
-  },
-  Divider22627dc6: {
-    height: 1,
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  Textde21574d: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  View7d6a39b7: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  Viewce4accf0: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  View8db74792: {
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  Viewcabc33e8: {
+  View4685c5ed: {
     overflow: 'hidden',
     borderLeftWidth: 1,
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
+    height: 100,
+    maxHeight: 100,
   },
   FlatList8db74792Content: {
     paddingLeft: 16,
@@ -737,6 +1051,100 @@ const styles = StyleSheet.create({
   },
   View9900fb05: {
     marginTop: 45,
+  },
+  IconButton897c6051: {
+    marginLeft: 16,
+  },
+  Textd59ae7c0: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 26,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  View7a993fb0: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  MapView7f1c84a4: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  Surfacedbd81cab: {
+    minHeight: 240,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  Text0dd45cce: {
+    marginLeft: 20,
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 20,
+  },
+  Text6ebfd19b: {
+    marginLeft: 20,
+    marginBottom: 12,
+  },
+  Text09cd9b42: {
+    marginRight: 20,
+    fontFamily: 'Poppins_600SemiBold',
+    marginLeft: 20,
+    marginTop: 4,
+  },
+  Divider6f17520d: {
+    height: 1,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  FlatList54a9f6e6Content: {
+    flex: 1,
+    marginTop: 40,
+    maxHeight: 300,
+  },
+  Surfaceca163954: {
+    minHeight: 40,
+    borderLeftWidth: 2,
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    minWidth: 80,
+    marginLeft: 16,
+    marginTop: 16,
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  ButtonSolid2ffa6a59: {
+    borderRadius: 40,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 16,
+    marginLeft: 16,
+    marginRight: 16,
+    width: '70%',
+  },
+  Text97a79954: {
+    textAlign: 'center',
+  },
+  Surface67b2725c: {
+    minHeight: 150,
+    width: '100%',
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  ActivityIndicatord06b86ef: {
+    width: 100,
+    height: 100,
+  },
+  View45f37179: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  Surface0503a1c6: {
+    minHeight: 40,
+    position: 'absolute',
+    bottom: -200,
   },
 });
 

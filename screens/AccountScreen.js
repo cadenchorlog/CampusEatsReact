@@ -15,12 +15,21 @@ const AccountScreen = props => {
   const Variables = Constants;
 
   const { theme } = props;
+  const { navigation } = props;
 
   return (
     <ScreenContainer scrollable={true} hasSafeArea={false}>
+      {/* Header */}
       <View style={styles.Viewf39cc81f}>
         <Row justifyContent={'flex-start'} alignItems={'center'}>
           <IconButton
+            onPress={() => {
+              try {
+                navigation.goBack();
+              } catch (err) {
+                console.error(err);
+              }
+            }}
             style={styles.IconButton897c6051}
             icon={'Ionicons/ios-chevron-back'}
             size={32}
@@ -32,9 +41,19 @@ const AccountScreen = props => {
           </Text>
         </Row>
       </View>
-
+      {/* browse-grid */}
       <View style={styles.View467c9a69} needsOffscreenAlphaCompositing={false}>
-        <Touchable style={styles.Touchablef4217bc1}>
+        {/* Address */}
+        <Touchable
+          onPress={() => {
+            try {
+              navigation.navigate('UserSetAddressScreen');
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          style={styles.Touchablef4217bc1}
+        >
           <View
             style={[
               styles.View932db872,
@@ -79,7 +98,7 @@ const AccountScreen = props => {
             </View>
           </View>
         </Touchable>
-
+        {/* CampusLink */}
         <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
@@ -125,7 +144,7 @@ const AccountScreen = props => {
             </View>
           </View>
         </Touchable>
-
+        {/* Courier */}
         <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
@@ -160,7 +179,7 @@ const AccountScreen = props => {
             </View>
           </View>
         </Touchable>
-
+        {/* UserInfo */}
         <Touchable style={styles.Touchable8f61467f}>
           <View
             style={[
@@ -195,7 +214,7 @@ const AccountScreen = props => {
             </View>
           </View>
         </Touchable>
-
+        {/* Delete Account */}
         <Touchable style={styles.Touchable8cc81ad3}>
           <View
             style={[

@@ -11,8 +11,8 @@ import AcceptOrderScreen from './screens/AcceptOrderScreen';
 import AccountScreen from './screens/AccountScreen';
 import AvailableOrdersScreen from './screens/AvailableOrdersScreen';
 import BaggageCartScreen from './screens/BaggageCartScreen';
-import BlankScreen from './screens/BlankScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
+import CreateOrderScreen from './screens/CreateOrderScreen';
 import DriverChatScreen from './screens/DriverChatScreen';
 import DriverDashboardScreen from './screens/DriverDashboardScreen';
 import ExitDriverScreen from './screens/ExitDriverScreen';
@@ -73,6 +73,7 @@ function Placeholder() {
 function BottomTabNavigator() {
   return (
     <Tab.Navigator
+      initialRouteName="OrderScreen"
       tabBarOptions={{
         showLabel: false,
         showIcon: true,
@@ -80,13 +81,13 @@ function BottomTabNavigator() {
       }}
     >
       <Tab.Screen
-        name="MapScreen"
-        component={MapScreen}
+        name="OrderScreen"
+        component={OrderScreen}
         options={{
-          title: 'Map',
+          title: 'Order',
           tabBarIcon: ({ focused, color }) => (
             <Icon
-              name="MaterialCommunityIcons/map-marker"
+              name="Ionicons/fast-food-outline"
               size={25}
               color={focused ? theme.colors.primary : color}
             />
@@ -94,13 +95,13 @@ function BottomTabNavigator() {
         }}
       />
       <Tab.Screen
-        name="OrderScreen"
-        component={OrderScreen}
+        name="MapScreen"
+        component={MapScreen}
         options={{
-          title: 'Order',
+          title: 'Map',
           tabBarIcon: ({ focused, color }) => (
             <Icon
-              name="Ionicons/fast-food"
+              name="MaterialCommunityIcons/map-marker-outline"
               size={25}
               color={focused ? theme.colors.primary : color}
             />
@@ -153,7 +154,7 @@ function DriverNav() {
           title: 'Driver Dashboard',
           tabBarIcon: ({ focused, color }) => (
             <Icon
-              name="MaterialCommunityIcons/view-dashboard-outline"
+              name="FontAwesome/dollar"
               size={25}
               color={focused ? theme.colors.primary : color}
             />
@@ -167,7 +168,7 @@ function DriverNav() {
           title: 'AvailableOrders',
           tabBarIcon: ({ focused, color }) => (
             <Icon
-              name="FontAwesome/dollar"
+              name="Entypo/list"
               size={25}
               color={focused ? theme.colors.primary : color}
             />
@@ -288,9 +289,9 @@ export default function RootAppNavigator() {
           options={{ title: 'restaurantView' }}
         />
         <Stack.Screen
-          name="BlankScreen"
-          component={BlankScreen}
-          options={{ title: 'Blank' }}
+          name="CreateOrderScreen"
+          component={CreateOrderScreen}
+          options={{ title: 'createOrder' }}
         />
         <Stack.Screen
           name="BottomTabNavigator"
