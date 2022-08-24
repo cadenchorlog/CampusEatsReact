@@ -80,11 +80,6 @@ line two` ) and will not work with special characters inside of quotes ( example
         if (!isFocused) {
           return;
         }
-        const me = await XanoApi.isDeliveringGET(Constants, {
-          user_id: Constants['user_id'],
-        });
-        const delivID = me.currentDelivery;
-        console.log(me);
         const location = await Utils.getLocation();
         const lat = location.latitude;
         const long = location.longitude;
@@ -96,17 +91,6 @@ line two` ) and will not work with special characters inside of quotes ( example
           key: 'deviceLong',
           value: long,
         });
-        if (!delivID) {
-          return;
-        }
-        setGlobalVariableValue({
-          key: 'courierActive',
-          value: true,
-        });
-        setGlobalVariableValue({
-          key: 'driverPickupID',
-          value: delivID,
-        });
       } catch (err) {
         console.error(err);
       }
@@ -114,6 +98,8 @@ line two` ) and will not work with special characters inside of quotes ( example
     handler();
   }, [isFocused]);
 
+  const [driverModal, setDriverModal] = React.useState(false);
+  const [enRoute, setEnRoute] = React.useState(false);
   const [lat, setLat] = React.useState('');
   const [long, setLong] = React.useState('');
   const [previewID, setPreviewID] = React.useState(0);
@@ -128,219 +114,234 @@ line two` ) and will not work with special characters inside of quotes ( example
       scrollable={true}
       hasTopSafeArea={false}
     >
-      {/* orderPickedUpView */}
-      <>
-        {!Constants['courierActive'] ? null : (
-          <View>
-            <XanoApi.FetchSpecificOrderViewGET
-              refetchInterval={1000}
-              session_id={Constants['driverPickupID']}
-              onData={fetchData => {
-                const handler = async () => {
-                  try {
-                    const location = await Utils.getLocation();
-                    console.log('hello');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                };
-                handler();
-              }}
-            >
-              {({ loading, error, data, refetchSpecificOrderView }) => {
-                const fetchData = data;
-                if (!fetchData || loading) {
-                  return <ActivityIndicator />;
-                }
+      <XanoApi.FetchIsDeliveringGET
+        refetchInterval={1000}
+        user_id={Constants['user_id']}
+        onData={fetchData => {
+          try {
+            setGlobalVariableValue({
+              key: 'driverPickupID',
+              value: fetchData?.currentDelivery,
+            });
+            if (!fetchData?.currentDelivery) {
+              return;
+            }
+            setDriverModal(true);
+          } catch (err) {
+            console.error(err);
+          }
+        }}
+      >
+        {({ loading, error, data, refetchIsDelivering }) => {
+          const fetchData = data;
+          if (!fetchData || loading) {
+            return <ActivityIndicator />;
+          }
 
-                if (error) {
-                  return (
-                    <Text style={{ textAlign: 'center' }}>
-                      There was a problem fetching this data
-                    </Text>
-                  );
-                }
+          if (error) {
+            return (
+              <Text style={{ textAlign: 'center' }}>
+                There was a problem fetching this data
+              </Text>
+            );
+          }
 
-                return (
-                  <>
-                    <Image
-                      style={styles.Image6ba238f9}
-                      source={{
-                        uri: `${fetchData?.userOrder?.restaurantImage}`,
-                      }}
-                      resizeMode={'cover'}
-                    />
-                    <Surface
-                      style={[
-                        styles.Surfacefd5c62b0,
-                        { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.Text9e468f17,
-                          { color: theme.colors.strong },
-                        ]}
-                      >
-                        {'Delivering order #'}
-                        {fetchData?.id}
-                      </Text>
+          return (
+            <>
+              {!fetchData?.currentDelivery ? null : (
+                <View>
+                  <XanoApi.FetchSpecificOrderViewGET
+                    refetchInterval={1000}
+                    session_id={fetchData?.currentDelivery}
+                    onData={fetchData => {
+                      const handler = async () => {
+                        try {
+                          const location = await Utils.getLocation();
+                          console.log('hello');
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      };
+                      handler();
+                    }}
+                  >
+                    {({ loading, error, data, refetchSpecificOrderView }) => {
+                      const fetchData = data;
+                      if (!fetchData || loading) {
+                        return <ActivityIndicator />;
+                      }
 
-                      <Text
-                        style={[
-                          styles.Textdf7ef565,
-                          { color: theme.colors.strong },
-                        ]}
-                      >
-                        {'Delivering to user: '}
-                        {fetchData?.user_id}
-                      </Text>
+                      if (error) {
+                        return (
+                          <Text style={{ textAlign: 'center' }}>
+                            There was a problem fetching this data
+                          </Text>
+                        );
+                      }
 
-                      <Row
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                      >
-                        <ButtonSolid
-                          onPress={() => {
-                            try {
-                              const result = openMapApplication(
-                                fetchData?.userOrder?.storeLat,
-                                fetchData?.userOrder?.storeLong
-                              );
-                              Linking.openURL(`${result}`);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={[
-                            styles.ButtonSolidb5539f45,
-                            { backgroundColor: theme.colors.primary },
-                          ]}
-                          title={'Pickup'}
-                          icon={'MaterialIcons/store'}
-                        />
-                        <ButtonSolid
-                          onPress={() => {
-                            try {
-                              const result = openMapApplication(
-                                fetchData?.userOrder?.userLat,
-                                fetchData?.userOrder?.userLong
-                              );
-                              Linking.openURL(`${result}`);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={[
-                            styles.ButtonSolid3a730fd5,
-                            { backgroundColor: theme.colors.primary },
-                          ]}
-                          title={'Destination'}
-                          icon={'Ionicons/ios-pin-sharp'}
-                        />
-                      </Row>
-                      <ButtonSolid
-                        onPress={() => {
-                          try {
-                            navigation.navigate('DriverChatScreen', {
-                              orderID: Constants['driverPickupID'],
-                            });
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                        style={[
-                          styles.ButtonSolidc21c4061,
-                          { backgroundColor: theme.colors.primary },
-                        ]}
-                        title={'Message User'}
-                        icon={'MaterialCommunityIcons/android-messages'}
-                      />
-                      <>
-                        {fetchData?.enRoute ? null : (
-                          <ButtonSolid
-                            onPress={() => {
-                              const handler = async () => {
+                      return (
+                        <>
+                          <Image
+                            style={styles.Image6ba238f9}
+                            source={{
+                              uri: `${fetchData?.userOrder?.restaurantImage}`,
+                            }}
+                            resizeMode={'cover'}
+                          />
+                          <Surface
+                            style={[
+                              styles.Surfacefd5c62b0,
+                              {
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                              },
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.Text9e468f17,
+                                { color: theme.colors.strong },
+                              ]}
+                            >
+                              {'Delivering order #'}
+                              {fetchData?.id}
+                            </Text>
+
+                            <Text
+                              style={[
+                                styles.Textdf7ef565,
+                                { color: theme.colors.strong },
+                              ]}
+                            >
+                              {'Delivering to user: '}
+                              {fetchData?.user_id}
+                            </Text>
+
+                            <Row
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
+                            >
+                              <ButtonSolid
+                                onPress={() => {
+                                  try {
+                                    const result = openMapApplication(
+                                      fetchData?.userOrder?.storeLat,
+                                      fetchData?.userOrder?.storeLong
+                                    );
+                                    Linking.openURL(`${result}`);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                style={[
+                                  styles.ButtonSolidb5539f45,
+                                  { backgroundColor: theme.colors.primary },
+                                ]}
+                                title={'Pickup'}
+                                icon={'MaterialIcons/store'}
+                              />
+                              <ButtonSolid
+                                onPress={() => {
+                                  try {
+                                    const result = openMapApplication(
+                                      fetchData?.userOrder?.userLat,
+                                      fetchData?.userOrder?.userLong
+                                    );
+                                    Linking.openURL(`${result}`);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                style={[
+                                  styles.ButtonSolid3a730fd5,
+                                  { backgroundColor: theme.colors.primary },
+                                ]}
+                                title={'Destination'}
+                                icon={'Ionicons/ios-pin-sharp'}
+                              />
+                            </Row>
+                            <ButtonSolid
+                              onPress={() => {
                                 try {
-                                  await markEnRoutePOST.mutateAsync({
-                                    driverUID: Constants['user_id'],
+                                  navigation.navigate('DriverChatScreen', {
                                     orderID: Constants['driverPickupID'],
                                   });
                                 } catch (err) {
                                   console.error(err);
                                 }
-                              };
-                              handler();
-                            }}
-                            style={[
-                              styles.ButtonSolidc21c4061,
-                              { backgroundColor: theme.colors.primary },
-                            ]}
-                            title={'Order Picked Up'}
-                          />
-                        )}
-                      </>
-                      <>
-                        {!fetchData?.enRoute ? null : (
-                          <ButtonSolid
-                            onPress={() => {
-                              const handler = async () => {
-                                try {
-                                  await markDeliveredPOST.mutateAsync({
-                                    driverID: Constants['user_id'],
-                                    orderID: Constants['driverPickupID'],
-                                  });
-                                  setGlobalVariableValue({
-                                    key: 'courierActive',
-                                    value: '',
-                                  });
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              };
-                              handler();
-                            }}
-                            style={[
-                              styles.ButtonSolidc21c4061,
-                              { backgroundColor: theme.colors.primary },
-                            ]}
-                            title={'Mark Delivered'}
-                          />
-                        )}
-                      </>
-                      <Divider
-                        style={styles.Dividerfc046f10}
-                        color={theme.colors.divider}
-                      />
-                      <Text
-                        style={[
-                          styles.Text0586d8e1,
-                          { color: theme.colors.strong },
-                        ]}
-                      >
-                        {'Order Contents:'}
-                      </Text>
-
-                      <XanoApi.FetchGetItemsGET
-                        order_id={Constants['driverPickupID']}
-                      >
-                        {({ loading, error, data, refetchGetItems }) => {
-                          const fetchData = data;
-                          if (!fetchData || loading) {
-                            return <ActivityIndicator />;
-                          }
-
-                          if (error) {
-                            return (
-                              <Text style={{ textAlign: 'center' }}>
-                                There was a problem fetching this data
-                              </Text>
-                            );
-                          }
-
-                          return (
+                              }}
+                              style={[
+                                styles.ButtonSolidc21c4061,
+                                { backgroundColor: theme.colors.primary },
+                              ]}
+                              title={'Message User'}
+                              icon={'MaterialCommunityIcons/android-messages'}
+                            />
+                            <>
+                              {fetchData?.enRoute ? null : (
+                                <ButtonSolid
+                                  onPress={() => {
+                                    const handler = async () => {
+                                      try {
+                                        const loggg =
+                                          await markEnRoutePOST.mutateAsync({
+                                            driverUID: Constants['user_id'],
+                                            orderID:
+                                              Constants['driverPickupID'],
+                                          });
+                                        console.log(loggg);
+                                      } catch (err) {
+                                        console.error(err);
+                                      }
+                                    };
+                                    handler();
+                                  }}
+                                  style={[
+                                    styles.ButtonSolidc21c4061,
+                                    { backgroundColor: theme.colors.primary },
+                                  ]}
+                                  title={'Order Picked Up'}
+                                />
+                              )}
+                            </>
+                            <>
+                              {!fetchData?.enRoute ? null : (
+                                <ButtonSolid
+                                  onPress={() => {
+                                    const handler = async () => {
+                                      try {
+                                        await markDeliveredPOST.mutateAsync({
+                                          driverID: Constants['user_id'],
+                                          orderID: Constants['driverPickupID'],
+                                        });
+                                      } catch (err) {
+                                        console.error(err);
+                                      }
+                                    };
+                                    handler();
+                                  }}
+                                  style={[
+                                    styles.ButtonSolidc21c4061,
+                                    { backgroundColor: theme.colors.primary },
+                                  ]}
+                                  title={'Mark Delivered'}
+                                />
+                              )}
+                            </>
+                            <Divider
+                              style={styles.Dividerfc046f10}
+                              color={theme.colors.divider}
+                            />
+                            <Text
+                              style={[
+                                styles.Text0586d8e1,
+                                { color: theme.colors.strong },
+                              ]}
+                            >
+                              {'Order Contents:'}
+                            </Text>
                             <FlatList
-                              data={fetchData}
+                              data={fetchData?.userOrder?.items}
                               listKey={'54olhpYp'}
                               keyExtractor={({ item }) =>
                                 item?.id || item?.uuid || item
@@ -383,244 +384,235 @@ line two` ) and will not work with special characters inside of quotes ( example
                               }
                               numColumns={1}
                             />
-                          );
-                        }}
-                      </XanoApi.FetchGetItemsGET>
-                    </Surface>
-                  </>
-                );
-              }}
-            </XanoApi.FetchSpecificOrderViewGET>
-            <XanoApi.FetchSetLocationGET
-              refetchInterval={5000}
-              lat={lat}
-              long={long}
-              session={Constants['driverPickupID']}
-              onData={fetchData => {
-                const handler = async () => {
-                  try {
-                    const location = await Utils.getLocation();
-                    console.log(location);
-                    const latitude = location.latitude;
-                    const longitude = location.longitude;
-                    setLat(latitude);
-                    setLong(longitude);
-                    await refetchSetLocation();
-                  } catch (err) {
-                    console.error(err);
-                  }
-                };
-                handler();
-              }}
-            >
-              {({ loading, error, data, refetchSetLocation }) => {
-                const fetchData = data;
-                if (!fetchData || loading) {
-                  return <ActivityIndicator />;
-                }
-
-                if (error) {
-                  return (
-                    <Text style={{ textAlign: 'center' }}>
-                      There was a problem fetching this data
-                    </Text>
-                  );
-                }
-
-                return null;
-              }}
-            </XanoApi.FetchSetLocationGET>
-          </View>
-        )}
-      </>
-      {/* offerView */}
-      <>
-        {Constants['courierActive'] ? null : (
-          <View style={styles.View9900fb05}>
-            <Row justifyContent={'space-between'} alignItems={'center'}>
-              <Text
-                style={[styles.Texta195e174, { color: theme.colors.strong }]}
-              >
-                {'Available Orders'}
-              </Text>
-              <IconButton
-                onPress={() => {
-                  try {
-                    navigation.navigate('CreateOrderScreen');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.IconButton03ed04fc}
-                icon={'AntDesign/plus'}
-                size={32}
-              />
-            </Row>
-
-            <XanoApi.FetchCourierOffersGET
-              method={'GET'}
-              refetchInterval={10000}
-              driverLat={Constants['deviceLat']}
-              driverLong={Constants['deviceLong']}
-            >
-              {({ loading, error, data, refetchCourierOffers }) => {
-                const fetchData = data;
-                if (!fetchData || loading) {
-                  return <ActivityIndicator />;
-                }
-
-                if (error) {
-                  return (
-                    <Text style={{ textAlign: 'center' }}>
-                      There was a problem fetching this data
-                    </Text>
-                  );
-                }
-
-                return (
-                  <FlatList
-                    data={fetchData}
-                    listKey={'jHvtzsa4'}
-                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
-                    renderItem={({ item }) => {
-                      const listData = item;
-                      return (
-                        <>
-                          <View
-                            style={[
-                              styles.View4685c5ed,
-                              {
-                                backgroundColor: theme.colors.surface,
-                                borderRadius: 8,
-                                borderColor: theme.colors.divider,
-                              },
-                            ]}
-                          >
-                            <Touchable
-                              onPress={() => {
-                                try {
-                                  setPreviewID(listData?.id);
-                                  setPreviewModal(true);
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                            >
-                              <View
-                                style={[
-                                  styles.View5cec8edc,
-                                  { backgroundColor: theme.colors.strong },
-                                ]}
-                              >
-                                <ImageBackground
-                                  style={[
-                                    styles.ImageBackground2c2160f4,
-                                    { borderRadius: theme.roundness },
-                                  ]}
-                                  resizeMode={'cover'}
-                                  source={{
-                                    uri: `${listData?.userOrder?.restaurantImage}`,
-                                  }}
-                                >
-                                  <Row
-                                    justifyContent={'space-between'}
-                                    alignItems={'center'}
-                                  >
-                                    <View style={styles.View24206b27}>
-                                      <Text
-                                        style={[
-                                          styles.Textfb77ec08,
-                                          { color: theme.colors.background },
-                                        ]}
-                                        textBreakStrategy={'highQuality'}
-                                        ellipsizeMode={'tail'}
-                                        allowFontScaling={true}
-                                        numberOfLines={2}
-                                      >
-                                        {listData?.userOrder?.restaurantName}
-                                      </Text>
-
-                                      <View style={styles.Viewce4accf0}>
-                                        <View style={styles.View7d6a39b7}>
-                                          <Icon
-                                            name={
-                                              'MaterialCommunityIcons/map-marker-distance'
-                                            }
-                                            size={24}
-                                            color={theme.colors.primary}
-                                          />
-                                          <Spacer right={2} left={2} />
-                                          <Text
-                                            style={[
-                                              styles.Text92a50533,
-                                              {
-                                                color: theme.colors.background,
-                                              },
-                                            ]}
-                                          >
-                                            {listData?.distance}
-                                            {' Mi.   OrderID: '}
-                                            {listData?.id}
-                                          </Text>
-                                        </View>
-                                        <Spacer
-                                          top={8}
-                                          right={8}
-                                          bottom={8}
-                                          left={8}
-                                        />
-                                        <Spacer
-                                          top={8}
-                                          right={8}
-                                          bottom={8}
-                                          left={8}
-                                        />
-                                      </View>
-                                    </View>
-
-                                    <View style={styles.View6a670001}>
-                                      <View
-                                        style={[
-                                          styles.View422f6f32,
-                                          {
-                                            backgroundColor:
-                                              theme.colors.primary,
-                                            borderBottomLeftRadius: 8,
-                                            borderTopLeftRadius: 8,
-                                          },
-                                        ]}
-                                      >
-                                        <Text
-                                          style={[
-                                            styles.Textd40b1daa,
-                                            { color: theme.colors.surface },
-                                          ]}
-                                          allowFontScaling={true}
-                                          ellipsizeMode={'tail'}
-                                          textBreakStrategy={'highQuality'}
-                                        >
-                                          {'$'}
-                                          {listData?.earnings}
-                                        </Text>
-                                      </View>
-                                    </View>
-                                  </Row>
-                                </ImageBackground>
-                              </View>
-                            </Touchable>
-                          </View>
-                          <Spacer top={12} right={8} bottom={12} left={8} />
+                          </Surface>
                         </>
                       );
                     }}
-                    contentContainerStyle={styles.FlatList8db74792Content}
-                  />
-                );
-              }}
-            </XanoApi.FetchCourierOffersGET>
-          </View>
-        )}
-      </>
+                  </XanoApi.FetchSpecificOrderViewGET>
+                  <XanoApi.FetchSetLocationGET
+                    refetchInterval={5000}
+                    lat={lat}
+                    long={long}
+                    session={fetchData?.currentDelivery}
+                    onData={fetchData => {
+                      const handler = async () => {
+                        try {
+                          const location = await Utils.getLocation();
+                          console.log(location);
+                          const latitude = location.latitude;
+                          const longitude = location.longitude;
+                          setLat(latitude);
+                          setLong(longitude);
+                          await refetchSetLocation();
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      };
+                      handler();
+                    }}
+                  >
+                    {({ loading, error, data, refetchSetLocation }) => {
+                      const fetchData = data;
+                      if (!fetchData || loading) {
+                        return <ActivityIndicator />;
+                      }
+
+                      if (error) {
+                        return (
+                          <Text style={{ textAlign: 'center' }}>
+                            There was a problem fetching this data
+                          </Text>
+                        );
+                      }
+
+                      return null;
+                    }}
+                  </XanoApi.FetchSetLocationGET>
+                </View>
+              )}
+            </>
+          );
+        }}
+      </XanoApi.FetchIsDeliveringGET>
+      {/* offerView */}
+      <View style={styles.View9900fb05}>
+        <Row justifyContent={'space-between'} alignItems={'center'}>
+          <Text style={[styles.Texta195e174, { color: theme.colors.strong }]}>
+            {'Available Orders'}
+          </Text>
+          <IconButton
+            onPress={() => {
+              try {
+                navigation.navigate('CreateOrderScreen');
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            style={styles.IconButton03ed04fc}
+            icon={'AntDesign/plus'}
+            size={32}
+          />
+        </Row>
+
+        <XanoApi.FetchCourierOffersGET
+          method={'GET'}
+          refetchInterval={10000}
+          driverLat={Constants['deviceLat']}
+          driverLong={Constants['deviceLong']}
+        >
+          {({ loading, error, data, refetchCourierOffers }) => {
+            const fetchData = data;
+            if (!fetchData || loading) {
+              return <ActivityIndicator />;
+            }
+
+            if (error) {
+              return (
+                <Text style={{ textAlign: 'center' }}>
+                  There was a problem fetching this data
+                </Text>
+              );
+            }
+
+            return (
+              <FlatList
+                data={fetchData}
+                listKey={'jHvtzsa4'}
+                keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                renderItem={({ item }) => {
+                  const listData = item;
+                  return (
+                    <>
+                      <View
+                        style={[
+                          styles.View4685c5ed,
+                          {
+                            backgroundColor: theme.colors.surface,
+                            borderRadius: 8,
+                            borderColor: theme.colors.divider,
+                          },
+                        ]}
+                      >
+                        <Touchable
+                          onPress={() => {
+                            try {
+                              setPreviewID(listData?.id);
+                              setPreviewModal(true);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                        >
+                          <View
+                            style={[
+                              styles.View5cec8edc,
+                              { backgroundColor: theme.colors.strong },
+                            ]}
+                          >
+                            <ImageBackground
+                              style={[
+                                styles.ImageBackground2c2160f4,
+                                { borderRadius: theme.roundness },
+                              ]}
+                              resizeMode={'cover'}
+                              source={{
+                                uri: `${listData?.userOrder?.restaurantImage}`,
+                              }}
+                            >
+                              <Row
+                                justifyContent={'space-between'}
+                                alignItems={'center'}
+                              >
+                                <View style={styles.View24206b27}>
+                                  <Text
+                                    style={[
+                                      styles.Textfb77ec08,
+                                      { color: theme.colors.background },
+                                    ]}
+                                    textBreakStrategy={'highQuality'}
+                                    ellipsizeMode={'tail'}
+                                    allowFontScaling={true}
+                                    numberOfLines={2}
+                                  >
+                                    {listData?.userOrder?.restaurantName}
+                                  </Text>
+
+                                  <View style={styles.Viewce4accf0}>
+                                    <View style={styles.View7d6a39b7}>
+                                      <Icon
+                                        name={
+                                          'MaterialCommunityIcons/map-marker-distance'
+                                        }
+                                        size={24}
+                                        color={theme.colors.primary}
+                                      />
+                                      <Spacer right={2} left={2} />
+                                      <Text
+                                        style={[
+                                          styles.Text92a50533,
+                                          { color: theme.colors.background },
+                                        ]}
+                                      >
+                                        {listData?.distance}
+                                        {' Mi.   OrderID: '}
+                                        {listData?.id}
+                                      </Text>
+                                    </View>
+                                    <Spacer
+                                      top={8}
+                                      right={8}
+                                      bottom={8}
+                                      left={8}
+                                    />
+                                    <Spacer
+                                      top={8}
+                                      right={8}
+                                      bottom={8}
+                                      left={8}
+                                    />
+                                  </View>
+                                </View>
+
+                                <View style={styles.View6a670001}>
+                                  <View
+                                    style={[
+                                      styles.View422f6f32,
+                                      {
+                                        backgroundColor: theme.colors.primary,
+                                        borderBottomLeftRadius: 8,
+                                        borderTopLeftRadius: 8,
+                                      },
+                                    ]}
+                                  >
+                                    <Text
+                                      style={[
+                                        styles.Textd40b1daa,
+                                        { color: theme.colors.surface },
+                                      ]}
+                                      allowFontScaling={true}
+                                      ellipsizeMode={'tail'}
+                                      textBreakStrategy={'highQuality'}
+                                    >
+                                      {'$'}
+                                      {listData?.earnings}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </Row>
+                            </ImageBackground>
+                          </View>
+                        </Touchable>
+                      </View>
+                      <Spacer top={12} right={8} bottom={12} left={8} />
+                    </>
+                  );
+                }}
+                contentContainerStyle={styles.FlatList8db74792Content}
+              />
+            );
+          }}
+        </XanoApi.FetchCourierOffersGET>
+      </View>
       {/* preAccectDialog */}
       <>
         {!previewModal ? null : (
@@ -970,12 +962,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 20,
   },
-  Fetch431eb058: {
-    minHeight: 40,
-  },
   Surfacefd5c62b0: {
     marginTop: -20,
     height: '100%',
+  },
+  Fetch431eb058: {
+    minHeight: 40,
   },
   Texta195e174: {
     fontFamily: 'Poppins_600SemiBold',

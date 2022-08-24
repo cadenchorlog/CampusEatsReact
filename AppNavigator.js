@@ -51,7 +51,7 @@ function Placeholder() {
           color: '#FFF',
         }}
       >
-        Missing Screens
+        Missing Screen
       </Text>
       <Text
         style={{
@@ -61,11 +61,22 @@ function Placeholder() {
           marginBottom: 8,
         }}
       >
-        Your app doesn't have any screens added to the Root Navigator.
+        This screen is not in a navigator.
+      </Text>
+      <Text
+        style={{
+          textAlign: 'center',
+          fontSize: 16,
+          color: '#FFF',
+          marginBottom: 8,
+        }}
+      >
+        Go to Navigation mode, and click the + (plus) icon in the Navigator tab
+        on the left side to add this screen to a Navigator.
       </Text>
       <Text style={{ textAlign: 'center', fontSize: 16, color: '#FFF' }}>
-        Click the + (plus) icon in the Navigator tab on the left side to add
-        some.
+        If the screen is in a Tab Navigator, make sure the screen is assigned to
+        a tab in the Config panel on the right.
       </Text>
     </View>
   );

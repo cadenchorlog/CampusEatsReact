@@ -5,12 +5,12 @@ import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
+  ButtonOutline,
   ButtonSolid,
   Checkbox,
   Divider,
   Icon,
   IconButton,
-  NumberInput,
   Row,
   ScreenContainer,
   Spacer,
@@ -36,15 +36,30 @@ const BaggageCartScreen = props => {
   const Constants = GlobalVariables.useValues();
   const Variables = Constants;
   const setGlobalVariableValue = GlobalVariables.useSetValue();
-  const addTipCost = (subTotal, tip) => {
-    if (tip !== undefined && tip !== null) {
-      let floatNumber = parseFloat(tip);
-      var tipMulti = floatNumber * 100;
-      var newTotal = tipMulti + subTotal;
-      return newTotal;
+  const getTipAmmount = (oneFifty, threeDollar) => {
+    if (oneFifty) {
+      return 1.5;
+    } else if (threeDollar) {
+      return 3;
+    } else {
+      return 0;
+    } // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
+  const addTipCost = (subTotal, oneFifty, threeDollar) => {
+    if (oneFifty) {
+      return subTotal + 150;
+    } else if (threeDollar) {
+      return subTotal + 300;
     } else {
       return subTotal;
     }
+
     // Type the code for the body of your function or hook here.
     // Functions can be triggered via Button/Touchable actions.
     // Hooks are run per ReactJS rules.
@@ -87,11 +102,14 @@ line two` ) and will not work with special characters inside of quotes ( example
   const [dashOpen, setDashOpen] = React.useState(false);
   const [isCard, setIsCard] = React.useState(true);
   const [isPlan, setIsPlan] = React.useState(false);
+  const [noTip, setNoTip] = React.useState(false);
   const [numberInputValue, setNumberInputValue] = React.useState(' ');
+  const [oneFifty, setOneFifty] = React.useState(true);
   const [showMessage, setShowMessage] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [styledTextFieldValue, setStyledTextFieldValue] = React.useState('');
   const [textInputValue, setTextInputValue] = React.useState('0');
+  const [threeDollar, setThreeDollar] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState(0);
 
   return (
@@ -653,7 +671,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     color={theme.colors.divider}
                   />
                   {/* Driver Tip */}
-                  <View style={styles.View003a266c}>
+                  <View style={styles.View8cb92e19}>
                     {/* Total Price Title */}
                     <Text
                       style={[
@@ -664,22 +682,96 @@ line two` ) and will not work with special characters inside of quotes ( example
                       {'Driver Tip'}
                     </Text>
                     <Spacer top={8} right={12} bottom={8} left={12} />
-                    <NumberInput
-                      onChangeText={newNumberInputValue => {
-                        try {
-                          setNumberInputValue(newNumberInputValue);
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      }}
-                      style={[
-                        styles.NumberInput03ad5433,
-                        { borderColor: theme.colors.divider },
-                      ]}
-                      value={numberInputValue}
-                      placeholder={'$'}
-                      keyboardType={'numeric'}
-                    />
+                    {/* oneFiftyOutline */}
+                    <>
+                      {oneFifty ? null : (
+                        <ButtonOutline
+                          onPress={() => {
+                            try {
+                              setThreeDollar(false);
+                              setNoTip(false);
+                              setOneFifty(true);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={styles.ButtonOutline75c728b2}
+                          title={'$1.50'}
+                        />
+                      )}
+                    </>
+                    {/* oneFiftySolid */}
+                    <>
+                      {!oneFifty ? null : (
+                        <ButtonSolid
+                          style={[
+                            styles.ButtonSolid2d5f6a36,
+                            { backgroundColor: theme.colors.primary },
+                          ]}
+                          title={'$1.50'}
+                        />
+                      )}
+                    </>
+                    {/* threeOutline */}
+                    <>
+                      {threeDollar ? null : (
+                        <ButtonOutline
+                          onPress={() => {
+                            try {
+                              setThreeDollar(true);
+                              setOneFifty(false);
+                              setNoTip(false);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={styles.ButtonOutline75c728b2}
+                          title={'$3.00'}
+                        />
+                      )}
+                    </>
+                    {/* threeSolid */}
+                    <>
+                      {!threeDollar ? null : (
+                        <ButtonSolid
+                          style={[
+                            styles.ButtonSolid2d5f6a36,
+                            { backgroundColor: theme.colors.primary },
+                          ]}
+                          title={'$3.00'}
+                        />
+                      )}
+                    </>
+                    {/* noneOutline */}
+                    <>
+                      {noTip ? null : (
+                        <ButtonOutline
+                          onPress={() => {
+                            try {
+                              setNoTip(true);
+                              setOneFifty(false);
+                              setThreeDollar(false);
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          style={styles.ButtonOutline75c728b2}
+                          title={'None'}
+                        />
+                      )}
+                    </>
+                    {/* noneSolid */}
+                    <>
+                      {!noTip ? null : (
+                        <ButtonSolid
+                          style={[
+                            styles.ButtonSolid2d5f6a36,
+                            { backgroundColor: theme.colors.primary },
+                          ]}
+                          title={'None'}
+                        />
+                      )}
+                    </>
                   </View>
                 </View>
               </KeyboardAwareScrollView>
@@ -691,13 +783,18 @@ line two` ) and will not work with special characters inside of quotes ( example
                     onPress={() => {
                       const handler = async () => {
                         try {
+                          const tipAmount = getTipAmmount(
+                            oneFifty,
+                            threeDollar
+                          );
                           const logAddTip = await addTipPOST.mutateAsync({
-                            tip: textInputValue,
+                            tip: tipAmount,
                             user_id: Constants['user_id'],
                           });
                           const newTotalPrice = addTipCost(
                             totalPrice,
-                            numberInputValue
+                            oneFifty,
+                            threeDollar
                           );
                           const cost = await setPricePOST.mutateAsync({
                             price: newTotalPrice,
@@ -1273,20 +1370,23 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 16,
   },
-  NumberInput03ad5433: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingTop: 8,
-    paddingBottom: 8,
+  ButtonOutline75c728b2: {
+    backgroundColor: 'transparent',
     borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    borderWidth: 1,
+    textAlign: 'center',
   },
-  View003a266c: {
+  ButtonSolid2d5f6a36: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  View8cb92e19: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginLeft: 12,
     marginRight: 12,
