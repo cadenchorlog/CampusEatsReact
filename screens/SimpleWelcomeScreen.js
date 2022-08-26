@@ -1,4 +1,5 @@
 import React from 'react';
+import * as GlobalVariables from '../config/GlobalVariableContext';
 import {
   ButtonOutline,
   ButtonSolid,
@@ -6,11 +7,31 @@ import {
   Stack,
   withTheme,
 } from '@draftbit/ui';
+import { useIsFocused } from '@react-navigation/native';
 import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 const SimpleWelcomeScreen = props => {
+  const Constants = GlobalVariables.useValues();
+  const Variables = Constants;
+
   const { theme } = props;
   const { navigation } = props;
+
+  const isFocused = useIsFocused();
+  React.useEffect(() => {
+    try {
+      if (!isFocused) {
+        return;
+      }
+      console.log(Constants['auth_header']);
+      if (!Constants['auth_header']) {
+        return;
+      }
+      navigation.navigate('BottomTabNavigator', { screen: 'OrderScreen' });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [isFocused]);
 
   return (
     <ScreenContainer
@@ -19,7 +40,7 @@ const SimpleWelcomeScreen = props => {
       hasSafeArea={false}
     >
       <ImageBackground
-        style={styles.ImageBackground587a5f31}
+        style={styles.ImageBackground5818f357}
         source={{
           uri: 'https://images.pexels.com/photos/3043114/pexels-photo-3043114.jpeg?auto=compress&cs=tinysrgb&w=600',
         }}
@@ -131,12 +152,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
   },
-  ImageBackground587a5f31: {
+  ImageBackground5818f357: {
     height: '100%',
     justifyContent: 'space-around',
     paddingLeft: 16,
     paddingRight: 16,
-    opacity: 0.75,
   },
 });
 

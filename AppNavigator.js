@@ -9,6 +9,7 @@ import theme from './themes/DraftbitTheme.js';
 
 import AcceptOrderScreen from './screens/AcceptOrderScreen';
 import AccountScreen from './screens/AccountScreen';
+import AddressOnSignUpScreen from './screens/AddressOnSignUpScreen';
 import AvailableOrdersScreen from './screens/AvailableOrdersScreen';
 import BaggageCartScreen from './screens/BaggageCartScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
@@ -17,6 +18,7 @@ import DriverChatScreen from './screens/DriverChatScreen';
 import DriverDashboardScreen from './screens/DriverDashboardScreen';
 import ExitDriverScreen from './screens/ExitDriverScreen';
 import HistoryScreen from './screens/HistoryScreen';
+import LinkCampusScreen from './screens/LinkCampusScreen';
 import LoginScreen from './screens/LoginScreen';
 import MapScreen from './screens/MapScreen';
 import OrderScreen from './screens/OrderScreen';
@@ -303,6 +305,16 @@ export default function RootAppNavigator() {
           name="CreateOrderScreen"
           component={CreateOrderScreen}
           options={{ title: 'createOrder' }}
+        />
+        <Stack.Screen
+          name="AddressOnSignUpScreen"
+          component={AddressOnSignUpScreen}
+          options={{ title: 'addressOnSignUp' }}
+        />
+        <Stack.Screen
+          name="LinkCampusScreen"
+          component={LinkCampusScreen}
+          options={{ title: 'linkCampus' }}
         />
         <Stack.Screen
           name="BottomTabNavigator"

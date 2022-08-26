@@ -1,27 +1,28 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DeviceVariables = {
   auth_header: '',
-  user_id: '',
-  user_name: '',
-  user_email: '',
   checkoutURL: '',
-  driverPickupID: '',
   courierActive: '',
   deviceLat: 0,
   deviceLong: 0,
+  driverPickupID: '',
+  onCampusLink: false,
+  user_email: '',
+  user_id: '',
+  user_name: '',
 };
 const AppVariables = {
+  delivLat: '',
+  delivLong: '',
   error_message: 'Please fill in the required fields.',
+  geocodio_api_key: '672ae72beed94992f4ed75bbd8262e46f529e5f',
   is_loading: '',
   PK_TEST:
     'pk_test_51LO2SYBwsDz1it0i7ggJBhk7TxeVTpHgoPeQuk0yl3QE9e02ZdZ4zR30fddiZqTCvqXlLxIXty0RQHNqEP8IybMY00ZlUmG26K',
-  delivLat: '',
-  delivLong: '',
-  geocodio_api_key: '672ae72beed94992f4ed75bbd8262e46f529e5f',
 };
 const GlobalVariableContext = React.createContext();
 const GlobalVariableUpdater = React.createContext();
@@ -106,6 +107,14 @@ class State {
 export function GlobalVariableProvider({ children }) {
   const [state, dispatch] = React.useReducer(State.reducer, State.initialState);
 
+  React.useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+
+    prepare();
+  }, []);
+
   // This effect runs on mount to overwrite the default value of any
   // key that has a local value.
   React.useEffect(() => {
@@ -136,14 +145,23 @@ export function GlobalVariableProvider({ children }) {
     }
   }, [state]);
 
+  const onLayoutRootView = React.useCallback(async () => {
+    if (state.__loaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [state.__loaded]);
+
   // We won't want an app to read a default state when there might be one
   // incoming from storage.
   if (!state.__loaded) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
-    <GlobalVariableUpdater.Provider value={dispatch}>
+    <GlobalVariableUpdater.Provider
+      value={dispatch}
+      onLayout={onLayoutRootView}
+    >
       <GlobalVariableContext.Provider value={state.values}>
         {children}
       </GlobalVariableContext.Provider>

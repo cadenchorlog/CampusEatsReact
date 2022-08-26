@@ -18,7 +18,7 @@ const AcceptOrderScreen = props => {
   const { theme } = props;
   const { navigation } = props;
 
-  const addDriverPOST = XanoApi.useAddDriverPOST();
+  const xanoAddDriverPOST = XanoApi.useAddDriverPOST();
 
   return (
     <ScreenContainer scrollable={false} hasSafeArea={true}>
@@ -26,7 +26,12 @@ const AcceptOrderScreen = props => {
       <View style={styles.View0bb8b0a3} />
       {/* Content Wrapper */}
       <View style={styles.View19e468f9}>
-        <Icon name={'FontAwesome/angle-double-down'} size={80} />
+        <Icon
+          style={styles.Icon7a33adf1}
+          name={'FontAwesome/angle-double-down'}
+          size={80}
+          color={theme.colors.light}
+        />
         {/* Permissions Name */}
         <Text style={[styles.Text0e732d29, { color: theme.colors.strong }]}>
           {'Accept this order?'}
@@ -58,7 +63,7 @@ const AcceptOrderScreen = props => {
           onPress={() => {
             const handler = async () => {
               try {
-                await addDriverPOST.mutateAsync({
+                await xanoAddDriverPOST.mutateAsync({
                   orderID: props.route?.params?.orderID ?? '',
                   userID: Constants['user_id'],
                 });
@@ -97,6 +102,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     minHeight: '33%',
     maxHeight: 33,
+  },
+  Icon7a33adf1: {
+    opacity: 1,
   },
   Text0e732d29: {
     fontSize: 24,

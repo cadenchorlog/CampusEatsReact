@@ -159,7 +159,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   <FlatList
                     data={popularPlacesData}
                     listKey={'HQwHamTL'}
-                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                    keyExtractor={item => item?.id || item?.uuid || item}
                     renderItem={({ item }) => {
                       const listData = item;
                       return (
@@ -190,7 +190,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                               ]}
                             >
                               <Image
-                                style={styles.Imagea98db7de}
+                                style={styles.Image732c54b5}
                                 source={{ uri: `${listData?.storeImage}` }}
                                 resizeMode={'cover'}
                               />
@@ -327,7 +327,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   <FlatList
                     data={popularPlacesData}
                     listKey={'wB9pCiba'}
-                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                    keyExtractor={item => item?.id || item?.uuid || item}
                     renderItem={({ item }) => {
                       const listData = item;
                       return (
@@ -360,7 +360,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                                 ]}
                               >
                                 <Image
-                                  style={styles.Imagea98db7de}
+                                  style={styles.Image732c54b5}
                                   source={{ uri: `${listData?.storeImage}` }}
                                   resizeMode={'cover'}
                                 />
@@ -843,9 +843,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     <FlatList
                       data={popularPlacesData}
                       listKey={'38Kv5lnu'}
-                      keyExtractor={({ item }) =>
-                        item?.id || item?.uuid || item
-                      }
+                      keyExtractor={item => item?.id || item?.uuid || item}
                       renderItem={({ item }) => {
                         const listData = item;
                         return (
@@ -1045,9 +1043,10 @@ const styles = StyleSheet.create({
   Text34e0cb74: {
     marginTop: 10,
   },
-  Imagea98db7de: {
+  Image732c54b5: {
     width: '100%',
     height: '100%',
+    opacity: 0.75,
   },
   View1b1f79af: {
     height: '60%',
@@ -1341,6 +1340,10 @@ const styles = StyleSheet.create({
   },
   IconButton5f47a348: {
     marginRight: 4,
+  },
+  Imagea98db7de: {
+    width: '100%',
+    height: '100%',
   },
   StarRating2c3e883b: {
     marginRight: 16,

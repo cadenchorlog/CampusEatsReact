@@ -32,7 +32,7 @@ const UserChatScreen = props => {
   const { theme } = props;
   const { navigation } = props;
 
-  const addChatPOST = XanoApi.useAddChatPOST();
+  const xanoAddChatPOST = XanoApi.useAddChatPOST();
 
   const [textInputValue, setTextInputValue] = React.useState('');
 
@@ -98,7 +98,7 @@ const UserChatScreen = props => {
                 <FlatList
                   data={fetchData}
                   listKey={'DZF5G2dy'}
-                  keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                  keyExtractor={item => item?.id || item?.uuid || item}
                   renderItem={({ item }) => {
                     const listData = item;
                     return (
@@ -119,15 +119,6 @@ const UserChatScreen = props => {
                                   {listData?.message}
                                 </Text>
                               </View>
-
-                              <Text
-                                style={[
-                                  styles.Text3e6b6036,
-                                  { color: theme.colors.medium },
-                                ]}
-                              >
-                                {'Courier'}
-                              </Text>
                             </View>
                           )}
                         </>
@@ -153,18 +144,10 @@ const UserChatScreen = props => {
                                   </View>
                                 )}
                               </>
-                              <Text
-                                style={[
-                                  styles.Text3e6b6036,
-                                  { color: theme.colors.medium },
-                                ]}
-                              >
-                                {'Me'}
-                              </Text>
                             </View>
                           )}
                         </>
-                        <Spacer top={8} right={8} bottom={8} left={8} />
+                        <Spacer top={4} right={8} bottom={4} left={8} />
                       </>
                     );
                   }}
@@ -208,7 +191,7 @@ const UserChatScreen = props => {
             onPress={() => {
               const handler = async () => {
                 try {
-                  await addChatPOST.mutateAsync({
+                  await xanoAddChatPOST.mutateAsync({
                     isDriver: false,
                     message: textInputValue,
                     session: props.route?.params?.orderID ?? 67,
@@ -248,9 +231,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingRight: 12,
     paddingBottom: 12,
-  },
-  Text3e6b6036: {
-    fontSize: 12,
   },
   View4a298bf0: {
     alignItems: 'flex-start',

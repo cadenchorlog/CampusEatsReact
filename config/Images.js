@@ -6,4 +6,5 @@ export default {
   CharlieGreen3JmfENcL24MUnsplash: require('../assets/images/CharlieGreen3JmfENcL24MUnsplash.jpg'),
   Sky: require('../assets/images/Sky.jpg'),
   PermissionsLocation: require('../assets/images/PermissionsLocation.png'),
+  CourseSplash: require('../assets/images/CourseSplash.png'),
 };

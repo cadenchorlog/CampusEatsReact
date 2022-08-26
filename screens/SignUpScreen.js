@@ -49,12 +49,14 @@ const SignUpScreen = props => {
   return (
     <ScreenContainer hasTopSafeArea={true}>
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.KeyboardAwareScrollView6a955cc3Content}
+        enableAutomaticScroll={true}
+        extraScrollHeight={110}
+        enableResetScrollToCoords={false}
       >
         {/* Header */}
-        <View style={styles.View39912261}>
+        <View style={styles.Viewb4f9b01d}>
           <Divider
-            style={styles.Dividere4660988}
+            style={styles.Divider4d5c264b}
             color={theme.colors.divider}
           />
           {/* Title */}
@@ -86,14 +88,14 @@ const SignUpScreen = props => {
               }
             }}
             style={[
-              styles.TextInputa6e0f828,
+              styles.TextInput1ffae2f5,
               { borderColor: theme.colors.divider },
             ]}
             placeholder={'Your Name '}
             value={nameValue}
-            keyboardType={'email-address'}
-            textContentType={'emailAddress'}
-            autoCapitalize={'none'}
+            keyboardType={'default'}
+            textContentType={'none'}
+            autoCapitalize={'words'}
           />
           <Spacer top={12} right={8} bottom={12} left={8} />
           {/* Email Input */}
@@ -195,9 +197,7 @@ const SignUpScreen = props => {
                         key: 'error_message',
                         value: '',
                       });
-                      navigation.navigate('BottomTabNavigator', {
-                        screen: 'MapScreen',
-                      });
+                      navigation.navigate('AddressOnSignUpScreen');
                     } catch (err) {
                       console.error(err);
                     }
@@ -250,8 +250,8 @@ const SignUpScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  Dividere4660988: {
-    height: 120,
+  Divider4d5c264b: {
+    height: 20,
   },
   Textdd83da03: {
     textAlign: 'center',
@@ -267,13 +267,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
   },
-  View39912261: {
+  Viewb4f9b01d: {
     alignItems: 'center',
+    marginTop: 40,
   },
   Text6789b8ec: {
     fontSize: 12,
     textAlign: 'center',
     marginBottom: 16,
+  },
+  TextInput1ffae2f5: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '400',
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    textTransform: 'none',
   },
   TextInputa6e0f828: {
     paddingLeft: 16,
@@ -319,9 +334,6 @@ const styles = StyleSheet.create({
     paddingLeft: 36,
     paddingRight: 36,
     marginTop: 24,
-  },
-  KeyboardAwareScrollView6a955cc3Content: {
-    justifyContent: 'center',
   },
 });
 

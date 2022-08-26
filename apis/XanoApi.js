@@ -677,6 +677,70 @@ export const FetchGetAllStoresGET = ({
   return children({ loading, data, error, refetchGetAllStores: refetch });
 };
 
+export const getCampusListGET = (Constants, { searchTerm }) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/campuslist/${
+      searchTerm ?? ''
+    }`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useGetCampusListGET = (args, { refetchInterval } = {}) => {
+  const Constants = GlobalVariables.useValues();
+  return useQuery(['users', args], () => getCampusListGET(Constants, args), {
+    refetchInterval,
+  });
+};
+
+export const FetchGetCampusListGET = ({
+  children,
+  onData = () => {},
+  refetchInterval,
+  searchTerm,
+}) => {
+  const Constants = GlobalVariables.useValues();
+  const isFocused = useIsFocused();
+  const prevIsFocused = usePrevious(isFocused);
+
+  const { loading, data, error, refetch } = useGetCampusListGET(
+    { searchTerm },
+    { refetchInterval }
+  );
+
+  React.useEffect(() => {
+    if (!prevIsFocused && isFocused) {
+      refetch();
+    }
+  }, [isFocused, prevIsFocused]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Fetch error: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    }
+  }, [error]);
+  React.useEffect(() => {
+    if (data) {
+      onData(data);
+    }
+  }, [data]);
+
+  return children({ loading, data, error, refetchGetCampusList: refetch });
+};
+
 export const getCartTotalsGET = (Constants, { user_id }) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/userCartTotal/${
@@ -1532,6 +1596,51 @@ export const useUserAddressPOST = initialArgs => {
         queryClient.invalidateQueries('user');
         queryClient.invalidateQueries('users');
       },
+    }
+  );
+};
+
+export const verifyStudentEnrollmentPOST = (
+  Constants,
+  { UID, campusID, studentEmail, studentID }
+) =>
+  fetch(
+    `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/verifyStudentEnrollment`,
+    {
+      body: JSON.stringify({
+        studentID: studentID,
+        studentEmail: studentEmail,
+        campusID: campusID,
+        UID: UID,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }
+  )
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useVerifyStudentEnrollmentPOST = (
+  args,
+  { refetchInterval } = {}
+) => {
+  const Constants = GlobalVariables.useValues();
+  const queryClient = useQueryClient();
+  return useQuery(
+    ['user', args],
+    () => verifyStudentEnrollmentPOST(Constants, args),
+    {
+      refetchInterval,
+      onSuccess: () => queryClient.invalidateQueries(['users']),
     }
   );
 };

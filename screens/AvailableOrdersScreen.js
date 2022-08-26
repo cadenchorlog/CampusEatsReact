@@ -70,8 +70,8 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const markEnRoutePOST = XanoApi.useMarkEnRoutePOST();
-  const markDeliveredPOST = XanoApi.useMarkDeliveredPOST();
+  const xanoMarkEnRoutePOST = XanoApi.useMarkEnRoutePOST();
+  const xanoMarkDeliveredPOST = XanoApi.useMarkDeliveredPOST();
 
   const isFocused = useIsFocused();
   React.useEffect(() => {
@@ -284,11 +284,13 @@ line two` ) and will not work with special characters inside of quotes ( example
                                     const handler = async () => {
                                       try {
                                         const loggg =
-                                          await markEnRoutePOST.mutateAsync({
-                                            driverUID: Constants['user_id'],
-                                            orderID:
-                                              Constants['driverPickupID'],
-                                          });
+                                          await xanoMarkEnRoutePOST.mutateAsync(
+                                            {
+                                              driverUID: Constants['user_id'],
+                                              orderID:
+                                                Constants['driverPickupID'],
+                                            }
+                                          );
                                         console.log(loggg);
                                       } catch (err) {
                                         console.error(err);
@@ -310,10 +312,13 @@ line two` ) and will not work with special characters inside of quotes ( example
                                   onPress={() => {
                                     const handler = async () => {
                                       try {
-                                        await markDeliveredPOST.mutateAsync({
-                                          driverID: Constants['user_id'],
-                                          orderID: Constants['driverPickupID'],
-                                        });
+                                        await xanoMarkDeliveredPOST.mutateAsync(
+                                          {
+                                            driverID: Constants['user_id'],
+                                            orderID:
+                                              Constants['driverPickupID'],
+                                          }
+                                        );
                                       } catch (err) {
                                         console.error(err);
                                       }
@@ -343,7 +348,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             <FlatList
                               data={fetchData?.userOrder?.items}
                               listKey={'54olhpYp'}
-                              keyExtractor={({ item }) =>
+                              keyExtractor={item =>
                                 item?.id || item?.uuid || item
                               }
                               renderItem={({ item }) => {
@@ -478,7 +483,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               <FlatList
                 data={fetchData}
                 listKey={'jHvtzsa4'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                keyExtractor={item => item?.id || item?.uuid || item}
                 renderItem={({ item }) => {
                   const listData = item;
                   return (
@@ -699,9 +704,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     <FlatList
                       data={fetchData?.userOrder?.items}
                       listKey={'Wgjvgo9d'}
-                      keyExtractor={({ item }) =>
-                        item?.id || item?.uuid || item
-                      }
+                      keyExtractor={item => item?.id || item?.uuid || item}
                       renderItem={({ item }) => {
                         const listData = item;
                         return (
@@ -770,10 +773,9 @@ line two` ) and will not work with special characters inside of quotes ( example
                       >
                         <Surface
                           style={[
-                            styles.Surfaceca163954,
+                            styles.Surface24b0047f,
                             {
                               backgroundColor: theme.colors.background,
-                              borderColor: theme.colors.primary,
                               borderRadius: 40,
                             },
                           ]}
@@ -1091,12 +1093,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
     maxHeight: 300,
   },
-  Surfaceca163954: {
+  Surface24b0047f: {
     minHeight: 40,
-    borderLeftWidth: 2,
-    borderTopWidth: 2,
-    borderRightWidth: 2,
-    borderBottomWidth: 2,
     minWidth: 80,
     marginLeft: 16,
     marginTop: 16,

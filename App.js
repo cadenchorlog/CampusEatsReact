@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AppState } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 import {
   SafeAreaProvider,
   initialWindowMetrics,
@@ -23,9 +23,11 @@ import { OpenSans_600SemiBold } from '@expo-google-fonts/open-sans';
 import {
   Poppins_300Light,
   Poppins_400Regular,
+  Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
+SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -52,6 +54,9 @@ const App = () => {
     Poppins_400Regular,
     Poppins_400Regular,
     Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_600SemiBold,
     Poppins_600SemiBold,
     Poppins_600SemiBold,
     Poppins_600SemiBold,
@@ -64,20 +69,38 @@ const App = () => {
     Poppins_600SemiBold,
     Poppins_600SemiBold,
     Poppins_700Bold,
+    Poppins_700Bold,
   });
 
+  React.useEffect(() => {
+    async function prepare() {
+      try {
+        await cacheAssetsAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = React.useCallback(async () => {
+    if (isReady && fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [isReady, fontsLoaded]);
+
   if (!isReady || !fontsLoaded) {
-    return (
-      <AppLoading
-        startAsync={cacheAssetsAsync}
-        onFinish={() => setIsReady(true)}
-        onError={console.warn}
-      />
-    );
+    return null;
   }
 
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+    <SafeAreaProvider
+      initialMetrics={initialWindowMetrics}
+      onLayout={onLayoutRootView}
+    >
       <GlobalVariableProvider>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={DraftbitTheme}>
