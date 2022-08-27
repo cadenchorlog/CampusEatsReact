@@ -68,7 +68,7 @@ const HistoryScreen = props => {
             <FlatList
               data={fetchData}
               listKey={'PImaJIqg'}
-              keyExtractor={({ item }) => item?.id || item?.uuid || item}
+              keyExtractor={item => item?.id || item?.uuid || item}
               renderItem={({ item }) => {
                 const listData = item;
                 return (

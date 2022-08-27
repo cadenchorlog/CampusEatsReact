@@ -40,7 +40,7 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const userAddressPOST = XanoApi.useUserAddressPOST();
+  const xanoUserAddressPOST = XanoApi.useUserAddressPOST();
 
   const [addressValue, setAddressValue] = React.useState('');
   const [cityValue, setCityValue] = React.useState('');
@@ -270,7 +270,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                               zipValue,
                               stateValue
                             );
-                            await userAddressPOST.mutateAsync({
+                            await xanoUserAddressPOST.mutateAsync({
                               UID: Constants['user_id'],
                               addressString: combined,
                               lat: geocodeLAT,

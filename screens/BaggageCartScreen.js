@@ -82,10 +82,10 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const removeFromCartPOST = XanoApi.useRemoveFromCartPOST();
-  const checkoutPOST = CheckoutApi.useCheckoutPOST();
-  const setPricePOST = AddCostApi.useSetPricePOST();
-  const addTipPOST = XanoApi.useAddTipPOST();
+  const xanoRemoveFromCartPOST = XanoApi.useRemoveFromCartPOST();
+  const checkoutCheckoutPOST = CheckoutApi.useCheckoutPOST();
+  const addCostSetPricePOST = AddCostApi.useSetPricePOST();
+  const xanoAddTipPOST = XanoApi.useAddTipPOST();
 
   const isFocused = useIsFocused();
   React.useEffect(() => {
@@ -164,7 +164,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               <FlatList
                 data={fetchData}
                 listKey={'a7hYLwxc'}
-                keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                keyExtractor={item => item?.id || item?.uuid || item}
                 renderItem={({ item }) => {
                   const listData = item;
                   return (
@@ -211,7 +211,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                               const handler = async () => {
                                 try {
                                   console.log(listData);
-                                  await removeFromCartPOST.mutateAsync({
+                                  await xanoRemoveFromCartPOST.mutateAsync({
                                     UID: Constants['user_id'],
                                     itemID: listData?.itemID,
                                     itemMods: listData?.customizations,
@@ -264,7 +264,7 @@ line two` ) and will not work with special characters inside of quotes ( example
       >
         <Divider style={styles.Dividerde11d607} color={theme.colors.primary} />
         <XanoApi.FetchGetCartTotalsGET
-          refetchInterval={250}
+          refetchInterval={500}
           user_id={Constants['user_id']}
           onData={fetchData => {
             try {
@@ -787,7 +787,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             oneFifty,
                             threeDollar
                           );
-                          const logAddTip = await addTipPOST.mutateAsync({
+                          const logAddTip = await xanoAddTipPOST.mutateAsync({
                             tip: tipAmount,
                             user_id: Constants['user_id'],
                           });
@@ -796,12 +796,12 @@ line two` ) and will not work with special characters inside of quotes ( example
                             oneFifty,
                             threeDollar
                           );
-                          const cost = await setPricePOST.mutateAsync({
+                          const cost = await addCostSetPricePOST.mutateAsync({
                             price: newTotalPrice,
                             priceID: 299,
                           });
                           const prodID = cost.id;
-                          const check = await checkoutPOST.mutateAsync({
+                          const check = await checkoutCheckoutPOST.mutateAsync({
                             UID: Constants['user_id'],
                             priceID: prodID,
                           });

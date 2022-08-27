@@ -406,7 +406,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                                     <FlatList
                                       data={fetchData}
                                       listKey={'Y51RbSb4'}
-                                      keyExtractor={({ item }) =>
+                                      keyExtractor={item =>
                                         item?.id || item?.uuid || item
                                       }
                                       renderItem={({ item }) => {
@@ -532,9 +532,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         <FlatList
                           data={[]}
                           listKey={'V73lG5U8'}
-                          keyExtractor={({ item }) =>
-                            item?.id || item?.uuid || item
-                          }
+                          keyExtractor={item => item?.id || item?.uuid || item}
                           renderItem={({ item }) => {
                             const listData = item;
                             return null;
@@ -556,9 +554,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                         <FlatList
                           data={[]}
                           listKey={'2rE43hcu'}
-                          keyExtractor={({ item }) =>
-                            item?.id || item?.uuid || item
-                          }
+                          keyExtractor={item => item?.id || item?.uuid || item}
                           renderItem={({ item }) => {
                             const listData = item;
                             return null;

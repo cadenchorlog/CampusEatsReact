@@ -1,5 +1,7 @@
 import React from 'react';
-import { IconButton, ScreenContainer, WebView, withTheme } from '@draftbit/ui';
+import * as CustomCode from '../components.js';
+import * as Utils from '../utils';
+import { IconButton, ScreenContainer, withTheme } from '@draftbit/ui';
 import { StyleSheet } from 'react-native';
 
 const CheckoutScreen = props => {
@@ -26,10 +28,26 @@ const CheckoutScreen = props => {
         size={45}
         color={theme.colors.divider}
       />
-      <WebView
-        style={styles.WebView4825887f}
-        source={{ uri: `${props.route?.params?.url ?? 'https://google.com'}` }}
-      />
+      <Utils.CustomCodeErrorBoundary>
+        {' '}
+        <WebView
+          source={{
+            uri: `${props.route?.params?.url ?? 'https://google.com'}`,
+          }}
+          onLoadEnd={() => this.hideSpinner()}
+          onMessage={onMessage.bind(this)}
+          ref={WEBVIEW_REF => (this.WebViewRef = WEBVIEW_REF)}
+          startInLoadingState={true}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          onLoadProgress={({ nativeEvent }) => {
+            //your code goes here
+          }}
+          onNavigationStateChange={state => {
+            navigation.navigate('BottomTabNavigator', { screen: 'History' });
+          }}
+        />
+      </Utils.CustomCodeErrorBoundary>
     </ScreenContainer>
   );
 };
@@ -39,11 +57,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: 15,
     marginBottom: 15,
-  },
-  WebView4825887f: {
-    flex: 1,
-    marginTop: -75,
-    marginBottom: -80,
   },
 });
 

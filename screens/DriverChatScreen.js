@@ -32,7 +32,7 @@ const DriverChatScreen = props => {
   const { theme } = props;
   const { navigation } = props;
 
-  const addChatPOST = XanoApi.useAddChatPOST();
+  const xanoAddChatPOST = XanoApi.useAddChatPOST();
 
   const [textInputValue, setTextInputValue] = React.useState('');
 
@@ -97,7 +97,7 @@ const DriverChatScreen = props => {
                 <FlatList
                   data={fetchData}
                   listKey={'BaJD3l44'}
-                  keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                  keyExtractor={item => item?.id || item?.uuid || item}
                   renderItem={({ item }) => {
                     const listData = item;
                     return (
@@ -207,7 +207,7 @@ const DriverChatScreen = props => {
             onPress={() => {
               const handler = async () => {
                 try {
-                  await addChatPOST.mutateAsync({
+                  await xanoAddChatPOST.mutateAsync({
                     isDriver: true,
                     message: textInputValue,
                     session: props.route?.params?.orderID ?? 67,

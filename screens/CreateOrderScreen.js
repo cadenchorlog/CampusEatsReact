@@ -52,7 +52,7 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const createDriverOfferPOST = XanoApi.useCreateDriverOfferPOST();
+  const xanoCreateDriverOfferPOST = XanoApi.useCreateDriverOfferPOST();
 
   const [mapOpen, setMapOpen] = React.useState(false);
   const [searchInputValue, setSearchInputValue] = React.useState(' ');
@@ -174,9 +174,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                     <FlatList
                       data={fetchData}
                       listKey={'m4jtkcKB'}
-                      keyExtractor={({ item }) =>
-                        item?.id || item?.uuid || item
-                      }
+                      keyExtractor={item => item?.id || item?.uuid || item}
                       renderItem={({ item }) => {
                         const listData = item;
                         return (
@@ -401,7 +399,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                 onPress={() => {
                   const handler = async () => {
                     try {
-                      await createDriverOfferPOST.mutateAsync({
+                      await xanoCreateDriverOfferPOST.mutateAsync({
                         storeID: storeID,
                         uid: Constants['user_id'],
                       });

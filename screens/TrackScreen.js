@@ -366,9 +366,7 @@ const TrackScreen = props => {
                       <FlatList
                         data={fetchData?.userOrder?.items}
                         listKey={'MdvDMLzC'}
-                        keyExtractor={({ item }) =>
-                          item?.id || item?.uuid || item
-                        }
+                        keyExtractor={item => item?.id || item?.uuid || item}
                         renderItem={({ item }) => {
                           const listData = item;
                           return (

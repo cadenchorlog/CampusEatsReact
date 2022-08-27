@@ -72,7 +72,7 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const updateCartPOST = XanoApi.useUpdateCartPOST();
+  const xanoUpdateCartPOST = XanoApi.useUpdateCartPOST();
 
   const [addedToCart, setAddedToCart] = React.useState(false);
   const [checkboxRowValue, setCheckboxRowValue] = React.useState(undefined);
@@ -177,7 +177,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                   <FlatList
                     data={fetchData?.itemCustomizations}
                     listKey={'5KS5gtbz'}
-                    keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                    keyExtractor={item => item?.id || item?.uuid || item}
                     renderItem={({ item }) => {
                       const listData = item;
                       return (
@@ -311,7 +311,7 @@ line two` ) and will not work with special characters inside of quotes ( example
             onPress={() => {
               const handler = async () => {
                 try {
-                  await updateCartPOST.mutateAsync({
+                  await xanoUpdateCartPOST.mutateAsync({
                     UID: Constants['user_id'],
                     cost: itemCost,
                     itemID: props.route?.params?.itemID ?? 1,

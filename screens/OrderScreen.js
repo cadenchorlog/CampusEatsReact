@@ -95,14 +95,13 @@ line two` ) and will not work with special characters inside of quotes ( example
             </Text>
           </View>
           <Spacer top={4} right={8} bottom={4} left={8} />
-          {/* Popular Places */}
           <XanoApi.FetchGetAllStoresGET
-            refetchInterval={1000}
             UID={Constants['user_id']}
+            onCampus={false}
           >
             {({ loading, error, data, refetchGetAllStores }) => {
-              const popularPlacesData = data;
-              if (!popularPlacesData || loading) {
+              const fetchData = data;
+              if (!fetchData || loading) {
                 return <ActivityIndicator />;
               }
 
@@ -115,244 +114,77 @@ line two` ) and will not work with special characters inside of quotes ( example
               }
 
               return (
-                <View style={styles.Viewd63bc9bc}>
-                  {/* Heading */}
-                  <View style={styles.View9fa86917}>
-                    <Row
-                      justifyContent={'space-between'}
-                      alignItems={'flex-start'}
-                    >
-                      {/* Primary */}
-                      <Text
-                        style={[
-                          styles.Textf90d72c6,
-                          { color: theme.colors.strong },
-                        ]}
+                <>
+                  {/* courierOffers */}
+                  <View style={styles.Viewd63bc9bc}>
+                    {/* Heading */}
+                    <View style={styles.View9fa86917}>
+                      <Row
+                        justifyContent={'space-between'}
+                        alignItems={'flex-start'}
                       >
-                        {'Courier Offers'}
-                      </Text>
-
-                      <Touchable
-                        onPress={() => {
-                          try {
-                            setOffersOpen(true);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                      >
+                        {/* Primary */}
                         <Text
                           style={[
-                            styles.Text34e0cb74,
-                            { color: theme.colors.primary },
+                            styles.Textf90d72c6,
+                            { color: theme.colors.strong },
                           ]}
                         >
-                          {'See All'}
+                          {'Courier Offers'}
                         </Text>
-                      </Touchable>
-                    </Row>
-                    {/* Secondary */}
-                    <Text style={{ color: theme.colors.strong }}>
-                      {'Off campus options'}
-                    </Text>
-                  </View>
-                  <FlatList
-                    data={popularPlacesData}
-                    listKey={'HQwHamTL'}
-                    keyExtractor={item => item?.id || item?.uuid || item}
-                    renderItem={({ item }) => {
-                      const listData = item;
-                      return (
+
                         <Touchable
                           onPress={() => {
                             try {
-                              navigation.navigate('RestaurantViewScreen', {
-                                storeID: listData?.id,
-                              });
+                              setOffersOpen(true);
                             } catch (err) {
                               console.error(err);
                             }
                           }}
                         >
-                          <Surface
+                          <Text
                             style={[
-                              styles.Surface56d97cb4,
-                              { borderRadius: 8 },
+                              styles.Text34e0cb74,
+                              { color: theme.colors.primary },
                             ]}
                           >
-                            <View
-                              style={[
-                                styles.View1b1f79af,
-                                {
-                                  borderTopLeftRadius: 8,
-                                  borderTopRightRadius: 8,
-                                },
-                              ]}
-                            >
-                              <Image
-                                style={styles.Image732c54b5}
-                                source={{ uri: `${listData?.storeImage}` }}
-                                resizeMode={'cover'}
-                              />
-                            </View>
-                            <CircleImage
-                              style={styles.CircleImage34352bf1}
-                              source={{ uri: `${listData?.storeIcon}` }}
-                              size={60}
-                            />
-                            <Row
-                              justifyContent={'space-between'}
-                              alignItems={'flex-end'}
-                            >
-                              <Stack
-                                justifyContent={'flex-start'}
-                                alignItems={'flex-start'}
-                              >
-                                {/* Name */}
-                                <Text
-                                  style={[
-                                    styles.Textb73c4ca6,
-                                    { color: theme.colors.strong },
-                                  ]}
-                                >
-                                  {listData?.storeName}
-                                </Text>
-                                {/* Style */}
-                                <Text
-                                  style={[
-                                    styles.Textcd669454,
-                                    { color: theme.colors.medium },
-                                  ]}
-                                >
-                                  {'$'}
-                                  {listData?.deliveryFee}
-                                  {' Delivery Fee'}
-                                </Text>
-                              </Stack>
-
-                              <Stack
-                                justifyContent={'flex-start'}
-                                alignItems={'flex-end'}
-                              >
-                                <StarRating
-                                  style={styles.StarRatinga57a4184}
-                                  starSize={16}
-                                  maxStars={5}
-                                  activeColor={theme.colors.primary}
-                                  inactiveColor={theme.colors.divider}
-                                  defaultValue={listData?.storeRating}
-                                />
-                                {/* Style */}
-                                <Text
-                                  style={[
-                                    styles.Text25694ba4,
-                                    { color: theme.colors.medium },
-                                  ]}
-                                >
-                                  {listData?.storeRating}
-                                  {' Stars'}
-                                </Text>
-                              </Stack>
-                              <IconButton
-                                onPress={() => {
-                                  try {
-                                    setStoreLat(listData?.storeLat);
-                                    setStoreLong(listData?.storeLong);
-                                    setMapOpen(true);
-                                  } catch (err) {
-                                    console.error(err);
-                                  }
-                                }}
-                                style={styles.IconButton2c3e883b}
-                                icon={'MaterialCommunityIcons/map-marker'}
-                                size={35}
-                                color={theme.colors.primary}
-                              />
-                            </Row>
-                          </Surface>
+                            {'See All'}
+                          </Text>
                         </Touchable>
-                      );
-                    }}
-                    contentContainerStyle={styles.FlatListe3f3fa82Content}
-                    numColumns={1}
-                    horizontal={true}
-                  />
-                </View>
-              );
-            }}
-          </XanoApi.FetchGetAllStoresGET>
-          <Spacer top={8} right={8} bottom={8} left={8} />
-          {/* Popular Places */}
-          <XanoApi.FetchGetAllStoresGET
-            refetchInterval={1000}
-            UID={Constants['user_id']}
-          >
-            {({ loading, error, data, refetchGetAllStores }) => {
-              const popularPlacesData = data;
-              if (!popularPlacesData || loading) {
-                return <ActivityIndicator />;
-              }
-
-              if (error) {
-                return (
-                  <Text style={{ textAlign: 'center' }}>
-                    There was a problem fetching this data
-                  </Text>
-                );
-              }
-
-              return (
-                <View style={styles.Viewfee4bb0e}>
-                  {/* Heading */}
-                  <View style={styles.View9fa86917}>
-                    <Row
-                      justifyContent={'space-between'}
-                      alignItems={'flex-start'}
-                    >
-                      {/* Primary */}
-                      <Text
-                        style={[
-                          styles.Textf90d72c6,
-                          { color: theme.colors.strong },
-                        ]}
-                      >
-                        {'Campus Offers'}
+                      </Row>
+                      {/* Secondary */}
+                      <Text style={{ color: theme.colors.strong }}>
+                        {'Off campus options'}
                       </Text>
-                    </Row>
-                    {/* Secondary */}
-                    <Text style={{ color: theme.colors.strong }}>
-                      {'Places on campus'}
-                    </Text>
-                  </View>
-                  <FlatList
-                    data={popularPlacesData}
-                    listKey={'wB9pCiba'}
-                    keyExtractor={item => item?.id || item?.uuid || item}
-                    renderItem={({ item }) => {
-                      const listData = item;
-                      return (
-                        <>
+                    </View>
+                    {/* courierList */}
+                    <FlatList
+                      data={fetchData?.campusDetails}
+                      listKey={'HQwHamTL'}
+                      keyExtractor={item => item?.id || item?.uuid || item}
+                      renderItem={({ item }) => {
+                        const courierListData = item;
+                        return (
                           <Touchable
                             onPress={() => {
                               try {
                                 navigation.navigate('RestaurantViewScreen', {
-                                  storeID: listData?.id,
+                                  storeID: courierListData?.id,
                                 });
                               } catch (err) {
                                 console.error(err);
                               }
                             }}
-                            style={styles.Touchable7d2b959f}
                           >
                             <Surface
                               style={[
-                                styles.Surface8012acab,
+                                styles.Surface56d97cb4,
                                 { borderRadius: 8 },
                               ]}
                             >
                               <View
                                 style={[
-                                  styles.View78e61bd0,
+                                  styles.View1b1f79af,
                                   {
                                     borderTopLeftRadius: 8,
                                     borderTopRightRadius: 8,
@@ -361,13 +193,17 @@ line two` ) and will not work with special characters inside of quotes ( example
                               >
                                 <Image
                                   style={styles.Image732c54b5}
-                                  source={{ uri: `${listData?.storeImage}` }}
+                                  source={{
+                                    uri: `${courierListData?.storeImage}`,
+                                  }}
                                   resizeMode={'cover'}
                                 />
                               </View>
                               <CircleImage
                                 style={styles.CircleImage34352bf1}
-                                source={{ uri: `${listData?.storeIcon}` }}
+                                source={{
+                                  uri: `${courierListData?.storeIcon}`,
+                                }}
                                 size={60}
                               />
                               <Row
@@ -381,11 +217,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                                   {/* Name */}
                                   <Text
                                     style={[
-                                      styles.Text26f0ecb9,
+                                      styles.Textb73c4ca6,
                                       { color: theme.colors.strong },
                                     ]}
                                   >
-                                    {listData?.storeName}
+                                    {courierListData?.storeName}
                                   </Text>
                                   {/* Style */}
                                   <Text
@@ -395,70 +231,266 @@ line two` ) and will not work with special characters inside of quotes ( example
                                     ]}
                                   >
                                     {'$'}
-                                    {listData?.deliveryFee}
+                                    {courierListData?.deliveryFee}
                                     {' Delivery Fee'}
                                   </Text>
                                 </Stack>
 
-                                <Row
+                                <Stack
                                   justifyContent={'flex-start'}
-                                  alignItems={'flex-start'}
+                                  alignItems={'flex-end'}
                                 >
-                                  <Stack
-                                    justifyContent={'flex-start'}
-                                    alignItems={'flex-end'}
-                                  >
-                                    <StarRating
-                                      style={styles.StarRating27d4405a}
-                                      starSize={16}
-                                      maxStars={5}
-                                      activeColor={theme.colors.primary}
-                                      inactiveColor={theme.colors.divider}
-                                      defaultValue={listData?.storeRating}
-                                    />
-                                    {/* Style */}
-                                    <Text
-                                      style={[
-                                        styles.Text23f672fe,
-                                        { color: theme.colors.medium },
-                                      ]}
-                                    >
-                                      {listData?.storeRating}
-                                      {' Stars'}
-                                    </Text>
-                                  </Stack>
-                                  <IconButton
-                                    onPress={() => {
-                                      try {
-                                        setStoreLat(listData?.storeLat);
-                                        setStoreLong(listData?.storeLong);
-                                        setMapOpen(true);
-                                      } catch (err) {
-                                        console.error(err);
-                                      }
-                                    }}
-                                    style={styles.IconButton2c3e883b}
-                                    icon={'MaterialCommunityIcons/map-marker'}
-                                    size={35}
-                                    color={theme.colors.primary}
+                                  <StarRating
+                                    style={styles.StarRatinga57a4184}
+                                    starSize={16}
+                                    maxStars={5}
+                                    activeColor={theme.colors.primary}
+                                    inactiveColor={theme.colors.divider}
+                                    defaultValue={courierListData?.storeRating}
                                   />
-                                </Row>
+                                  {/* Style */}
+                                  <Text
+                                    style={[
+                                      styles.Text25694ba4,
+                                      { color: theme.colors.medium },
+                                    ]}
+                                  >
+                                    {courierListData?.storeRating}
+                                    {' Stars'}
+                                  </Text>
+                                </Stack>
+                                <IconButton
+                                  onPress={() => {
+                                    try {
+                                      setStoreLat(courierListData?.storeLat);
+                                      setStoreLong(courierListData?.storeLong);
+                                      setMapOpen(true);
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.IconButton2c3e883b}
+                                  icon={'MaterialCommunityIcons/map-marker'}
+                                  size={35}
+                                  color={theme.colors.primary}
+                                />
                               </Row>
                             </Surface>
                           </Touchable>
-                          <Spacer top={8} right={10} bottom={8} left={10} />
-                        </>
-                      );
-                    }}
-                    style={styles.FlatList754b2e07}
-                    contentContainerStyle={styles.FlatList754b2e07Content}
-                    numColumns={1}
-                    horizontal={false}
-                  />
-                </View>
+                        );
+                      }}
+                      contentContainerStyle={styles.FlatListe3f3fa82Content}
+                      numColumns={1}
+                      horizontal={true}
+                    />
+                  </View>
+                </>
               );
             }}
           </XanoApi.FetchGetAllStoresGET>
+          <Spacer top={8} right={8} bottom={8} left={8} />
+          <XanoApi.FetchGetAllStoresGET
+            UID={Constants['user_id']}
+            onCampus={true}
+            onData={fetchData => {
+              const handler = async () => {
+                try {
+                  await refetchGetAllStores();
+                } catch (err) {
+                  console.error(err);
+                }
+              };
+              handler();
+            }}
+          >
+            {({ loading, error, data, refetchGetAllStores }) => {
+              const fetchData = data;
+              if (!fetchData || loading) {
+                return <ActivityIndicator />;
+              }
+
+              if (error) {
+                return (
+                  <Text style={{ textAlign: 'center' }}>
+                    There was a problem fetching this data
+                  </Text>
+                );
+              }
+
+              return (
+                <>
+                  {/* campusOffers */}
+                  <View style={styles.Viewdf29e2e2}>
+                    {/* Heading */}
+                    <View style={styles.View9fa86917}>
+                      <Row
+                        justifyContent={'space-between'}
+                        alignItems={'flex-start'}
+                      >
+                        {/* Primary */}
+                        <Text
+                          style={[
+                            styles.Textf90d72c6,
+                            { color: theme.colors.strong },
+                          ]}
+                        >
+                          {'Campus Offers'}
+                        </Text>
+                      </Row>
+                      {/* Secondary */}
+                      <Text style={{ color: theme.colors.strong }}>
+                        {'Places on campus'}
+                      </Text>
+                    </View>
+                    {/* campusList */}
+                    <FlatList
+                      data={fetchData?.campusDetails}
+                      listKey={'wB9pCiba'}
+                      keyExtractor={item => item?.id || item?.uuid || item}
+                      renderItem={({ item }) => {
+                        const campusListData = item;
+                        return (
+                          <>
+                            <Touchable
+                              onPress={() => {
+                                try {
+                                  navigation.navigate('RestaurantViewScreen', {
+                                    storeID: campusListData?.id,
+                                  });
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              }}
+                              style={styles.Touchable7d2b959f}
+                            >
+                              {/* campusSurface */}
+                              <Surface
+                                style={[
+                                  styles.Surface8012acab,
+                                  { borderRadius: 8 },
+                                ]}
+                              >
+                                <View
+                                  style={[
+                                    styles.View78e61bd0,
+                                    {
+                                      borderTopLeftRadius: 8,
+                                      borderTopRightRadius: 8,
+                                    },
+                                  ]}
+                                >
+                                  <Image
+                                    style={styles.Image732c54b5}
+                                    source={{
+                                      uri: `${campusListData?.storeImage}`,
+                                    }}
+                                    resizeMode={'cover'}
+                                  />
+                                </View>
+                                <CircleImage
+                                  style={styles.CircleImage34352bf1}
+                                  source={{
+                                    uri: `${campusListData?.storeIcon}`,
+                                  }}
+                                  size={60}
+                                />
+                                <Row
+                                  justifyContent={'space-between'}
+                                  alignItems={'flex-end'}
+                                >
+                                  <Stack
+                                    justifyContent={'flex-start'}
+                                    alignItems={'flex-start'}
+                                  >
+                                    {/* Name */}
+                                    <Text
+                                      style={[
+                                        styles.Text26f0ecb9,
+                                        { color: theme.colors.strong },
+                                      ]}
+                                    >
+                                      {campusListData?.storeName}
+                                    </Text>
+                                    {/* Style */}
+                                    <Text
+                                      style={[
+                                        styles.Textcd669454,
+                                        { color: theme.colors.medium },
+                                      ]}
+                                    >
+                                      {'$'}
+                                      {campusListData?.deliveryFee}
+                                      {' Delivery Fee'}
+                                    </Text>
+                                  </Stack>
+
+                                  <Row
+                                    justifyContent={'flex-start'}
+                                    alignItems={'flex-start'}
+                                  >
+                                    <Stack
+                                      justifyContent={'flex-start'}
+                                      alignItems={'flex-end'}
+                                    >
+                                      <StarRating
+                                        style={styles.StarRating27d4405a}
+                                        starSize={16}
+                                        maxStars={5}
+                                        activeColor={theme.colors.primary}
+                                        inactiveColor={theme.colors.divider}
+                                        defaultValue={
+                                          campusListData?.storeRating
+                                        }
+                                      />
+                                      {/* Style */}
+                                      <Text
+                                        style={[
+                                          styles.Text23f672fe,
+                                          { color: theme.colors.medium },
+                                        ]}
+                                      >
+                                        {campusListData?.storeRating}
+                                        {' Stars'}
+                                      </Text>
+                                    </Stack>
+                                    <IconButton
+                                      onPress={() => {
+                                        try {
+                                          setStoreLat(
+                                            courierListData?.storeLat
+                                          );
+                                          setStoreLong(
+                                            courierListData?.storeLong
+                                          );
+                                          setMapOpen(true);
+                                        } catch (err) {
+                                          console.error(err);
+                                        }
+                                      }}
+                                      style={styles.IconButton2c3e883b}
+                                      icon={'MaterialCommunityIcons/map-marker'}
+                                      size={35}
+                                      color={theme.colors.primary}
+                                    />
+                                  </Row>
+                                </Row>
+                              </Surface>
+                            </Touchable>
+                            <Spacer top={8} right={10} bottom={8} left={10} />
+                          </>
+                        );
+                      }}
+                      style={styles.FlatList754b2e07}
+                      contentContainerStyle={styles.FlatList754b2e07Content}
+                      numColumns={1}
+                      horizontal={false}
+                    />
+                  </View>
+                </>
+              );
+            }}
+          </XanoApi.FetchGetAllStoresGET>
+          <Spacer top={50} right={8} bottom={8} left={8} />
         </ScrollView>
 
         <Surface
@@ -790,7 +822,10 @@ line two` ) and will not work with special characters inside of quotes ( example
         {!offersOpen ? null : (
           <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
             {/* Popular Places */}
-            <XanoApi.FetchGetAllStoresGET UID={Constants['user_id']}>
+            <XanoApi.FetchGetAllStoresGET
+              UID={Constants['user_id']}
+              onCampus={false}
+            >
               {({ loading, error, data, refetchGetAllStores }) => {
                 const popularPlacesData = data;
                 if (!popularPlacesData || loading) {
@@ -841,7 +876,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       </Text>
                     </View>
                     <FlatList
-                      data={popularPlacesData}
+                      data={popularPlacesData?.campusDetails}
                       listKey={'38Kv5lnu'}
                       keyExtractor={item => item?.id || item?.uuid || item}
                       renderItem={({ item }) => {
@@ -955,6 +990,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                 );
               }}
             </XanoApi.FetchGetAllStoresGET>
+            <View />
           </Modal>
         )}
       </>
@@ -1103,6 +1139,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+  Fetch431eb058: {
+    minHeight: 40,
+  },
   View78e61bd0: {
     height: '65%',
     overflow: 'hidden',
@@ -1146,9 +1185,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 16,
   },
-  Viewfee4bb0e: {
+  Viewdf29e2e2: {
     width: '100%',
-    marginBottom: 70,
   },
   TextInputbaf7ad36: {
     fontFamily: 'System',

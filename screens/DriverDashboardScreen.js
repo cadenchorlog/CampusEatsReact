@@ -127,7 +127,7 @@ const DriverDashboardScreen = props => {
                 <FlatList
                   data={fetchData?.earningHistory}
                   listKey={'ZkbUG5t3'}
-                  keyExtractor={({ item }) => item?.id || item?.uuid || item}
+                  keyExtractor={item => item?.id || item?.uuid || item}
                   renderItem={({ item }) => {
                     const listData = item;
                     return (

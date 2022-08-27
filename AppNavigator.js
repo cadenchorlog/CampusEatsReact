@@ -12,6 +12,7 @@ import AccountScreen from './screens/AccountScreen';
 import AddressOnSignUpScreen from './screens/AddressOnSignUpScreen';
 import AvailableOrdersScreen from './screens/AvailableOrdersScreen';
 import BaggageCartScreen from './screens/BaggageCartScreen';
+import BlankScreen from './screens/BlankScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
 import CreateOrderScreen from './screens/CreateOrderScreen';
 import DriverChatScreen from './screens/DriverChatScreen';
@@ -315,6 +316,11 @@ export default function RootAppNavigator() {
           name="LinkCampusScreen"
           component={LinkCampusScreen}
           options={{ title: 'linkCampus' }}
+        />
+        <Stack.Screen
+          name="BlankScreen"
+          component={BlankScreen}
+          options={{ title: 'Blank' }}
         />
         <Stack.Screen
           name="BottomTabNavigator"
