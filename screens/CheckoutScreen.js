@@ -1,9 +1,6 @@
 import React from 'react';
-import * as CustomCode from '../components.js';
-import * as Utils from '../utils';
-import { IconButton, ScreenContainer, withTheme } from '@draftbit/ui';
+import { IconButton, ScreenContainer, WebView, withTheme } from '@draftbit/ui';
 import { StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 const CheckoutScreen = props => {
   const { theme } = props;
@@ -29,15 +26,10 @@ const CheckoutScreen = props => {
         size={45}
         color={theme.colors.divider}
       />
-      <WebView 
-          style={styles.webviewMargin}
-          source={{ uri: `${props.route?.params?.url ?? 'https://google.com'}` }}
-          onNavigationStateChange={navState => {
-            if(navState.url != props.route?.params?.url){
-            navigation.navigate('BottomTabNavigator', { screen: 'HistoryScreen' });
-            }
-        }}
-        />
+      <WebView
+        style={styles.WebViewc992f941}
+        source={{ uri: `${props.route?.params?.url ?? 'https://google.com'}` }}
+      />
     </ScreenContainer>
   );
 };
@@ -48,8 +40,8 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginBottom: 15,
   },
-  webviewMargin: {
-    marginTop: -50
+  WebViewc992f941: {
+    flex: 1,
   },
 });
 
