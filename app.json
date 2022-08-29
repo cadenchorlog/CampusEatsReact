@@ -10,7 +10,7 @@
       "android",
       "web"
     ],
-    "version": "1.9.0",
+    "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -24,7 +24,7 @@
     "ios": {
       "bundleIdentifier": "net.campusEats.test",
       "supportsTablet": false,
-      "buildNumber": "1.9.0",
+      "buildNumber": "1.0.0",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to review rich media previously added.",
@@ -34,7 +34,7 @@
       "usesIcloudStorage": false
     },
     "android": {
-      "versionCode": 9,
+      "versionCode": 1,
       "package": "com.draftbit.untitledapp",
       "permissions": [
         "ACCESS_FINE_LOCATION"

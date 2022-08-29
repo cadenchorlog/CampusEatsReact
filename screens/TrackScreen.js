@@ -1,6 +1,7 @@
 import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import dividePrice from '../custom/dividePrice';
 import * as Utils from '../utils';
 import { MapMarker, MapView } from '@draftbit/maps';
 import {
@@ -20,7 +21,6 @@ import * as Linking from 'expo-linking';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   Modal,
   StyleSheet,
   Text,
@@ -82,30 +82,9 @@ const TrackScreen = props => {
 
           return (
             <>
-              <Row justifyContent={'flex-start'} alignItems={'flex-end'}>
-                <IconButton
-                  onPress={() => {
-                    try {
-                      navigation.goBack();
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={styles.IconButtonba106552}
-                  icon={'Entypo/chevron-thin-left'}
-                  size={32}
-                />
-                <Text
-                  style={[styles.Textfb371129, { color: theme.colors.strong }]}
-                >
-                  {fetchData?.userOrder?.restaurantName}
-                  {' Order #'}
-                  {props.route?.params?.orderID ?? 84}
-                </Text>
-              </Row>
               <>
                 {fetchData?.completed ? null : (
-                  <Surface style={styles.Surface494c0973}>
+                  <Surface style={styles.Surfacedf6d398d}>
                     {/* Map Views */}
                     <MapView
                       style={styles.MapViewc992f941}
@@ -132,204 +111,245 @@ const TrackScreen = props => {
                   </Surface>
                 )}
               </>
-              <>
-                {fetchData?.completed ? null : (
-                  <Text
-                    style={[
-                      styles.Text00d6867f,
-                      { color: theme.colors.strong },
-                    ]}
-                  >
-                    {'Current Stage:'}
-                  </Text>
-                )}
-              </>
-              <>
-                {!fetchData?.completed ? null : (
-                  <Text
-                    style={[
-                      styles.Text00d6867f,
-                      { color: theme.colors.strong },
-                    ]}
-                  >
-                    {'Order Completed'}
-                  </Text>
-                )}
-              </>
-              <Row justifyContent={'center'} alignItems={'center'}>
-                <Divider
-                  style={styles.Divider8ca704fc}
-                  color={theme.colors.primary}
-                />
-                <Icon
-                  name={'MaterialCommunityIcons/numeric-1-circle'}
-                  size={40}
-                  color={theme.colors.primary}
-                />
-                <Divider
-                  style={styles.Divider8ca704fc}
-                  color={theme.colors.primary}
-                />
-                <>
-                  {fetchData?.enRoute ? null : (
-                    <Icon
-                      name={'MaterialCommunityIcons/numeric-2-circle'}
-                      size={40}
-                    />
-                  )}
-                </>
-                <>
-                  {!fetchData?.enRoute ? null : (
-                    <Icon
-                      name={'MaterialCommunityIcons/numeric-2-circle'}
-                      size={40}
-                      color={theme.colors.primary}
-                    />
-                  )}
-                </>
-                <>
-                  {fetchData?.enRoute ? null : (
-                    <Divider
-                      style={styles.Divider8ca704fc}
-                      color={theme.colors.divider}
-                    />
-                  )}
-                </>
-                <>
-                  {!fetchData?.enRoute ? null : (
-                    <Divider
-                      style={styles.Divider8ca704fc}
-                      color={theme.colors.primary}
-                    />
-                  )}
-                </>
-                <>
-                  {fetchData?.completed ? null : (
-                    <Icon
-                      name={'MaterialCommunityIcons/checkbox-marked-circle'}
-                      size={40}
-                    />
-                  )}
-                </>
-                <>
-                  {!fetchData?.completed ? null : (
-                    <Icon
-                      name={'MaterialCommunityIcons/checkbox-marked-circle'}
-                      size={40}
-                      color={theme.colors.primary}
-                    />
-                  )}
-                </>
-                <>
-                  {fetchData?.completed ? null : (
-                    <Divider
-                      style={styles.Divider8ca704fc}
-                      color={theme.colors.divider}
-                    />
-                  )}
-                </>
-                <>
-                  {!fetchData?.completed ? null : (
-                    <Divider
-                      style={styles.Divider8ca704fc}
-                      color={theme.colors.primary}
-                    />
-                  )}
-                </>
-              </Row>
-              <Spacer top={4} right={8} bottom={4} left={8} />
-              <Row justifyContent={'center'} alignItems={'center'}>
-                <Divider
-                  style={styles.Divider02c21491}
-                  color={theme.colors.background}
-                />
-                <Text
-                  style={[styles.Textfc6a8388, { color: theme.colors.strong }]}
-                >
-                  {'Order\nPlaced'}
-                </Text>
-                <Divider
-                  style={styles.Divider65945329}
-                  color={theme.colors.background}
-                />
-                <Text
-                  style={[styles.Textfc6a8388, { color: theme.colors.strong }]}
-                >
-                  {'Picked\nUp'}
-                </Text>
-                <Divider
-                  style={styles.Divider65945329}
-                  color={theme.colors.background}
-                />
-                <Text
-                  style={[styles.Textfc6a8388, { color: theme.colors.strong }]}
-                >
-                  {'Order\nArrived'}
-                </Text>
-                <Divider
-                  style={styles.Divider02c21491}
-                  color={theme.colors.background}
-                />
-              </Row>
-              <>
-                {fetchData?.completed ? null : (
-                  <ButtonSolid
+              <Row justifyContent={'flex-start'} alignItems={'flex-end'}>
+                <View style={styles.View699771c3}>
+                  <IconButton
                     onPress={() => {
                       try {
-                        navigation.navigate('UserChatScreen', {
-                          orderID: props.route?.params?.orderID ?? 84,
-                        });
+                        navigation.goBack();
                       } catch (err) {
                         console.error(err);
                       }
                     }}
-                    style={[
-                      styles.ButtonSolid7d5c426d,
-                      { backgroundColor: theme.colors.primary },
-                    ]}
-                    title={'Message Courier'}
-                    icon={'MaterialCommunityIcons/android-messages'}
+                    style={styles.IconButtonba106552}
+                    icon={'Entypo/chevron-thin-left'}
+                    size={32}
                   />
+                  <Text
+                    style={[
+                      styles.Textdf38a7a9,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {fetchData?.userOrder?.restaurantName}
+                    {' Order'}
+                  </Text>
+                </View>
+              </Row>
+              <>
+                {fetchData?.completed ? null : (
+                  <Spacer top={0} right={8} bottom={'60%'} left={8} />
                 )}
               </>
-              <ButtonSolid
-                onPress={() => {
-                  try {
-                    setModalOpen(true);
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
+              <Surface
                 style={[
-                  styles.ButtonSolid062cd685,
-                  {
-                    backgroundColor: theme.colors.background,
-                    borderColor: theme.colors.primary,
-                    color: theme.colors.primary,
-                  },
+                  styles.Surface74de28d3,
+                  { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
                 ]}
-                title={'View Order Contents'}
-                icon={'MaterialCommunityIcons/table-of-contents'}
-              />
-              <ButtonSolid
-                onPress={() => {
-                  try {
-                    Linking.openURL('https://direct.lc.chat/14396454/');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={[
-                  styles.ButtonSolidc9daa8c2,
-                  {
-                    backgroundColor: theme.colors.background,
-                    borderColor: theme.colors.primary,
-                    color: theme.colors.primary,
-                  },
-                ]}
-                title={'Contact CampusEats'}
-                icon={'MaterialIcons/support-agent'}
-              />
+              >
+                <>
+                  {!fetchData?.completed ? null : (
+                    <Text
+                      style={[
+                        styles.Text00d6867f,
+                        { color: theme.colors.strong },
+                      ]}
+                    >
+                      {'Order Completed'}
+                    </Text>
+                  )}
+                </>
+                <Spacer top={8} right={8} bottom={8} left={8} />
+                <Row justifyContent={'center'} alignItems={'center'}>
+                  <Divider
+                    style={styles.Divider8ca704fc}
+                    color={theme.colors.primary}
+                  />
+                  <Icon
+                    name={'MaterialCommunityIcons/numeric-1-circle'}
+                    size={40}
+                    color={theme.colors.primary}
+                  />
+                  <Divider
+                    style={styles.Divider8ca704fc}
+                    color={theme.colors.primary}
+                  />
+                  <>
+                    {fetchData?.enRoute ? null : (
+                      <Icon
+                        name={'MaterialCommunityIcons/numeric-2-circle'}
+                        size={40}
+                      />
+                    )}
+                  </>
+                  <>
+                    {!fetchData?.enRoute ? null : (
+                      <Icon
+                        name={'MaterialCommunityIcons/numeric-2-circle'}
+                        size={40}
+                        color={theme.colors.primary}
+                      />
+                    )}
+                  </>
+                  <>
+                    {fetchData?.enRoute ? null : (
+                      <Divider
+                        style={styles.Divider8ca704fc}
+                        color={theme.colors.divider}
+                      />
+                    )}
+                  </>
+                  <>
+                    {!fetchData?.enRoute ? null : (
+                      <Divider
+                        style={styles.Divider8ca704fc}
+                        color={theme.colors.primary}
+                      />
+                    )}
+                  </>
+                  <>
+                    {fetchData?.completed ? null : (
+                      <Icon
+                        name={'MaterialCommunityIcons/checkbox-marked-circle'}
+                        size={40}
+                      />
+                    )}
+                  </>
+                  <>
+                    {!fetchData?.completed ? null : (
+                      <Icon
+                        name={'MaterialCommunityIcons/checkbox-marked-circle'}
+                        size={40}
+                        color={theme.colors.primary}
+                      />
+                    )}
+                  </>
+                  <>
+                    {fetchData?.completed ? null : (
+                      <Divider
+                        style={styles.Divider8ca704fc}
+                        color={theme.colors.divider}
+                      />
+                    )}
+                  </>
+                  <>
+                    {!fetchData?.completed ? null : (
+                      <Divider
+                        style={styles.Divider8ca704fc}
+                        color={theme.colors.primary}
+                      />
+                    )}
+                  </>
+                </Row>
+                <Spacer top={4} right={8} bottom={4} left={8} />
+                <Row justifyContent={'center'} alignItems={'center'}>
+                  <Divider
+                    style={styles.Divider02c21491}
+                    color={theme.colors.strongInverse}
+                  />
+                  <Text
+                    style={[
+                      styles.Textfc6a8388,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {'Order\nPlaced'}
+                  </Text>
+                  <Divider
+                    style={styles.Divider65945329}
+                    color={theme.colors.strongInverse}
+                  />
+                  <Text
+                    style={[
+                      styles.Textfc6a8388,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {'Picked\nUp'}
+                  </Text>
+                  <Divider
+                    style={styles.Divider65945329}
+                    color={theme.colors.strongInverse}
+                  />
+                  <Text
+                    style={[
+                      styles.Textfc6a8388,
+                      { color: theme.colors.strong },
+                    ]}
+                  >
+                    {'Order\nArrived'}
+                  </Text>
+                  <Divider
+                    style={styles.Divider02c21491}
+                    color={theme.colors.strongInverse}
+                  />
+                </Row>
+                <>
+                  {fetchData?.completed ? null : (
+                    <ButtonSolid
+                      onPress={() => {
+                        try {
+                          navigation.navigate('UserChatScreen', {
+                            orderID: props.route?.params?.orderID ?? 84,
+                          });
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                      style={[
+                        styles.ButtonSolid7d5c426d,
+                        { backgroundColor: theme.colors.primary },
+                      ]}
+                      title={'Message Courier'}
+                      icon={'MaterialCommunityIcons/android-messages'}
+                    />
+                  )}
+                </>
+                <ButtonSolid
+                  onPress={() => {
+                    try {
+                      setModalOpen(true);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={[
+                    styles.ButtonSolid062cd685,
+                    {
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.primary,
+                      color: theme.colors.primary,
+                    },
+                  ]}
+                  title={'View Order Contents'}
+                  icon={'MaterialCommunityIcons/table-of-contents'}
+                />
+                <ButtonSolid
+                  onPress={() => {
+                    try {
+                      Linking.openURL('https://direct.lc.chat/14396454/');
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={[
+                    styles.ButtonSolidc9daa8c2,
+                    {
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.primary,
+                      color: theme.colors.primary,
+                    },
+                  ]}
+                  title={'Contact CampusEats'}
+                  icon={'MaterialIcons/support-agent'}
+                />
+                <Text
+                  style={[styles.Text28b243ac, { color: theme.colors.strong }]}
+                >
+                  {'Order ID: '}
+                  {props.route?.params?.orderID ?? 84}
+                </Text>
+              </Surface>
               <>
                 {!modalOpen ? null : (
                   <Modal
@@ -372,14 +392,9 @@ const TrackScreen = props => {
                           return (
                             <>
                               <Row
-                                justifyContent={'flex-start'}
-                                alignItems={'center'}
+                                justifyContent={'space-between'}
+                                alignItems={'flex-start'}
                               >
-                                <Image
-                                  style={styles.Image61c110c8}
-                                  source={{ uri: `${listData?.itemImage}` }}
-                                  resizeMode={'cover'}
-                                />
                                 <Stack
                                   justifyContent={'flex-start'}
                                   alignItems={'flex-start'}
@@ -396,16 +411,6 @@ const TrackScreen = props => {
                                     >
                                       {listData?.itemName}
                                     </Text>
-
-                                    <Text
-                                      style={[
-                                        styles.Text7f80e720,
-                                        { color: theme.colors.strong },
-                                      ]}
-                                    >
-                                      {'$'}
-                                      {listData?.itemPrice}
-                                    </Text>
                                   </Row>
 
                                   <Text
@@ -417,6 +422,16 @@ const TrackScreen = props => {
                                     {listData?.customizations}
                                   </Text>
                                 </Stack>
+
+                                <Text
+                                  style={[
+                                    styles.Text7f80e720,
+                                    { color: theme.colors.strong },
+                                  ]}
+                                >
+                                  {'$'}
+                                  {listData?.itemPrice}
+                                </Text>
                               </Row>
                               <Divider
                                 style={styles.Divider6f17520d}
@@ -437,8 +452,8 @@ const TrackScreen = props => {
                           { color: theme.colors.strong },
                         ]}
                       >
-                        {'Order Subtotal: $'}
-                        {fetchData?.amount_subtotal}
+                        {'Tips + Delivery Fee: $'}
+                        {fetchData?.earnings}
                       </Text>
 
                       <Text
@@ -448,7 +463,7 @@ const TrackScreen = props => {
                         ]}
                       >
                         {'Order Total: $'}
-                        {fetchData?.amount_total}
+                        {dividePrice(fetchData?.amount_total)}
                       </Text>
                     </Surface>
                   </Modal>
@@ -463,29 +478,31 @@ const TrackScreen = props => {
 };
 
 const styles = StyleSheet.create({
+  MapViewc992f941: {
+    flex: 1,
+  },
+  Surfacedf6d398d: {
+    minHeight: '40%',
+    width: '100%',
+    height: '40%',
+    position: 'absolute',
+    overflow: 'hidden',
+  },
   IconButtonba106552: {
     marginBottom: 18,
     marginLeft: 16,
   },
-  Textfb371129: {
+  Textdf38a7a9: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 26,
-    paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
     paddingBottom: 16,
-    marginTop: 40,
   },
-  MapViewc992f941: {
-    flex: 1,
-  },
-  Surface494c0973: {
-    minHeight: 40,
-    width: '90%',
-    height: '30%',
-    marginLeft: '5%',
-    marginRight: '5%',
-    marginTop: 20,
+  View699771c3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 50,
   },
   Text00d6867f: {
     fontFamily: 'Poppins_400Regular',
@@ -551,6 +568,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '50%',
   },
+  Text28b243ac: {
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  Surface74de28d3: {
+    minHeight: '70%',
+    height: '100%',
+    marginTop: -30,
+  },
   IconButton897c6051: {
     marginLeft: 16,
   },
@@ -569,26 +595,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
   },
-  Image61c110c8: {
-    width: 60,
-    height: 60,
-    marginLeft: 20,
-  },
   Text1a0045e5: {
     marginLeft: 20,
     marginTop: 12,
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 20,
   },
+  Text6ebfd19b: {
+    marginLeft: 20,
+    marginBottom: 12,
+  },
   Text7f80e720: {
     marginTop: 12,
     marginRight: 20,
     fontFamily: 'Poppins_600SemiBold',
     marginLeft: 20,
-  },
-  Text6ebfd19b: {
-    marginLeft: 20,
-    marginBottom: 12,
   },
   Divider6f17520d: {
     height: 1,

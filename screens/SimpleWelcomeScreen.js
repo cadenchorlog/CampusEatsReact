@@ -8,7 +8,7 @@ import {
   withTheme,
 } from '@draftbit/ui';
 import { useIsFocused } from '@react-navigation/native';
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 const SimpleWelcomeScreen = props => {
   const Constants = GlobalVariables.useValues();
@@ -47,13 +47,6 @@ const SimpleWelcomeScreen = props => {
         resizeMode={'cover'}
       >
         <View style={styles.View2b14edd0}>
-          <Image
-            style={styles.Imagee65b0c4c}
-            source={{
-              uri: 'https://assets.stickpng.com/images/584290baa6515b1e0ad75ac2.png',
-            }}
-            resizeMode={'cover'}
-          />
           <Stack justifyContent={'flex-start'} alignItems={'flex-start'}>
             <Text
               style={[
@@ -114,10 +107,6 @@ const SimpleWelcomeScreen = props => {
 };
 
 const styles = StyleSheet.create({
-  Imagee65b0c4c: {
-    width: 250,
-    height: 250,
-  },
   Text5816c588: {
     textAlign: 'left',
     fontSize: 36,

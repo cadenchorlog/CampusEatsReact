@@ -22,7 +22,6 @@ import * as Linking from 'expo-linking';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   ImageBackground,
   Modal,
   Platform,
@@ -105,6 +104,7 @@ line two` ) and will not work with special characters inside of quotes ( example
   const [previewID, setPreviewID] = React.useState(0);
   const [previewModal, setPreviewModal] = React.useState(false);
 
+  const mapViewqyqXh27bRef = React.useRef();
   const mapViewwpaCz5cORef = React.useRef();
 
   return (
@@ -181,19 +181,67 @@ line two` ) and will not work with special characters inside of quotes ( example
 
                       return (
                         <>
-                          <Image
-                            style={styles.Image6ba238f9}
-                            source={{
-                              uri: `${fetchData?.userOrder?.restaurantImage}`,
+                          <Touchable
+                            onPress={() => {
+                              console.log('Touchable ON_PRESS Start');
+                              let error = null;
+                              try {
+                                console.log('Start ON_PRESS:0 CUSTOM_FUNCTION');
+                                const resultApp = openMapApplication(
+                                  fetchData?.userOrder?.storeLat,
+                                  fetchData?.userOrder?.storeLong
+                                );
+                                console.log(
+                                  'Complete ON_PRESS:0 CUSTOM_FUNCTION',
+                                  { resultApp }
+                                );
+                                console.log('Start ON_PRESS:1 LINKING_OPENURL');
+                                Linking.openURL(`${resultApp}`);
+                                console.log(
+                                  'Complete ON_PRESS:1 LINKING_OPENURL'
+                                );
+                              } catch (err) {
+                                console.error(err);
+                                error = err.message ?? err;
+                              }
+                              console.log(
+                                'Touchable ON_PRESS Complete',
+                                error ? { error } : 'no error'
+                              );
                             }}
-                            resizeMode={'cover'}
-                          />
+                            style={styles.Touchable1b8c5a98}
+                          >
+                            <Surface style={styles.Surface2200bac7}>
+                              <MapView
+                                style={styles.MapViewc992f941}
+                                latitude={fetchData?.userOrder?.storeLat}
+                                longitude={fetchData?.userOrder?.storeLong}
+                                zoom={14}
+                                zoomEnabled={true}
+                                rotateEnabled={true}
+                                scrollEnabled={true}
+                                loadingEnabled={true}
+                                showsPointsOfInterest={true}
+                                apiKey={
+                                  'AIzaSyC53v7BvSuA1yv7Hwf1rC_9kpHMmmYJJhU'
+                                }
+                                showsUserLocation={true}
+                                ref={mapViewqyqXh27bRef}
+                              >
+                                <MapMarker
+                                  latitude={fetchData?.userOrder?.storeLat}
+                                  longitude={fetchData?.userOrder?.storeLong}
+                                />
+                              </MapView>
+                            </Surface>
+                          </Touchable>
+
                           <Surface
                             style={[
-                              styles.Surfacefd5c62b0,
+                              styles.Surface38d194eb,
                               {
-                                borderTopLeftRadius: 20,
-                                borderTopRightRadius: 20,
+                                borderTopLeftRadius: 16,
+                                borderTopRightRadius: 16,
                               },
                             ]}
                           >
@@ -394,45 +442,6 @@ line two` ) and will not work with special characters inside of quotes ( example
                       );
                     }}
                   </XanoApi.FetchSpecificOrderViewGET>
-                  <XanoApi.FetchSetLocationGET
-                    refetchInterval={5000}
-                    lat={lat}
-                    long={long}
-                    session={fetchData?.currentDelivery}
-                    onData={fetchData => {
-                      const handler = async () => {
-                        try {
-                          const location = await Utils.getLocation();
-                          console.log(location);
-                          const latitude = location.latitude;
-                          const longitude = location.longitude;
-                          setLat(latitude);
-                          setLong(longitude);
-                          await refetchSetLocation();
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      };
-                      handler();
-                    }}
-                  >
-                    {({ loading, error, data, refetchSetLocation }) => {
-                      const fetchData = data;
-                      if (!fetchData || loading) {
-                        return <ActivityIndicator />;
-                      }
-
-                      if (error) {
-                        return (
-                          <Text style={{ textAlign: 'center' }}>
-                            There was a problem fetching this data
-                          </Text>
-                        );
-                      }
-
-                      return null;
-                    }}
-                  </XanoApi.FetchSetLocationGET>
                 </View>
               )}
             </>
@@ -873,9 +882,14 @@ line two` ) and will not work with special characters inside of quotes ( example
 };
 
 const styles = StyleSheet.create({
-  Image6ba238f9: {
-    width: '100%',
-    height: 250,
+  MapViewc992f941: {
+    flex: 1,
+  },
+  Surface2200bac7: {
+    height: '100%',
+  },
+  Touchable1b8c5a98: {
+    height: '30%',
   },
   Text9e468f17: {
     fontFamily: 'Poppins_600SemiBold',
@@ -964,7 +978,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 20,
   },
-  Surfacefd5c62b0: {
+  Surface38d194eb: {
     marginTop: -20,
     height: '100%',
   },
