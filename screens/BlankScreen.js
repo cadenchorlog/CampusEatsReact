@@ -50,40 +50,21 @@ const BlankScreen = props => {
           );
         }}
       </XanoApi.FetchGetAllStoresGET>
-      <XanoApi.FetchGetOnCampusStoresGET UID={9}>
-        {({ loading, error, data, refetchGetOnCampusStores }) => {
-          const fetchData = data;
-          if (!fetchData || loading) {
-            return <ActivityIndicator />;
-          }
-
-          if (error) {
-            return (
-              <Text style={{ textAlign: 'center' }}>
-                There was a problem fetching this data
-              </Text>
-            );
-          }
-
+      <FlatList
+        data={fetchData}
+        listKey={'NTUFqaGM'}
+        keyExtractor={item => item?.id || item?.uuid || item}
+        renderItem={({ item }) => {
+          const listData = item;
           return (
-            <FlatList
-              data={fetchData}
-              listKey={'NTUFqaGM'}
-              keyExtractor={item => item?.id || item?.uuid || item}
-              renderItem={({ item }) => {
-                const listData = item;
-                return (
-                  <Text style={{ color: theme.colors.strong }}>
-                    {listData?.storeName}
-                  </Text>
-                );
-              }}
-              contentContainerStyle={styles.FlatListc992f941Content}
-              numColumns={1}
-            />
+            <Text style={{ color: theme.colors.strong }}>
+              {listData?.storeName}
+            </Text>
           );
         }}
-      </XanoApi.FetchGetOnCampusStoresGET>
+        contentContainerStyle={styles.FlatListc992f941Content}
+        numColumns={1}
+      />
     </ScreenContainer>
   );
 };

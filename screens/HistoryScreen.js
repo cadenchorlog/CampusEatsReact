@@ -1,6 +1,7 @@
 import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import dividePrice from '../custom/dividePrice';
 import {
   CircleImage,
   Icon,
@@ -135,7 +136,7 @@ const HistoryScreen = props => {
                                   numberOfLines={2}
                                 >
                                   {'Total: $'}
-                                  {listData?.amount_total}
+                                  {dividePrice(listData?.amount_total)}
                                 </Text>
                               </Stack>
                             </Row>

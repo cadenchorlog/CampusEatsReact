@@ -114,14 +114,56 @@ line two` ) and will not work with special characters inside of quotes ( example
       </View>
       {/* Search Frame */}
       <View style={styles.View300032e0}>
-        {/* Search Bar Flex */}
+        {/* Right Side Frame */}
         <View
           style={[
-            styles.Viewc58193b4,
+            styles.View53a4e1d1,
             {
               backgroundColor: theme.colors.divider,
               borderTopLeftRadius: 12,
               borderBottomLeftRadius: 12,
+            },
+          ]}
+        >
+          {/* Touchable Frame */}
+          <View>
+            <Touchable
+              onPress={() => {
+                const handler = async () => {
+                  try {
+                    await refetchGetCampusList();
+                  } catch (err) {
+                    console.error(err);
+                  }
+                };
+                handler();
+              }}
+            >
+              {/* Rectangle Search BG */}
+              <View
+                style={[
+                  styles.View4de07d74,
+                  { backgroundColor: theme.colors.divider, borderRadius: 6 },
+                ]}
+              >
+                {/* Icon  */}
+                <Icon
+                  name={'AntDesign/search1'}
+                  size={18}
+                  color={theme.colors.primary}
+                />
+              </View>
+            </Touchable>
+          </View>
+        </View>
+        {/* Search Bar Flex */}
+        <View
+          style={[
+            styles.View9768e908,
+            {
+              backgroundColor: theme.colors.divider,
+              borderTopRightRadius: 12,
+              borderBottomRightRadius: 12,
             },
           ]}
         >
@@ -145,48 +187,6 @@ line two` ) and will not work with special characters inside of quotes ( example
             value={searchBarValue}
             placeholder={'Search'}
           />
-        </View>
-        {/* Right Side Frame */}
-        <View
-          style={[
-            styles.Viewf6d9c156,
-            {
-              backgroundColor: theme.colors.divider,
-              borderTopRightRadius: 12,
-              borderBottomRightRadius: 12,
-            },
-          ]}
-        >
-          {/* Touchable Frame */}
-          <View>
-            <Touchable
-              onPress={() => {
-                const handler = async () => {
-                  try {
-                    await refetchGetCampusList();
-                  } catch (err) {
-                    console.error(err);
-                  }
-                };
-                handler();
-              }}
-            >
-              {/* Rectangle Search BG */}
-              <View
-                style={[
-                  styles.View7d9aef08,
-                  { backgroundColor: theme.colors.primary, borderRadius: 6 },
-                ]}
-              >
-                {/* Icon  */}
-                <Icon
-                  name={'AntDesign/search1'}
-                  size={18}
-                  color={theme.colors.studilyWhite3}
-                />
-              </View>
-            </Touchable>
-          </View>
         </View>
       </View>
 
@@ -469,23 +469,23 @@ const styles = StyleSheet.create({
   View33be2a49: {
     paddingTop: 30,
   },
-  Viewc58193b4: {
+  View4de07d74: {
+    paddingTop: 12,
+    paddingLeft: 12,
+    paddingBottom: 12,
+    paddingRight: 12,
+    marginLeft: 12,
+  },
+  View53a4e1d1: {
+    paddingTop: 6,
+    paddingBottom: 6,
+  },
+  View9768e908: {
     justifyContent: 'center',
     paddingLeft: 12,
     paddingRight: 12,
     flexGrow: 1,
     flexShrink: 0,
-  },
-  View7d9aef08: {
-    paddingTop: 12,
-    paddingLeft: 12,
-    paddingBottom: 12,
-    paddingRight: 12,
-    marginRight: 12,
-  },
-  Viewf6d9c156: {
-    paddingTop: 6,
-    paddingBottom: 6,
   },
   View300032e0: {
     paddingLeft: 12,

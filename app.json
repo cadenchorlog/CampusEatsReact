@@ -3,14 +3,16 @@
     "name": "Campus Eats",
     "slug": "campus-eats",
     "scheme": "campus-eats",
+    "owner": "campuseats",
     "description": "Campus Eats, powered by Draftbit",
     "privacy": "unlisted",
+    "sdkVersion": "46.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.9.0",
+    "version": "2.1.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -18,13 +20,17 @@
       "resizeMode": "cover",
       "backgroundColor": "#1B1B40"
     },
+    "updates": {
+      "fallbackToCacheTimeout": 20000,
+      "url": "https://u.expo.dev/ba437504-794d-4317-8661-e29e44ea18a6"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "net.campusEats.test",
+      "bundleIdentifier": "net.campuseats.test",
       "supportsTablet": false,
-      "buildNumber": "1.9.0",
+      "buildNumber": "2.1.0",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to review rich media previously added.",
@@ -35,7 +41,7 @@
     },
     "android": {
       "versionCode": 9,
-      "package": "com.draftbit.untitledapp",
+      "package": "net.campuseats.test",
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
@@ -45,6 +51,14 @@
     },
     "notification": {
       "androidMode": "default"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ba437504-794d-4317-8661-e29e44ea18a6"
+      }
     }
   }
 }

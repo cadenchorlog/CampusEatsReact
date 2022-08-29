@@ -82,10 +82,10 @@ line two` ) and will not work with special characters inside of quotes ( example
   const { theme } = props;
   const { navigation } = props;
 
-  const xanoRemoveFromCartPOST = XanoApi.useRemoveFromCartPOST();
   const checkoutCheckoutPOST = CheckoutApi.useCheckoutPOST();
   const addCostSetPricePOST = AddCostApi.useSetPricePOST();
   const xanoAddTipPOST = XanoApi.useAddTipPOST();
+  const xanoRemoveFromCartPOST = XanoApi.useRemoveFromCartPOST();
 
   const isFocused = useIsFocused();
   React.useEffect(() => {
@@ -135,170 +135,657 @@ line two` ) and will not work with special characters inside of quotes ( example
           />
         </Row>
       </View>
-      {/* Scrolling Content Frame */}
-      <ScrollView
-        style={styles.ScrollViewf26042a5}
-        contentContainerStyle={styles.ScrollViewf26042a5Content}
-        showsVerticalScrollIndicator={true}
-        bounces={true}
+
+      <XanoApi.FetchGetCartTotalsGET
+        user_id={Constants['user_id']}
+        onData={fetchData => {
+          try {
+            const result = multiplyTotal(fetchData?.subTotal);
+            setTotalPrice(result);
+          } catch (err) {
+            console.error(err);
+          }
+        }}
       >
-        <XanoApi.FetchGetUserCartGET
-          refetchInterval={250}
-          UID={Constants['user_id']}
-        >
-          {({ loading, error, data, refetchGetUserCart }) => {
-            const fetchData = data;
-            if (!fetchData || loading) {
-              return <ActivityIndicator />;
-            }
+        {({ loading, error, data, refetchGetCartTotals }) => {
+          const fetchData = data;
+          if (!fetchData || loading) {
+            return <ActivityIndicator />;
+          }
 
-            if (error) {
-              return (
-                <Text style={{ textAlign: 'center' }}>
-                  There was a problem fetching this data
-                </Text>
-              );
-            }
-
+          if (error) {
             return (
-              <FlatList
-                data={fetchData}
-                listKey={'a7hYLwxc'}
-                keyExtractor={item => item?.id || item?.uuid || item}
-                renderItem={({ item }) => {
-                  const listData = item;
-                  return (
-                    <>
-                      {/* Shopping Cart List Frame */}
-                      <View style={styles.View00740b37}>
-                        {/* Cart Item Details Frame */}
-                        <View style={styles.Viewc46b8fec}>
-                          {/* Cart Item Title */}
-                          <Text
-                            style={[
-                              styles.Textbfd3752d,
-                              { color: theme.colors.primaryTitleUiBaeg },
-                            ]}
-                          >
-                            {listData?.itemName}
-                          </Text>
-                          {/* Price Size Frame */}
-                          <View>
-                            {/* Cart Item Price */}
-                            <Text
-                              style={[
-                                styles.Textbfd3df7a,
-                                { color: theme.colors.primaryTitleUiBaeg },
-                              ]}
-                            >
-                              {listData?.itemPrice}
-                            </Text>
-                            {/* customizations */}
-                            <Text
-                              style={[
-                                styles.Textbffce5db,
-                                { color: theme.colors.primaryTitleUiBaeg },
-                              ]}
-                            >
-                              {listData?.customizations}
-                            </Text>
-                          </View>
-                        </View>
-                        {/* Toggle Frame */}
-                        <View style={styles.View6ff87234}>
+              <Text style={{ textAlign: 'center' }}>
+                There was a problem fetching this data
+              </Text>
+            );
+          }
+
+          return (
+            <>
+              {/* Payment Modal */}
+              <>
+                {!showModal ? null : (
+                  <Modal
+                    animationType={'slide'}
+                    presentationStyle={'pageSheet'}
+                  >
+                    {/* Payment */}
+                    <View style={styles.View2200bac7}>
+                      {/* Header */}
+                      <View style={styles.View7a993fb0}>
+                        <Row
+                          justifyContent={'flex-start'}
+                          alignItems={'center'}
+                        >
                           <IconButton
                             onPress={() => {
+                              try {
+                                setShowModal(false);
+                              } catch (err) {
+                                console.error(err);
+                              }
+                            }}
+                            style={styles.IconButton897c6051}
+                            icon={'Ionicons/ios-chevron-back'}
+                            size={32}
+                          />
+                          <Text
+                            style={[
+                              styles.Textd59ae7c0,
+                              { color: theme.colors.strong },
+                            ]}
+                          >
+                            {'Payment'}
+                          </Text>
+                        </Row>
+                      </View>
+
+                      <KeyboardAwareScrollView
+                        showsVerticalScrollIndicator={true}
+                        keyboardShouldPersistTaps={'never'}
+                        extraScrollHeight={-150}
+                        enableAutomaticScroll={true}
+                      >
+                        {/* Content Frame */}
+                        <View>
+                          {/* List Title Frame  */}
+                          <View style={styles.View12981c6a}>
+                            {/* Rich Text Title */}
+                            <Text
+                              style={[
+                                styles.Textcd71a0f7,
+                                { color: theme.colors.strong },
+                              ]}
+                            >
+                              {'Choose Payment Method'}
+                            </Text>
+                          </View>
+                          {/* Actions Frame */}
+                          <View style={styles.View80a9a9a9}>
+                            {/* Card Payment */}
+                            <View style={styles.Viewb7eaad51}>
+                              <Touchable
+                                onPress={() => {
+                                  try {
+                                    setIsPlan(false);
+                                    setIsCard(true);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                              >
+                                {/* Button Frame */}
+                                <View
+                                  style={[
+                                    styles.View1957b5f2,
+                                    {
+                                      borderColor: theme.colors.internalBorder,
+                                      borderRadius: 12,
+                                    },
+                                  ]}
+                                >
+                                  {/* Left Side Frame */}
+                                  <View style={styles.View43b593eb}>
+                                    {/* Icon Flex Frame */}
+                                    <View style={styles.Viewa521a992}>
+                                      <Icon
+                                        name={'Ionicons/ios-card'}
+                                        size={24}
+                                        color={
+                                          theme.colors.communityMediumBlack
+                                        }
+                                      />
+                                    </View>
+                                    {/* Option Title Frame */}
+                                    <View style={styles.Viewfeac12d8}>
+                                      {/* Option Title */}
+                                      <Text
+                                        style={[
+                                          styles.Text14121fc4,
+                                          {
+                                            color:
+                                              theme.colors.internalPrimaryBold,
+                                          },
+                                        ]}
+                                      >
+                                        {'Card Payment'}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  {/* Right Side Frame */}
+                                  <View style={styles.View6a955cc3}>
+                                    <Checkbox
+                                      onPress={newCheckboxValue => {
+                                        try {
+                                          setIsCard(newCheckboxValue);
+                                          setIsPlan(false);
+                                        } catch (err) {
+                                          console.error(err);
+                                        }
+                                      }}
+                                      status={isCard}
+                                      size={18}
+                                      checkedIcon={'Ionicons/radio-button-on'}
+                                      uncheckedIcon={
+                                        'MaterialIcons/radio-button-unchecked'
+                                      }
+                                      color={theme.colors.primary}
+                                      uncheckedColor={theme.colors.primary}
+                                    />
+                                  </View>
+                                </View>
+                              </Touchable>
+                            </View>
+                            {/* Flex Touchable */}
+                            <View style={styles.Viewb7eaad51}>
+                              <Touchable
+                                onPress={() => {
+                                  try {
+                                    setIsPlan(true);
+                                    setIsCard(false);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                              >
+                                {/* Button Frame */}
+                                <View
+                                  style={[
+                                    styles.View1957b5f2,
+                                    {
+                                      borderColor: theme.colors.internalBorder,
+                                      borderRadius: 12,
+                                    },
+                                  ]}
+                                >
+                                  {/* Left Side Frame */}
+                                  <View style={styles.View43b593eb}>
+                                    {/* Icon Flex Frame */}
+                                    <View style={styles.Viewa521a992}>
+                                      <Icon
+                                        name={'Ionicons/school'}
+                                        size={24}
+                                        color={
+                                          theme.colors.communityMediumBlack
+                                        }
+                                      />
+                                    </View>
+                                    {/* Option Title Frame */}
+                                    <View style={styles.Viewfeac12d8}>
+                                      {/* Option Title */}
+                                      <Text
+                                        style={[
+                                          styles.Text3e74d306,
+                                          {
+                                            color:
+                                              theme.colors.internalPrimaryBold,
+                                          },
+                                        ]}
+                                      >
+                                        {'Meal Plan'}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  {/* Right Side Frame */}
+                                  <View style={styles.View6a955cc3}>
+                                    <Checkbox
+                                      onPress={newCheckboxValue => {
+                                        try {
+                                          setIsPlan(newCheckboxValue);
+                                          setIsCard(false);
+                                        } catch (err) {
+                                          console.error(err);
+                                        }
+                                      }}
+                                      status={isPlan}
+                                      size={18}
+                                      checkedIcon={'Ionicons/radio-button-on'}
+                                      uncheckedIcon={
+                                        'MaterialIcons/radio-button-unchecked'
+                                      }
+                                      color={theme.colors.primary}
+                                      uncheckedColor={theme.colors.primary}
+                                    />
+                                  </View>
+                                </View>
+                              </Touchable>
+                            </View>
+                          </View>
+                          {/* Voucher Frame */}
+                          <View>
+                            {/* List Title Frame  */}
+                            <View style={styles.View12981c6a}>
+                              {/* Rich Text Title */}
+                              <Text
+                                style={[
+                                  styles.Textcd71a0f7,
+                                  { color: theme.colors.strong },
+                                ]}
+                              >
+                                {'Have a coupon code?'}
+                              </Text>
+                            </View>
+                            {/* Actions Input Frame */}
+                            <View style={styles.View603e5d81}>
+                              {/* Flex for Text Field */}
+                              <View
+                                style={[
+                                  styles.Viewb5c2cefd,
+                                  {
+                                    borderTopLeftRadius: 24,
+                                    borderBottomLeftRadius: 24,
+                                  },
+                                ]}
+                              >
+                                <TextField
+                                  onChangeText={newStyledTextFieldValue => {
+                                    try {
+                                      setStyledTextFieldValue(
+                                        newStyledTextFieldValue
+                                      );
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.TextField04c2524d}
+                                  placeholder={'Voucher Code'}
+                                  value={styledTextFieldValue}
+                                  type={'solid'}
+                                  underlineColor={theme.colors.lightInverse}
+                                  returnKeyType={'done'}
+                                  contextMenuHidden={true}
+                                  caretHidden={true}
+                                />
+                              </View>
+                              <ButtonSolid
+                                style={[
+                                  styles.ButtonSolidce4d6f27,
+                                  { backgroundColor: theme.colors.primary },
+                                ]}
+                                title={'Apply'}
+                              />
+                            </View>
+                          </View>
+                          <Divider
+                            style={styles.Divider79894792}
+                            color={theme.colors.divider}
+                          />
+                          {/* Driver Tip */}
+                          <View style={styles.View8cb92e19}>
+                            {/* Total Price Title */}
+                            <Text
+                              style={[
+                                styles.Texteafa8587,
+                                { color: theme.colors.custom_rgb189_198_212 },
+                              ]}
+                            >
+                              {'Driver Tip'}
+                            </Text>
+                            <Spacer top={8} right={12} bottom={8} left={12} />
+                            {/* oneFiftyOutline */}
+                            <>
+                              {oneFifty ? null : (
+                                <ButtonOutline
+                                  onPress={() => {
+                                    try {
+                                      setThreeDollar(false);
+                                      setNoTip(false);
+                                      setOneFifty(true);
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.ButtonOutline75c728b2}
+                                  title={'$1.50'}
+                                />
+                              )}
+                            </>
+                            {/* oneFiftySolid */}
+                            <>
+                              {!oneFifty ? null : (
+                                <ButtonSolid
+                                  style={[
+                                    styles.ButtonSolid2d5f6a36,
+                                    { backgroundColor: theme.colors.primary },
+                                  ]}
+                                  title={'$1.50'}
+                                />
+                              )}
+                            </>
+                            {/* threeOutline */}
+                            <>
+                              {threeDollar ? null : (
+                                <ButtonOutline
+                                  onPress={() => {
+                                    try {
+                                      setThreeDollar(true);
+                                      setOneFifty(false);
+                                      setNoTip(false);
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.ButtonOutline75c728b2}
+                                  title={'$3.00'}
+                                />
+                              )}
+                            </>
+                            {/* threeSolid */}
+                            <>
+                              {!threeDollar ? null : (
+                                <ButtonSolid
+                                  style={[
+                                    styles.ButtonSolid2d5f6a36,
+                                    { backgroundColor: theme.colors.primary },
+                                  ]}
+                                  title={'$3.00'}
+                                />
+                              )}
+                            </>
+                            {/* noneOutline */}
+                            <>
+                              {noTip ? null : (
+                                <ButtonOutline
+                                  onPress={() => {
+                                    try {
+                                      setNoTip(true);
+                                      setOneFifty(false);
+                                      setThreeDollar(false);
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.ButtonOutline75c728b2}
+                                  title={'None'}
+                                />
+                              )}
+                            </>
+                            {/* noneSolid */}
+                            <>
+                              {!noTip ? null : (
+                                <ButtonSolid
+                                  style={[
+                                    styles.ButtonSolid2d5f6a36,
+                                    { backgroundColor: theme.colors.primary },
+                                  ]}
+                                  title={'None'}
+                                />
+                              )}
+                            </>
+                          </View>
+                        </View>
+                      </KeyboardAwareScrollView>
+                      {/* Footer Frame */}
+                      <View style={styles.View45692adb}>
+                        {/* Flex Touchable */}
+                        <View style={styles.Viewdbf79098}>
+                          <ButtonSolid
+                            onPress={() => {
                               const handler = async () => {
+                                console.log('Button Solid ON_PRESS Start');
+                                let error = null;
                                 try {
-                                  console.log(listData);
-                                  await xanoRemoveFromCartPOST.mutateAsync({
-                                    UID: Constants['user_id'],
-                                    itemID: listData?.itemID,
-                                    itemMods: listData?.customizations,
+                                  console.log(
+                                    'Start ON_PRESS:0 CUSTOM_FUNCTION'
+                                  );
+                                  const tipAmount = getTipAmmount(
+                                    oneFifty,
+                                    threeDollar
+                                  );
+                                  console.log(
+                                    'Complete ON_PRESS:0 CUSTOM_FUNCTION',
+                                    { tipAmount }
+                                  );
+                                  console.log('Start ON_PRESS:1 FETCH_REQUEST');
+                                  const logAddTip =
+                                    await xanoAddTipPOST.mutateAsync({
+                                      tip: tipAmount,
+                                      user_id: Constants['user_id'],
+                                    });
+                                  console.log(
+                                    'Complete ON_PRESS:1 FETCH_REQUEST',
+                                    { logAddTip }
+                                  );
+                                  console.log(
+                                    'Start ON_PRESS:2 CUSTOM_FUNCTION'
+                                  );
+                                  const newTotalPrice = addTipCost(
+                                    multiplyTotal(fetchData?.total),
+                                    oneFifty,
+                                    threeDollar
+                                  );
+                                  console.log(
+                                    'Complete ON_PRESS:2 CUSTOM_FUNCTION',
+                                    { newTotalPrice }
+                                  );
+                                  console.log('Start ON_PRESS:3 FETCH_REQUEST');
+                                  const cost =
+                                    await addCostSetPricePOST.mutateAsync({
+                                      price: newTotalPrice,
+                                      priceID: 299,
+                                    });
+                                  console.log(
+                                    'Complete ON_PRESS:3 FETCH_REQUEST',
+                                    { cost }
+                                  );
+                                  console.log('Start ON_PRESS:4 EXTRACT_KEY');
+                                  const prodID = cost.id;
+                                  console.log(
+                                    'Complete ON_PRESS:4 EXTRACT_KEY',
+                                    { prodID }
+                                  );
+                                  console.log('Start ON_PRESS:5 FETCH_REQUEST');
+                                  const check =
+                                    await checkoutCheckoutPOST.mutateAsync({
+                                      UID: Constants['user_id'],
+                                      priceID: prodID,
+                                    });
+                                  console.log(
+                                    'Complete ON_PRESS:5 FETCH_REQUEST',
+                                    { check }
+                                  );
+                                  console.log('Start ON_PRESS:6 EXTRACT_KEY');
+                                  const url = check.url;
+                                  console.log(
+                                    'Complete ON_PRESS:6 EXTRACT_KEY',
+                                    { url }
+                                  );
+                                  console.log(
+                                    'Start ON_PRESS:7 NAVIGATE_SCREEN'
+                                  );
+                                  navigation.navigate('CheckoutScreen', {
+                                    url: url,
                                   });
-                                  await refetchGetUserCart();
-                                  await refetchGetCartTotals();
+                                  console.log(
+                                    'Complete ON_PRESS:7 NAVIGATE_SCREEN'
+                                  );
+                                  console.log('Start ON_PRESS:8 CONSOLE_LOG');
+                                  console.log(Constants['checkoutURL']);
+                                  console.log(
+                                    'Complete ON_PRESS:8 CONSOLE_LOG'
+                                  );
+                                  console.log('Start ON_PRESS:9 CONSOLE_LOG');
+                                  console.log(url);
+                                  console.log(
+                                    'Complete ON_PRESS:9 CONSOLE_LOG'
+                                  );
+                                  console.log(
+                                    'Start ON_PRESS:10 SET_SCREEN_LOCAL_STATE'
+                                  );
+                                  setShowModal(false);
+                                  console.log(
+                                    'Complete ON_PRESS:10 SET_SCREEN_LOCAL_STATE'
+                                  );
+                                  console.log('Start ON_PRESS:11 CONSOLE_LOG');
+                                  console.log(logAddTip);
+                                  console.log(
+                                    'Complete ON_PRESS:11 CONSOLE_LOG'
+                                  );
+                                  console.log('Start ON_PRESS:12 CONSOLE_LOG');
+                                  console.log(numberInputValue);
+                                  console.log(
+                                    'Complete ON_PRESS:12 CONSOLE_LOG'
+                                  );
                                 } catch (err) {
                                   console.error(err);
+                                  error = err.message ?? err;
                                 }
+                                console.log(
+                                  'Button Solid ON_PRESS Complete',
+                                  error ? { error } : 'no error'
+                                );
                               };
                               handler();
                             }}
-                            icon={'MaterialCommunityIcons/close'}
-                            size={32}
-                            color={theme.colors.error}
+                            style={[
+                              styles.ButtonSolid7d2cfd44,
+                              { backgroundColor: theme.colors.primary },
+                            ]}
+                            title={'Place Order'}
                           />
                         </View>
                       </View>
-                      <Divider
-                        style={styles.Dividerbed2bcba}
-                        color={theme.colors.divider}
-                      />
-                    </>
-                  );
-                }}
-                contentContainerStyle={styles.FlatListc992f941Content}
-                numColumns={1}
-              />
-            );
-          }}
-        </XanoApi.FetchGetUserCartGET>
-        <>
-          {!showMessage ? null : (
-            <View style={styles.View3316e76b}>
-              <Text
-                style={[styles.Text4c56df9c, { color: theme.colors.strong }]}
+                    </View>
+                  </Modal>
+                )}
+              </>
+              {/* Scrolling Content Frame */}
+              <ScrollView
+                style={styles.ScrollViewf26042a5}
+                contentContainerStyle={styles.ScrollViewf26042a5Content}
+                showsVerticalScrollIndicator={true}
+                bounces={true}
               >
-                {'Your bag is empty. Add some items and check back here later.'}
-              </Text>
-            </View>
-          )}
-        </>
-      </ScrollView>
-      {/* Footer Frame */}
-      <View
-        style={[
-          styles.Viewe515c9dd,
-          { backgroundColor: theme.colors.background },
-        ]}
-      >
-        <Divider style={styles.Dividerde11d607} color={theme.colors.primary} />
-        <XanoApi.FetchGetCartTotalsGET
-          refetchInterval={500}
-          user_id={Constants['user_id']}
-          onData={fetchData => {
-            try {
-              const finalTotal = multiplyTotal(fetchData?.total);
-              setTotalPrice(finalTotal);
-              console.log(finalTotal);
-              if (fetchData?.subTotal !== 0) {
-                return;
-              }
-              setShowMessage(true);
-            } catch (err) {
-              console.error(err);
-            }
-          }}
-        >
-          {({ loading, error, data, refetchGetCartTotals }) => {
-            const fetchData = data;
-            if (!fetchData || loading) {
-              return <ActivityIndicator />;
-            }
-
-            if (error) {
-              return (
-                <Text style={{ textAlign: 'center' }}>
-                  There was a problem fetching this data
-                </Text>
-              );
-            }
-
-            return (
-              <>
-                {/* Content Frame */}
+                <FlatList
+                  data={fetchData?.items}
+                  listKey={'a7hYLwxc'}
+                  keyExtractor={item => item?.id || item?.uuid || item}
+                  renderItem={({ item }) => {
+                    const listData = item;
+                    return (
+                      <>
+                        {/* Shopping Cart List Frame */}
+                        <View style={styles.View00740b37}>
+                          {/* Cart Item Details Frame */}
+                          <View style={styles.Viewc46b8fec}>
+                            {/* Cart Item Title */}
+                            <Text
+                              style={[
+                                styles.Textbfd3752d,
+                                { color: theme.colors.primaryTitleUiBaeg },
+                              ]}
+                            >
+                              {listData?.itemName}
+                            </Text>
+                            {/* Price Size Frame */}
+                            <View>
+                              {/* Cart Item Price */}
+                              <Text
+                                style={[
+                                  styles.Textbfd3df7a,
+                                  { color: theme.colors.primaryTitleUiBaeg },
+                                ]}
+                              >
+                                {listData?.itemPrice}
+                              </Text>
+                              {/* customizations */}
+                              <Text
+                                style={[
+                                  styles.Textbffce5db,
+                                  { color: theme.colors.primaryTitleUiBaeg },
+                                ]}
+                              >
+                                {listData?.customizations}
+                              </Text>
+                            </View>
+                          </View>
+                          {/* Toggle Frame */}
+                          <View style={styles.View6ff87234}>
+                            <IconButton
+                              onPress={() => {
+                                const handler = async () => {
+                                  try {
+                                    console.log(listData);
+                                    await xanoRemoveFromCartPOST.mutateAsync({
+                                      UID: Constants['user_id'],
+                                      itemID: listData?.itemID,
+                                      itemMods: listData?.customizations,
+                                    });
+                                    await refetchGetCartTotals();
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                };
+                                handler();
+                              }}
+                              icon={'MaterialCommunityIcons/close'}
+                              size={32}
+                              color={theme.colors.error}
+                            />
+                          </View>
+                        </View>
+                        <Divider
+                          style={styles.Dividerbed2bcba}
+                          color={theme.colors.divider}
+                        />
+                      </>
+                    );
+                  }}
+                  contentContainerStyle={styles.FlatListc992f941Content}
+                  numColumns={1}
+                />
                 <>
-                  {!(fetchData?.subTotal !== 0) ? null : (
+                  {fetchData?.subTotal ? null : (
+                    <View style={styles.View3316e76b}>
+                      <Text
+                        style={[
+                          styles.Text4c56df9c,
+                          { color: theme.colors.strong },
+                        ]}
+                      >
+                        {
+                          'Your bag is empty. Add some items and check back here later.'
+                        }
+                      </Text>
+                    </View>
+                  )}
+                </>
+              </ScrollView>
+              {/* Footer Frame */}
+              <>
+                {!fetchData?.subTotal ? null : (
+                  <View
+                    style={[
+                      styles.Viewe515c9dd,
+                      { backgroundColor: theme.colors.background },
+                    ]}
+                  >
+                    <Divider
+                      style={styles.Dividerde11d607}
+                      color={theme.colors.primary}
+                    />
+                    {/* Content Frame */}
                     <View style={styles.Viewad2d300f}>
                       {/* Subtotal View */}
                       <View style={styles.View0ae50d17}>
@@ -413,423 +900,13 @@ line two` ) and will not work with special characters inside of quotes ( example
                         />
                       </View>
                     </View>
-                  )}
-                </>
+                  </View>
+                )}
               </>
-            );
-          }}
-        </XanoApi.FetchGetCartTotalsGET>
-      </View>
-      {/* Payment Modal */}
-      <>
-        {!showModal ? null : (
-          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
-            {/* Payment */}
-            <View style={styles.View2200bac7}>
-              {/* Header */}
-              <View style={styles.View7a993fb0}>
-                <Row justifyContent={'flex-start'} alignItems={'center'}>
-                  <IconButton
-                    onPress={() => {
-                      try {
-                        setShowModal(false);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    style={styles.IconButton897c6051}
-                    icon={'Ionicons/ios-chevron-back'}
-                    size={32}
-                  />
-                  <Text
-                    style={[
-                      styles.Textd59ae7c0,
-                      { color: theme.colors.strong },
-                    ]}
-                  >
-                    {'Payment'}
-                  </Text>
-                </Row>
-              </View>
-
-              <KeyboardAwareScrollView
-                showsVerticalScrollIndicator={true}
-                keyboardShouldPersistTaps={'never'}
-                extraScrollHeight={-150}
-                enableAutomaticScroll={true}
-              >
-                {/* Content Frame */}
-                <View>
-                  {/* List Title Frame  */}
-                  <View style={styles.View12981c6a}>
-                    {/* Rich Text Title */}
-                    <Text
-                      style={[
-                        styles.Textcd71a0f7,
-                        { color: theme.colors.strong },
-                      ]}
-                    >
-                      {'Choose Payment Method'}
-                    </Text>
-                  </View>
-                  {/* Actions Frame */}
-                  <View style={styles.View80a9a9a9}>
-                    {/* Card Payment */}
-                    <View style={styles.Viewb7eaad51}>
-                      <Touchable
-                        onPress={() => {
-                          try {
-                            setIsPlan(false);
-                            setIsCard(true);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                      >
-                        {/* Button Frame */}
-                        <View
-                          style={[
-                            styles.View1957b5f2,
-                            {
-                              borderColor: theme.colors.internalBorder,
-                              borderRadius: 12,
-                            },
-                          ]}
-                        >
-                          {/* Left Side Frame */}
-                          <View style={styles.View43b593eb}>
-                            {/* Icon Flex Frame */}
-                            <View style={styles.Viewa521a992}>
-                              <Icon
-                                name={'Ionicons/ios-card'}
-                                size={24}
-                                color={theme.colors.communityMediumBlack}
-                              />
-                            </View>
-                            {/* Option Title Frame */}
-                            <View style={styles.Viewfeac12d8}>
-                              {/* Option Title */}
-                              <Text
-                                style={[
-                                  styles.Text14121fc4,
-                                  { color: theme.colors.internalPrimaryBold },
-                                ]}
-                              >
-                                {'Card Payment'}
-                              </Text>
-                            </View>
-                          </View>
-                          {/* Right Side Frame */}
-                          <View style={styles.View6a955cc3}>
-                            <Checkbox
-                              onPress={newCheckboxValue => {
-                                try {
-                                  setIsCard(newCheckboxValue);
-                                  setIsPlan(false);
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                              status={isCard}
-                              size={18}
-                              checkedIcon={'Ionicons/radio-button-on'}
-                              uncheckedIcon={
-                                'MaterialIcons/radio-button-unchecked'
-                              }
-                              color={theme.colors.primary}
-                              uncheckedColor={theme.colors.primary}
-                            />
-                          </View>
-                        </View>
-                      </Touchable>
-                    </View>
-                    {/* Flex Touchable */}
-                    <View style={styles.Viewb7eaad51}>
-                      <Touchable
-                        onPress={() => {
-                          try {
-                            setIsPlan(true);
-                            setIsCard(false);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                      >
-                        {/* Button Frame */}
-                        <View
-                          style={[
-                            styles.View1957b5f2,
-                            {
-                              borderColor: theme.colors.internalBorder,
-                              borderRadius: 12,
-                            },
-                          ]}
-                        >
-                          {/* Left Side Frame */}
-                          <View style={styles.View43b593eb}>
-                            {/* Icon Flex Frame */}
-                            <View style={styles.Viewa521a992}>
-                              <Icon
-                                name={'Ionicons/school'}
-                                size={24}
-                                color={theme.colors.communityMediumBlack}
-                              />
-                            </View>
-                            {/* Option Title Frame */}
-                            <View style={styles.Viewfeac12d8}>
-                              {/* Option Title */}
-                              <Text
-                                style={[
-                                  styles.Text3e74d306,
-                                  { color: theme.colors.internalPrimaryBold },
-                                ]}
-                              >
-                                {'Meal Plan'}
-                              </Text>
-                            </View>
-                          </View>
-                          {/* Right Side Frame */}
-                          <View style={styles.View6a955cc3}>
-                            <Checkbox
-                              onPress={newCheckboxValue => {
-                                try {
-                                  setIsPlan(newCheckboxValue);
-                                  setIsCard(false);
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }}
-                              status={isPlan}
-                              size={18}
-                              checkedIcon={'Ionicons/radio-button-on'}
-                              uncheckedIcon={
-                                'MaterialIcons/radio-button-unchecked'
-                              }
-                              color={theme.colors.primary}
-                              uncheckedColor={theme.colors.primary}
-                            />
-                          </View>
-                        </View>
-                      </Touchable>
-                    </View>
-                  </View>
-                  {/* Voucher Frame */}
-                  <View>
-                    {/* List Title Frame  */}
-                    <View style={styles.View12981c6a}>
-                      {/* Rich Text Title */}
-                      <Text
-                        style={[
-                          styles.Textcd71a0f7,
-                          { color: theme.colors.strong },
-                        ]}
-                      >
-                        {'Have a coupon code?'}
-                      </Text>
-                    </View>
-                    {/* Actions Input Frame */}
-                    <View style={styles.View603e5d81}>
-                      {/* Flex for Text Field */}
-                      <View
-                        style={[
-                          styles.Viewb5c2cefd,
-                          {
-                            borderTopLeftRadius: 24,
-                            borderBottomLeftRadius: 24,
-                          },
-                        ]}
-                      >
-                        <TextField
-                          onChangeText={newStyledTextFieldValue => {
-                            try {
-                              setStyledTextFieldValue(newStyledTextFieldValue);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={styles.TextField04c2524d}
-                          placeholder={'Voucher Code'}
-                          value={styledTextFieldValue}
-                          type={'solid'}
-                          underlineColor={theme.colors.lightInverse}
-                          returnKeyType={'done'}
-                          contextMenuHidden={true}
-                          caretHidden={true}
-                        />
-                      </View>
-                      <ButtonSolid
-                        style={[
-                          styles.ButtonSolidce4d6f27,
-                          { backgroundColor: theme.colors.primary },
-                        ]}
-                        title={'Apply'}
-                      />
-                    </View>
-                  </View>
-                  <Divider
-                    style={styles.Divider79894792}
-                    color={theme.colors.divider}
-                  />
-                  {/* Driver Tip */}
-                  <View style={styles.View8cb92e19}>
-                    {/* Total Price Title */}
-                    <Text
-                      style={[
-                        styles.Texteafa8587,
-                        { color: theme.colors.custom_rgb189_198_212 },
-                      ]}
-                    >
-                      {'Driver Tip'}
-                    </Text>
-                    <Spacer top={8} right={12} bottom={8} left={12} />
-                    {/* oneFiftyOutline */}
-                    <>
-                      {oneFifty ? null : (
-                        <ButtonOutline
-                          onPress={() => {
-                            try {
-                              setThreeDollar(false);
-                              setNoTip(false);
-                              setOneFifty(true);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={styles.ButtonOutline75c728b2}
-                          title={'$1.50'}
-                        />
-                      )}
-                    </>
-                    {/* oneFiftySolid */}
-                    <>
-                      {!oneFifty ? null : (
-                        <ButtonSolid
-                          style={[
-                            styles.ButtonSolid2d5f6a36,
-                            { backgroundColor: theme.colors.primary },
-                          ]}
-                          title={'$1.50'}
-                        />
-                      )}
-                    </>
-                    {/* threeOutline */}
-                    <>
-                      {threeDollar ? null : (
-                        <ButtonOutline
-                          onPress={() => {
-                            try {
-                              setThreeDollar(true);
-                              setOneFifty(false);
-                              setNoTip(false);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={styles.ButtonOutline75c728b2}
-                          title={'$3.00'}
-                        />
-                      )}
-                    </>
-                    {/* threeSolid */}
-                    <>
-                      {!threeDollar ? null : (
-                        <ButtonSolid
-                          style={[
-                            styles.ButtonSolid2d5f6a36,
-                            { backgroundColor: theme.colors.primary },
-                          ]}
-                          title={'$3.00'}
-                        />
-                      )}
-                    </>
-                    {/* noneOutline */}
-                    <>
-                      {noTip ? null : (
-                        <ButtonOutline
-                          onPress={() => {
-                            try {
-                              setNoTip(true);
-                              setOneFifty(false);
-                              setThreeDollar(false);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                          style={styles.ButtonOutline75c728b2}
-                          title={'None'}
-                        />
-                      )}
-                    </>
-                    {/* noneSolid */}
-                    <>
-                      {!noTip ? null : (
-                        <ButtonSolid
-                          style={[
-                            styles.ButtonSolid2d5f6a36,
-                            { backgroundColor: theme.colors.primary },
-                          ]}
-                          title={'None'}
-                        />
-                      )}
-                    </>
-                  </View>
-                </View>
-              </KeyboardAwareScrollView>
-              {/* Footer Frame */}
-              <View style={styles.View45692adb}>
-                {/* Flex Touchable */}
-                <View style={styles.Viewdbf79098}>
-                  <ButtonSolid
-                    onPress={() => {
-                      const handler = async () => {
-                        try {
-                          const tipAmount = getTipAmmount(
-                            oneFifty,
-                            threeDollar
-                          );
-                          const logAddTip = await xanoAddTipPOST.mutateAsync({
-                            tip: tipAmount,
-                            user_id: Constants['user_id'],
-                          });
-                          const newTotalPrice = addTipCost(
-                            totalPrice,
-                            oneFifty,
-                            threeDollar
-                          );
-                          const cost = await addCostSetPricePOST.mutateAsync({
-                            price: newTotalPrice,
-                            priceID: 299,
-                          });
-                          const prodID = cost.id;
-                          const check = await checkoutCheckoutPOST.mutateAsync({
-                            UID: Constants['user_id'],
-                            priceID: prodID,
-                          });
-                          const url = check.url;
-                          navigation.navigate('CheckoutScreen', { url: url });
-                          console.log(Constants['checkoutURL']);
-                          console.log(url);
-                          setShowModal(false);
-                          console.log(logAddTip);
-                          console.log(numberInputValue);
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      };
-                      handler();
-                    }}
-                    style={[
-                      styles.ButtonSolid7d2cfd44,
-                      { backgroundColor: theme.colors.primary },
-                    ]}
-                    title={'Place Order'}
-                  />
-                </View>
-              </View>
-            </View>
-          </Modal>
-        )}
-      </>
+            </>
+          );
+        }}
+      </XanoApi.FetchGetCartTotalsGET>
       {/* dashboardModal */}
       <>
         {!dashOpen ? null : (
@@ -1133,137 +1210,6 @@ const styles = StyleSheet.create({
     marginTop: 60,
     marginBottom: 20,
   },
-  Textbfd3752d: {
-    fontSize: 15,
-    textTransform: 'capitalize',
-    fontFamily: 'Poppins_400Regular',
-  },
-  Textbfd3df7a: {
-    fontSize: 12,
-    fontFamily: 'Poppins_600SemiBold',
-    marginRight: 12,
-  },
-  Textbffce5db: {
-    fontSize: 12,
-    fontFamily: 'Poppins_300Light',
-    marginRight: 12,
-  },
-  Viewc46b8fec: {
-    marginLeft: 10,
-    justifyContent: 'space-between',
-    marginTop: 11,
-    marginBottom: 13,
-    flex: 1,
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  View6ff87234: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  View00740b37: {
-    minHeight: 60,
-    maxHeight: 60,
-    marginLeft: 12,
-    marginRight: 25,
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  Dividerbed2bcba: {
-    height: 1,
-    marginLeft: '5%',
-    marginRight: '5%',
-    marginBottom: 10,
-  },
-  FlatListc992f941Content: {
-    flex: 1,
-  },
-  Fetch431eb058: {
-    minHeight: 40,
-  },
-  Text4c56df9c: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 22,
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  View3316e76b: {
-    top: 100,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
-  ScrollViewf26042a5: {
-    flexGrow: 1,
-  },
-  ScrollViewf26042a5Content: {
-    marginTop: 21,
-    flexShrink: 0,
-    paddingBottom: 220,
-  },
-  Dividerde11d607: {
-    height: 1,
-  },
-  Textf7bbdd1d: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  Text86ce3ba5: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 12,
-  },
-  View0ae50d17: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-  },
-  View88c44c3e: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  Divider0e02aada: {
-    height: 1,
-    marginTop: 10,
-  },
-  Text5528eed5: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 16,
-  },
-  Text4036ef9a: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 16,
-  },
-  Viewddd27fdd: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12,
-  },
-  ButtonSolidf0b1de94: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  View7bb6e4d9: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginTop: 18,
-  },
-  Viewad2d300f: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginLeft: 12,
-    marginRight: 12,
-    justifyContent: 'flex-end',
-  },
-  Viewe515c9dd: {
-    paddingBottom: 20,
-    bottom: 0,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
   IconButton897c6051: {
     marginLeft: 16,
   },
@@ -1412,6 +1358,137 @@ const styles = StyleSheet.create({
   },
   View2200bac7: {
     height: '100%',
+  },
+  Textbfd3752d: {
+    fontSize: 15,
+    textTransform: 'capitalize',
+    fontFamily: 'Poppins_400Regular',
+  },
+  Textbfd3df7a: {
+    fontSize: 12,
+    fontFamily: 'Poppins_600SemiBold',
+    marginRight: 12,
+  },
+  Textbffce5db: {
+    fontSize: 12,
+    fontFamily: 'Poppins_300Light',
+    marginRight: 12,
+  },
+  Viewc46b8fec: {
+    marginLeft: 10,
+    justifyContent: 'space-between',
+    marginTop: 11,
+    marginBottom: 13,
+    flex: 1,
+    flexGrow: 1,
+    flexShrink: 0,
+  },
+  View6ff87234: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  View00740b37: {
+    minHeight: 60,
+    maxHeight: 60,
+    marginLeft: 12,
+    marginRight: 25,
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  Dividerbed2bcba: {
+    height: 1,
+    marginLeft: '5%',
+    marginRight: '5%',
+    marginBottom: 10,
+  },
+  FlatListc992f941Content: {
+    flex: 1,
+  },
+  Text4c56df9c: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 22,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  View3316e76b: {
+    top: 100,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+  },
+  ScrollViewf26042a5: {
+    flexGrow: 1,
+  },
+  ScrollViewf26042a5Content: {
+    marginTop: 21,
+    flexShrink: 0,
+    paddingBottom: 220,
+  },
+  Dividerde11d607: {
+    height: 1,
+  },
+  Textf7bbdd1d: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 12,
+  },
+  Text86ce3ba5: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 12,
+  },
+  View0ae50d17: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+  View88c44c3e: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  Divider0e02aada: {
+    height: 1,
+    marginTop: 10,
+  },
+  Text5528eed5: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 16,
+  },
+  Text4036ef9a: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 16,
+  },
+  Viewddd27fdd: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 12,
+  },
+  ButtonSolidf0b1de94: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  View7bb6e4d9: {
+    flexGrow: 1,
+    flexShrink: 0,
+    marginTop: 18,
+  },
+  Viewad2d300f: {
+    flexGrow: 1,
+    flexShrink: 0,
+    marginLeft: 12,
+    marginRight: 12,
+    justifyContent: 'flex-end',
+  },
+  Viewe515c9dd: {
+    paddingBottom: 20,
+    bottom: 0,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+  },
+  Fetch431eb058: {
+    minHeight: 40,
   },
   View40d56b89: {
     marginTop: 20,
