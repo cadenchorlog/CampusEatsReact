@@ -913,7 +913,12 @@ line two` ) and will not work with special characters inside of quotes ( example
           <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
             {/* Header */}
             <View style={styles.View40d56b89}>
-              <Row justifyContent={'flex-start'} alignItems={'center'}>
+              <Row justifyContent={'space-between'} alignItems={'center'}>
+                <Text
+                  style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}
+                >
+                  {'Dashboard'}
+                </Text>
                 <IconButton
                   onPress={() => {
                     try {
@@ -922,15 +927,10 @@ line two` ) and will not work with special characters inside of quotes ( example
                       console.error(err);
                     }
                   }}
-                  style={styles.IconButton897c6051}
+                  style={styles.IconButton2c3e883b}
                   icon={'AntDesign/close'}
                   size={40}
                 />
-                <Text
-                  style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}
-                >
-                  {'Dashboard'}
-                </Text>
               </Row>
             </View>
             {/* Grid */}

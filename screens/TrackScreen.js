@@ -137,6 +137,11 @@ const TrackScreen = props => {
                 </View>
               </Row>
               <>
+                {!fetchData?.completed ? null : (
+                  <Spacer top={0} right={8} bottom={25} left={8} />
+                )}
+              </>
+              <>
                 {fetchData?.completed ? null : (
                   <Spacer top={0} right={8} bottom={'60%'} left={8} />
                 )}
