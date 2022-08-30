@@ -2,6 +2,7 @@ import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import isArrayEmpty from '../custom/isArrayEmpty';
 import { parseBoolean } from '../utils';
 import { MapMarker, MapView } from '@draftbit/maps';
 import {
@@ -24,6 +25,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   ScrollView,
@@ -32,7 +34,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Fetch } from 'react-request';
 
 const OrderScreen = props => {
@@ -58,15 +59,33 @@ const OrderScreen = props => {
 line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
   };
 
+  const checkSearchField = searchField => {
+    if (typeof searchField === 'string' && searchField.trim().length === 0) {
+      console.log('string is empty');
+      return false;
+    } else {
+      console.log('string is NOT empty');
+      refetchGetAllStores();
+      return true;
+    } // Type the code for the body of your function or hook here.
+    // Functions can be triggered via Button/Touchable actions.
+    // Hooks are run per ReactJS rules.
+
+    /* String line breaks are accomplished with backticks ( example: `line one
+line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
+  };
+
   const { theme } = props;
   const { navigation } = props;
 
+  const [campusEmpty, setCampusEmpty] = React.useState(false);
+  const [courierEmpty, setCourierEmpty] = React.useState(false);
   const [mapOpen, setMapOpen] = React.useState(false);
   const [offersOpen, setOffersOpen] = React.useState(false);
   const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [searchInputValue, setSearchInputValue] = React.useState(' ');
   const [storeLat, setStoreLat] = React.useState(0);
   const [storeLong, setStoreLong] = React.useState(0);
-  const [textInputValue, setTextInputValue] = React.useState('');
 
   const mapViewgdzxBb5HRef = React.useRef();
 
@@ -76,28 +95,117 @@ line two` ) and will not work with special characters inside of quotes ( example
       scrollable={false}
       hasTopSafeArea={true}
     >
-      <KeyboardAwareScrollView
-        style={styles.KeyboardAwareScrollView6559c7e9}
-        contentContainerStyle={styles.KeyboardAwareScrollView6559c7e9Content}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps={'always'}
-        enableAutomaticScroll={true}
-        viewIsInsideTabBar={false}
+      <KeyboardAvoidingView
+        enabled={true}
+        behavior={'padding'}
+        keyboardVerticalOffset={45}
       >
+        <Surface
+          style={[
+            styles.Surface6dba1345,
+            { backgroundColor: theme.colors.background },
+          ]}
+        >
+          <Row justifyContent={'space-around'} alignItems={'center'}>
+            {/* Search Field */}
+            <View
+              style={[
+                styles.Viewa2581795,
+                { backgroundColor: theme.colors.divider, borderRadius: 12 },
+              ]}
+            >
+              <View>
+                {/* Search Button */}
+                <IconButton
+                  icon={'MaterialIcons/search'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              </View>
+              <Spacer top={0} right={3} bottom={0} left={3} />
+              <View style={styles.Viewc992f941}>
+                {/* Search Input */}
+                <TextInput
+                  onChangeText={newSearchInputValue => {
+                    const handler = async () => {
+                      try {
+                        setSearchInputValue(newSearchInputValue);
+                        const result = checkSearchField(newSearchInputValue);
+                        if (result) {
+                          return;
+                        }
+                        setSearchInputValue(' ');
+                        await refetchGetAllStores();
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    };
+                    handler();
+                  }}
+                  style={styles.TextInputbaf7ad36}
+                  value={searchInputValue}
+                  placeholder={'Search...'}
+                  returnKeyType={'done'}
+                />
+              </View>
+            </View>
+            {/* showDrawer */}
+            <>
+              {openDrawer ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setOpenDrawer(true);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButton7245b3d8}
+                  icon={'Ionicons/grid'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+            {/* hideDrawer */}
+            <>
+              {!openDrawer ? null : (
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setOpenDrawer(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButton7245b3d8}
+                  icon={'Entypo/chevron-thin-down'}
+                  size={32}
+                  color={theme.colors.light}
+                />
+              )}
+            </>
+          </Row>
+        </Surface>
+
         <ScrollView showsVerticalScrollIndicator={true} bounces={true}>
-          <Spacer top={6} right={0} bottom={6} left={0} />
-          {/* Search */}
-          <View style={styles.View9fa86917}>
-            <Text style={[styles.Text93742bfd, { color: theme.colors.medium }]}>
-              {'Hi '}
-              {Constants['user_name']}
-              {'!'}
-            </Text>
-          </View>
           <Spacer top={4} right={8} bottom={4} left={8} />
           <XanoApi.FetchGetAllStoresGET
             UID={Constants['user_id']}
             onCampus={false}
+            searchterm={searchInputValue}
+            onData={fetchData => {
+              try {
+                const courierResult = isArrayEmpty(fetchData?.campusDetails);
+                setCourierEmpty(false);
+                if (!courierResult) {
+                  return;
+                }
+                setCourierEmpty(true);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
           >
             {({ loading, error, data, refetchGetAllStores }) => {
               const fetchData = data;
@@ -116,340 +224,151 @@ line two` ) and will not work with special characters inside of quotes ( example
               return (
                 <>
                   {/* courierOffers */}
-                  <View style={styles.Viewd63bc9bc}>
-                    {/* Heading */}
-                    <View style={styles.View9fa86917}>
-                      <Row
-                        justifyContent={'space-between'}
-                        alignItems={'flex-start'}
-                      >
-                        {/* Primary */}
-                        <Text
-                          style={[
-                            styles.Textf90d72c6,
-                            { color: theme.colors.strong },
-                          ]}
-                        >
-                          {'Courier Offers'}
-                        </Text>
-
-                        <Touchable
-                          onPress={() => {
-                            try {
-                              setOffersOpen(true);
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                        >
-                          <Text
-                            style={[
-                              styles.Text34e0cb74,
-                              { color: theme.colors.primary },
-                            ]}
+                  <>
+                    {courierEmpty ? null : (
+                      <View style={styles.Viewd63bc9bc}>
+                        {/* Heading */}
+                        <View style={styles.View9fa86917}>
+                          <Row
+                            justifyContent={'space-between'}
+                            alignItems={'flex-start'}
                           >
-                            {'See All'}
-                          </Text>
-                        </Touchable>
-                      </Row>
-                      {/* Secondary */}
-                      <Text style={{ color: theme.colors.strong }}>
-                        {'Off campus options'}
-                      </Text>
-                    </View>
-                    {/* courierList */}
-                    <FlatList
-                      data={fetchData?.campusDetails}
-                      listKey={'HQwHamTL'}
-                      keyExtractor={item => item?.id || item?.uuid || item}
-                      renderItem={({ item }) => {
-                        const courierListData = item;
-                        return (
-                          <Touchable
-                            onPress={() => {
-                              try {
-                                navigation.navigate('RestaurantViewScreen', {
-                                  storeID: courierListData?.id,
-                                });
-                              } catch (err) {
-                                console.error(err);
-                              }
-                            }}
-                          >
-                            <Surface
+                            {/* Primary */}
+                            <Text
                               style={[
-                                styles.Surface56d97cb4,
-                                { borderRadius: 8 },
+                                styles.Textf90d72c6,
+                                { color: theme.colors.strong },
                               ]}
                             >
-                              <View
-                                style={[
-                                  styles.View1b1f79af,
-                                  {
-                                    borderTopLeftRadius: 8,
-                                    borderTopRightRadius: 8,
-                                  },
-                                ]}
-                              >
-                                <Image
-                                  style={styles.Image732c54b5}
-                                  source={{
-                                    uri: `${courierListData?.storeImage}`,
-                                  }}
-                                  resizeMode={'cover'}
-                                />
-                              </View>
-                              <CircleImage
-                                style={styles.CircleImage34352bf1}
-                                source={{
-                                  uri: `${courierListData?.storeIcon}`,
-                                }}
-                                size={60}
-                              />
-                              <Row
-                                justifyContent={'space-between'}
-                                alignItems={'flex-end'}
-                              >
-                                <Stack
-                                  justifyContent={'flex-start'}
-                                  alignItems={'flex-start'}
-                                >
-                                  {/* Name */}
-                                  <Text
-                                    style={[
-                                      styles.Textb73c4ca6,
-                                      { color: theme.colors.strong },
-                                    ]}
-                                  >
-                                    {courierListData?.storeName}
-                                  </Text>
-                                  {/* Style */}
-                                  <Text
-                                    style={[
-                                      styles.Textcd669454,
-                                      { color: theme.colors.medium },
-                                    ]}
-                                  >
-                                    {'$'}
-                                    {courierListData?.deliveryFee}
-                                    {' Delivery Fee'}
-                                  </Text>
-                                </Stack>
+                              {'Courier Offers'}
+                            </Text>
 
-                                <Stack
-                                  justifyContent={'flex-start'}
-                                  alignItems={'flex-end'}
-                                >
-                                  <StarRating
-                                    style={styles.StarRatinga57a4184}
-                                    starSize={16}
-                                    maxStars={5}
-                                    activeColor={theme.colors.primary}
-                                    inactiveColor={theme.colors.divider}
-                                    defaultValue={courierListData?.storeRating}
-                                  />
-                                  {/* Style */}
-                                  <Text
-                                    style={[
-                                      styles.Text25694ba4,
-                                      { color: theme.colors.medium },
-                                    ]}
-                                  >
-                                    {courierListData?.storeRating}
-                                    {' Stars'}
-                                  </Text>
-                                </Stack>
-                                <IconButton
-                                  onPress={() => {
-                                    try {
-                                      setStoreLat(courierListData?.storeLat);
-                                      setStoreLong(courierListData?.storeLong);
-                                      setMapOpen(true);
-                                    } catch (err) {
-                                      console.error(err);
-                                    }
-                                  }}
-                                  style={styles.IconButton2c3e883b}
-                                  icon={'MaterialCommunityIcons/map-marker'}
-                                  size={35}
-                                  color={theme.colors.primary}
-                                />
-                              </Row>
-                            </Surface>
-                          </Touchable>
-                        );
-                      }}
-                      contentContainerStyle={styles.FlatListe3f3fa82Content}
-                      numColumns={1}
-                      horizontal={true}
-                    />
-                  </View>
-                </>
-              );
-            }}
-          </XanoApi.FetchGetAllStoresGET>
-          <Spacer top={8} right={8} bottom={8} left={8} />
-          <XanoApi.FetchGetAllStoresGET
-            UID={Constants['user_id']}
-            onCampus={true}
-            onData={fetchData => {
-              const handler = async () => {
-                try {
-                  await refetchGetAllStores();
-                } catch (err) {
-                  console.error(err);
-                }
-              };
-              handler();
-            }}
-          >
-            {({ loading, error, data, refetchGetAllStores }) => {
-              const fetchData = data;
-              if (!fetchData || loading) {
-                return <ActivityIndicator />;
-              }
-
-              if (error) {
-                return (
-                  <Text style={{ textAlign: 'center' }}>
-                    There was a problem fetching this data
-                  </Text>
-                );
-              }
-
-              return (
-                <>
-                  {/* campusOffers */}
-                  <View style={styles.Viewdf29e2e2}>
-                    {/* Heading */}
-                    <View style={styles.View9fa86917}>
-                      <Row
-                        justifyContent={'space-between'}
-                        alignItems={'flex-start'}
-                      >
-                        {/* Primary */}
-                        <Text
-                          style={[
-                            styles.Textf90d72c6,
-                            { color: theme.colors.strong },
-                          ]}
-                        >
-                          {'Campus Offers'}
-                        </Text>
-                      </Row>
-                      {/* Secondary */}
-                      <Text style={{ color: theme.colors.strong }}>
-                        {'Places on campus'}
-                      </Text>
-                    </View>
-                    {/* campusList */}
-                    <FlatList
-                      data={fetchData?.campusDetails}
-                      listKey={'wB9pCiba'}
-                      keyExtractor={item => item?.id || item?.uuid || item}
-                      renderItem={({ item }) => {
-                        const campusListData = item;
-                        return (
-                          <>
                             <Touchable
                               onPress={() => {
                                 try {
-                                  navigation.navigate('RestaurantViewScreen', {
-                                    storeID: campusListData?.id,
-                                  });
+                                  setOffersOpen(true);
                                 } catch (err) {
                                   console.error(err);
                                 }
                               }}
-                              style={styles.Touchable7d2b959f}
                             >
-                              {/* campusSurface */}
-                              <Surface
+                              <Text
                                 style={[
-                                  styles.Surface8012acab,
-                                  { borderRadius: 8 },
+                                  styles.Text34e0cb74,
+                                  { color: theme.colors.primary },
                                 ]}
                               >
-                                <View
+                                {'See All'}
+                              </Text>
+                            </Touchable>
+                          </Row>
+                          {/* Secondary */}
+                          <Text style={{ color: theme.colors.strong }}>
+                            {'Off campus options'}
+                          </Text>
+                        </View>
+                        {/* courierList */}
+                        <FlatList
+                          data={fetchData?.campusDetails}
+                          listKey={'HQwHamTL'}
+                          keyExtractor={item => item?.id || item?.uuid || item}
+                          renderItem={({ item }) => {
+                            const courierListData = item;
+                            return (
+                              <Touchable
+                                onPress={() => {
+                                  try {
+                                    navigation.navigate(
+                                      'RestaurantViewScreen',
+                                      { storeID: courierListData?.id }
+                                    );
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                              >
+                                <Surface
                                   style={[
-                                    styles.View78e61bd0,
-                                    {
-                                      borderTopLeftRadius: 8,
-                                      borderTopRightRadius: 8,
-                                    },
+                                    styles.Surface56d97cb4,
+                                    { borderRadius: 8 },
                                   ]}
                                 >
-                                  <Image
-                                    style={styles.Image732c54b5}
+                                  <View
+                                    style={[
+                                      styles.View1b1f79af,
+                                      {
+                                        borderTopLeftRadius: 8,
+                                        borderTopRightRadius: 8,
+                                      },
+                                    ]}
+                                  >
+                                    <Image
+                                      style={styles.Imagea98db7de}
+                                      source={{
+                                        uri: `${courierListData?.storeImage}`,
+                                      }}
+                                      resizeMode={'cover'}
+                                    />
+                                  </View>
+                                  <CircleImage
+                                    style={styles.CircleImage34352bf1}
                                     source={{
-                                      uri: `${campusListData?.storeImage}`,
+                                      uri: `${courierListData?.storeIcon}`,
                                     }}
-                                    resizeMode={'cover'}
+                                    size={60}
                                   />
-                                </View>
-                                <CircleImage
-                                  style={styles.CircleImage34352bf1}
-                                  source={{
-                                    uri: `${campusListData?.storeIcon}`,
-                                  }}
-                                  size={60}
-                                />
-                                <Row
-                                  justifyContent={'space-between'}
-                                  alignItems={'flex-end'}
-                                >
-                                  <Stack
-                                    justifyContent={'flex-start'}
-                                    alignItems={'flex-start'}
-                                  >
-                                    {/* Name */}
-                                    <Text
-                                      style={[
-                                        styles.Text26f0ecb9,
-                                        { color: theme.colors.strong },
-                                      ]}
-                                    >
-                                      {campusListData?.storeName}
-                                    </Text>
-                                    {/* Style */}
-                                    <Text
-                                      style={[
-                                        styles.Textcd669454,
-                                        { color: theme.colors.medium },
-                                      ]}
-                                    >
-                                      {'$'}
-                                      {campusListData?.deliveryFee}
-                                      {' Delivery Fee'}
-                                    </Text>
-                                  </Stack>
-
                                   <Row
-                                    justifyContent={'flex-start'}
-                                    alignItems={'flex-start'}
+                                    justifyContent={'space-between'}
+                                    alignItems={'flex-end'}
                                   >
+                                    <Stack
+                                      justifyContent={'flex-start'}
+                                      alignItems={'flex-start'}
+                                    >
+                                      {/* Name */}
+                                      <Text
+                                        style={[
+                                          styles.Textb73c4ca6,
+                                          { color: theme.colors.strong },
+                                        ]}
+                                      >
+                                        {courierListData?.storeName}
+                                      </Text>
+                                      {/* Style */}
+                                      <Text
+                                        style={[
+                                          styles.Textcd669454,
+                                          { color: theme.colors.medium },
+                                        ]}
+                                      >
+                                        {'$'}
+                                        {courierListData?.deliveryFee}
+                                        {' Delivery Fee'}
+                                      </Text>
+                                    </Stack>
+
                                     <Stack
                                       justifyContent={'flex-start'}
                                       alignItems={'flex-end'}
                                     >
                                       <StarRating
-                                        style={styles.StarRating27d4405a}
+                                        style={styles.StarRatinga57a4184}
                                         starSize={16}
                                         maxStars={5}
                                         activeColor={theme.colors.primary}
                                         inactiveColor={theme.colors.divider}
                                         defaultValue={
-                                          campusListData?.storeRating
+                                          courierListData?.storeRating
                                         }
                                       />
                                       {/* Style */}
                                       <Text
                                         style={[
-                                          styles.Text23f672fe,
+                                          styles.Text25694ba4,
                                           { color: theme.colors.medium },
                                         ]}
                                       >
-                                        {campusListData?.storeRating}
+                                        {courierListData?.storeRating}
                                         {' Stars'}
                                       </Text>
                                     </Stack>
@@ -473,350 +392,245 @@ line two` ) and will not work with special characters inside of quotes ( example
                                       color={theme.colors.primary}
                                     />
                                   </Row>
-                                </Row>
-                              </Surface>
-                            </Touchable>
-                            <Spacer top={8} right={10} bottom={8} left={10} />
-                          </>
-                        );
-                      }}
-                      style={styles.FlatList754b2e07}
-                      contentContainerStyle={styles.FlatList754b2e07Content}
-                      numColumns={1}
-                      horizontal={false}
-                    />
-                  </View>
+                                </Surface>
+                              </Touchable>
+                            );
+                          }}
+                          contentContainerStyle={styles.FlatListe3f3fa82Content}
+                          numColumns={1}
+                          horizontal={true}
+                        />
+                      </View>
+                    )}
+                  </>
+                </>
+              );
+            }}
+          </XanoApi.FetchGetAllStoresGET>
+          <>
+            {courierEmpty ? null : (
+              <Spacer top={8} right={8} bottom={8} left={8} />
+            )}
+          </>
+          <XanoApi.FetchGetAllStoresGET
+            UID={Constants['user_id']}
+            onCampus={true}
+            searchterm={searchInputValue}
+            onData={fetchData => {
+              try {
+                const campusResult = isArrayEmpty(fetchData?.campusDetails);
+                setCampusEmpty(false);
+                if (!campusResult) {
+                  return;
+                }
+                setCampusEmpty(true);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+          >
+            {({ loading, error, data, refetchGetAllStores }) => {
+              const fetchData = data;
+              if (!fetchData || loading) {
+                return <ActivityIndicator />;
+              }
+
+              if (error) {
+                return (
+                  <Text style={{ textAlign: 'center' }}>
+                    There was a problem fetching this data
+                  </Text>
+                );
+              }
+
+              return (
+                <>
+                  {/* campusOffers */}
+                  <>
+                    {campusEmpty ? null : (
+                      <View style={styles.Viewdf29e2e2}>
+                        {/* Heading */}
+                        <View style={styles.View9fa86917}>
+                          <Row
+                            justifyContent={'space-between'}
+                            alignItems={'flex-start'}
+                          >
+                            {/* Primary */}
+                            <Text
+                              style={[
+                                styles.Textf90d72c6,
+                                { color: theme.colors.strong },
+                              ]}
+                            >
+                              {'Campus Offers'}
+                            </Text>
+                          </Row>
+                          {/* Secondary */}
+                          <Text style={{ color: theme.colors.strong }}>
+                            {'Places on campus'}
+                          </Text>
+                        </View>
+                        {/* campusList */}
+                        <FlatList
+                          data={fetchData?.campusDetails}
+                          listKey={'wB9pCiba'}
+                          keyExtractor={item => item?.id || item?.uuid || item}
+                          renderItem={({ item }) => {
+                            const campusListData = item;
+                            return (
+                              <>
+                                <Touchable
+                                  onPress={() => {
+                                    try {
+                                      navigation.navigate(
+                                        'RestaurantViewScreen',
+                                        { storeID: campusListData?.id }
+                                      );
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  style={styles.Touchable7d2b959f}
+                                >
+                                  {/* campusSurface */}
+                                  <Surface
+                                    style={[
+                                      styles.Surface8012acab,
+                                      { borderRadius: 8 },
+                                    ]}
+                                  >
+                                    <View
+                                      style={[
+                                        styles.View78e61bd0,
+                                        {
+                                          borderTopLeftRadius: 8,
+                                          borderTopRightRadius: 8,
+                                        },
+                                      ]}
+                                    >
+                                      <Image
+                                        style={styles.Imagea98db7de}
+                                        source={{
+                                          uri: `${campusListData?.storeImage}`,
+                                        }}
+                                        resizeMode={'cover'}
+                                      />
+                                    </View>
+                                    <CircleImage
+                                      style={styles.CircleImage34352bf1}
+                                      source={{
+                                        uri: `${campusListData?.storeIcon}`,
+                                      }}
+                                      size={60}
+                                    />
+                                    <Row
+                                      justifyContent={'space-between'}
+                                      alignItems={'flex-end'}
+                                    >
+                                      <Stack
+                                        justifyContent={'flex-start'}
+                                        alignItems={'flex-start'}
+                                      >
+                                        {/* Name */}
+                                        <Text
+                                          style={[
+                                            styles.Text26f0ecb9,
+                                            { color: theme.colors.strong },
+                                          ]}
+                                        >
+                                          {campusListData?.storeName}
+                                        </Text>
+                                        {/* Style */}
+                                        <Text
+                                          style={[
+                                            styles.Textcd669454,
+                                            { color: theme.colors.medium },
+                                          ]}
+                                        >
+                                          {'$'}
+                                          {campusListData?.deliveryFee}
+                                          {' Delivery Fee'}
+                                        </Text>
+                                      </Stack>
+
+                                      <Row
+                                        justifyContent={'flex-start'}
+                                        alignItems={'flex-start'}
+                                      >
+                                        <Stack
+                                          justifyContent={'flex-start'}
+                                          alignItems={'flex-end'}
+                                        >
+                                          <StarRating
+                                            style={styles.StarRating27d4405a}
+                                            starSize={16}
+                                            maxStars={5}
+                                            activeColor={theme.colors.primary}
+                                            inactiveColor={theme.colors.divider}
+                                            defaultValue={
+                                              campusListData?.storeRating
+                                            }
+                                          />
+                                          {/* Style */}
+                                          <Text
+                                            style={[
+                                              styles.Text23f672fe,
+                                              { color: theme.colors.medium },
+                                            ]}
+                                          >
+                                            {campusListData?.storeRating}
+                                            {' Stars'}
+                                          </Text>
+                                        </Stack>
+                                        <IconButton
+                                          onPress={() => {
+                                            try {
+                                              setStoreLat(
+                                                campusListData?.storeLat
+                                              );
+                                              setStoreLong(
+                                                campusListData?.storeLong
+                                              );
+                                              setMapOpen(true);
+                                            } catch (err) {
+                                              console.error(err);
+                                            }
+                                          }}
+                                          style={styles.IconButton2c3e883b}
+                                          icon={
+                                            'MaterialCommunityIcons/map-marker'
+                                          }
+                                          size={35}
+                                          color={theme.colors.primary}
+                                        />
+                                      </Row>
+                                    </Row>
+                                  </Surface>
+                                </Touchable>
+                                <Spacer
+                                  top={8}
+                                  right={10}
+                                  bottom={8}
+                                  left={10}
+                                />
+                              </>
+                            );
+                          }}
+                          style={styles.FlatList754b2e07}
+                          contentContainerStyle={styles.FlatList754b2e07Content}
+                          numColumns={1}
+                          horizontal={false}
+                        />
+                      </View>
+                    )}
+                  </>
                 </>
               );
             }}
           </XanoApi.FetchGetAllStoresGET>
           <Spacer top={50} right={8} bottom={8} left={8} />
         </ScrollView>
-
-        <Surface
-          style={[
-            styles.Surface15b3cc20,
-            { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-          ]}
-        >
-          <Row justifyContent={'space-around'} alignItems={'center'}>
-            {/* Search Field */}
-            <View
-              style={[
-                styles.View9deeaf2f,
-                { backgroundColor: theme.colors.divider, borderRadius: 12 },
-              ]}
-            >
-              <View>
-                {/* Search Button */}
-                <IconButton
-                  icon={'MaterialIcons/search'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              </View>
-              <Spacer top={0} right={3} bottom={0} left={3} />
-              <View style={styles.Viewc992f941}>
-                {/* Search Input */}
-                <TextInput
-                  onChangeText={newSearchInputValue => {
-                    const textInputValue = newSearchInputValue;
-                    try {
-                      setTextInputValue(textInputValue);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={styles.TextInputbaf7ad36}
-                  placeholder={'Search...'}
-                  value={textInputValue}
-                />
-              </View>
-            </View>
-            {/* showDrawer */}
-            <>
-              {openDrawer ? null : (
-                <IconButton
-                  onPress={() => {
-                    try {
-                      setOpenDrawer(true);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={styles.IconButtonbcce0fc4}
-                  icon={'Ionicons/grid'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              )}
-            </>
-            {/* hideDrawer */}
-            <>
-              {!openDrawer ? null : (
-                <IconButton
-                  onPress={() => {
-                    try {
-                      setOpenDrawer(false);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={styles.IconButtonbcce0fc4}
-                  icon={'Entypo/chevron-thin-down'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              )}
-            </>
-          </Row>
-        </Surface>
-      </KeyboardAwareScrollView>
-      <>
-        {!openDrawer ? null : (
-          <View style={styles.Viewac5e8875}>
-            {/* Grid */}
-            <View
-              style={[
-                styles.View1acef5e2,
-                { backgroundColor: theme.colors.strongInverse },
-              ]}
-              needsOffscreenAlphaCompositing={false}
-            >
-              {/* Profile */}
-              <Touchable
-                onPress={() => {
-                  try {
-                    navigation.navigate('AccountScreen');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.Touchableaf6910bf}
-              >
-                <View
-                  style={[
-                    styles.View1aef42d9,
-                    {
-                      borderRadius: theme.roundness,
-                      borderColor: theme.colors.divider,
-                      backgroundColor: theme.colors.background,
-                    },
-                  ]}
-                >
-                  <Icon
-                    style={styles.Icon6bf74529}
-                    size={40}
-                    color={theme.colors.strong}
-                    name={'Ionicons/md-person-circle-outline'}
-                  />
-                  <Spacer top={8} right={8} bottom={8} left={8} />
-                  <Stack
-                    justifyContent={'flex-start'}
-                    alignItems={'flex-start'}
-                  >
-                    <Text
-                      style={[
-                        styles.Text8a1d4f88,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'Hi '}
-                      {Constants['user_name']}
-                      {'!'}
-                    </Text>
-
-                    <Text
-                      style={[
-                        styles.Text058e2418,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'View your account'}
-                    </Text>
-                  </Stack>
-                </View>
-              </Touchable>
-              {/* Courier */}
-              <Touchable
-                onPress={() => {
-                  try {
-                    navigation.navigate('StackNavigator', {
-                      screen: 'DriverNav',
-                      params: { screen: 'AvailableOrdersScreen' },
-                    });
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.Touchable2e5bf580}
-              >
-                <View
-                  style={[
-                    styles.View0f4451f3,
-                    {
-                      borderRadius: theme.roundness,
-                      backgroundColor: theme.colors.background,
-                      borderColor: theme.colors.divider,
-                    },
-                  ]}
-                >
-                  <View style={styles.View94ee2e18}>
-                    <Text
-                      style={[
-                        theme.typography.headline6,
-                        styles.Textca4d6164,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'Switch to\nCourier\n'}
-                    </Text>
-                    <Icon
-                      style={styles.Icon84575dc9}
-                      name={'MaterialCommunityIcons/truck-delivery'}
-                      size={32}
-                      color={theme.colors.strong}
-                    />
-                  </View>
-                </View>
-              </Touchable>
-              {/* Address */}
-              <Touchable
-                onPress={() => {
-                  try {
-                    navigation.navigate('UserSetAddressScreen');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.Touchableb3269bed}
-              >
-                <View
-                  style={[
-                    styles.View57ac46a1,
-                    {
-                      borderRadius: theme.roundness,
-                      backgroundColor: theme.colors.background,
-                      borderColor: theme.colors.divider,
-                    },
-                  ]}
-                >
-                  <View style={styles.View837d8621}>
-                    <Text
-                      style={[
-                        theme.typography.headline6,
-                        styles.Text4b62e5ec,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'Delivery\nAddress'}
-                    </Text>
-                    <Icon
-                      style={styles.Icon013300ec}
-                      size={26}
-                      name={'Ionicons/md-home'}
-                      color={theme.colors.strong}
-                    />
-                  </View>
-                </View>
-              </Touchable>
-              {/* Sign Out */}
-              <Touchable
-                onPress={() => {
-                  try {
-                    navigation.navigate('SimpleWelcomeScreen');
-                    setGlobalVariableValue({
-                      key: 'auth_header',
-                      value: '',
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_id',
-                      value: '',
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_name',
-                      value: '',
-                    });
-                    setGlobalVariableValue({
-                      key: 'user_email',
-                      value: '',
-                    });
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                style={styles.Touchablec4f3901b}
-              >
-                <View
-                  style={[
-                    styles.View075ba974,
-                    {
-                      borderRadius: theme.roundness,
-                      backgroundColor: theme.colors.background,
-                      borderColor: theme.colors.divider,
-                    },
-                  ]}
-                >
-                  <View style={styles.View3b106cac}>
-                    <Text
-                      style={[
-                        theme.typography.headline6,
-                        styles.Textca4d6164,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'Sign Out'}
-                    </Text>
-                    <Icon
-                      style={styles.Icon9e5973b7}
-                      name={'MaterialIcons/logout'}
-                      size={24}
-                      color={theme.colors.error}
-                    />
-                  </View>
-                </View>
-              </Touchable>
-              {/* help */}
-              <Touchable style={styles.Touchable1b2cb320}>
-                <View
-                  style={[
-                    styles.View075ba974,
-                    {
-                      borderRadius: theme.roundness,
-                      backgroundColor: theme.colors.background,
-                      borderColor: theme.colors.divider,
-                    },
-                  ]}
-                >
-                  <View style={styles.View3b106cac}>
-                    <Text
-                      style={[
-                        theme.typography.headline6,
-                        styles.Textca4d6164,
-                        { color: theme.colors.strong },
-                      ]}
-                      allowFontScaling={true}
-                    >
-                      {'Help'}
-                    </Text>
-                    <Icon
-                      style={styles.Icon9e5973b7}
-                      name={'Entypo/help-with-circle'}
-                      size={24}
-                      color={theme.colors.error}
-                    />
-                  </View>
-                </View>
-              </Touchable>
-            </View>
-          </View>
-        )}
-      </>
+      </KeyboardAvoidingView>
       {/* offerList */}
       <>
         {!offersOpen ? null : (
@@ -1057,19 +871,319 @@ line two` ) and will not work with special characters inside of quotes ( example
           </Modal>
         )}
       </>
+      {/* dashboardModal */}
+      <>
+        {!openDrawer ? null : (
+          <Modal animationType={'slide'} presentationStyle={'pageSheet'}>
+            {/* Header */}
+            <View style={styles.View40d56b89}>
+              <Row justifyContent={'space-between'} alignItems={'center'}>
+                <Text
+                  style={[styles.Textd59ae7c0, { color: theme.colors.strong }]}
+                >
+                  {'Dashboard'}
+                </Text>
+                <IconButton
+                  onPress={() => {
+                    try {
+                      setOpenDrawer(false);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  style={styles.IconButton2c3e883b}
+                  icon={'AntDesign/close'}
+                  size={40}
+                />
+              </Row>
+            </View>
+            {/* Grid */}
+            <View
+              style={[
+                styles.View1acef5e2,
+                { backgroundColor: theme.colors.strongInverse },
+              ]}
+              needsOffscreenAlphaCompositing={false}
+            >
+              {/* Profile */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('AccountScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableaf6910bf}
+              >
+                <View
+                  style={[
+                    styles.View1aef42d9,
+                    {
+                      borderRadius: theme.roundness,
+                      borderColor: theme.colors.divider,
+                      backgroundColor: theme.colors.background,
+                    },
+                  ]}
+                >
+                  <Icon
+                    style={styles.Icon6bf74529}
+                    size={40}
+                    color={theme.colors.strong}
+                    name={'Ionicons/md-person-circle-outline'}
+                  />
+                  <Spacer top={8} right={8} bottom={8} left={8} />
+                  <Stack
+                    justifyContent={'flex-start'}
+                    alignItems={'flex-start'}
+                  >
+                    <Text
+                      style={[
+                        styles.Text8a1d4f88,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Hi '}
+                      {Constants['user_name']}
+                      {'!'}
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.Text058e2418,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'View your account'}
+                    </Text>
+                  </Stack>
+                </View>
+              </Touchable>
+              {/* Courier */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('StackNavigator', {
+                      screen: 'DriverNav',
+                      params: { screen: 'AvailableOrdersScreen' },
+                    });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchable2e5bf580}
+              >
+                <View
+                  style={[
+                    styles.View0f4451f3,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View94ee2e18}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Switch to\nCourier\n'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon84575dc9}
+                      name={'MaterialCommunityIcons/truck-delivery'}
+                      size={32}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Address */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('UserSetAddressScreen');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchableb3269bed}
+              >
+                <View
+                  style={[
+                    styles.View57ac46a1,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View837d8621}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Text4b62e5ec,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Delivery\nAddress'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon013300ec}
+                      size={26}
+                      name={'Ionicons/md-home'}
+                      color={theme.colors.strong}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* Sign Out */}
+              <Touchable
+                onPress={() => {
+                  try {
+                    navigation.navigate('SimpleWelcomeScreen');
+                    setGlobalVariableValue({
+                      key: 'auth_header',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_id',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_name',
+                      value: '',
+                    });
+                    setGlobalVariableValue({
+                      key: 'user_email',
+                      value: '',
+                    });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchablec4f3901b}
+              >
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Sign Out'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'MaterialIcons/logout'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+              {/* help */}
+              <Touchable
+                onPress={() => {
+                  try {
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                style={styles.Touchable1b2cb320}
+              >
+                <View
+                  style={[
+                    styles.View075ba974,
+                    {
+                      borderRadius: theme.roundness,
+                      backgroundColor: theme.colors.background,
+                      borderColor: theme.colors.divider,
+                    },
+                  ]}
+                >
+                  <View style={styles.View3b106cac}>
+                    <Text
+                      style={[
+                        theme.typography.headline6,
+                        styles.Textca4d6164,
+                        { color: theme.colors.strong },
+                      ]}
+                      allowFontScaling={true}
+                    >
+                      {'Help'}
+                    </Text>
+                    <Icon
+                      style={styles.Icon9e5973b7}
+                      name={'Entypo/help-with-circle'}
+                      size={24}
+                      color={theme.colors.error}
+                    />
+                  </View>
+                </View>
+              </Touchable>
+            </View>
+
+            <Text style={[styles.Textb536ac60, { color: theme.colors.strong }]}>
+              {'Copyright Campus Eats 2022'}
+            </Text>
+          </Modal>
+        )}
+      </>
     </ScreenContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  Text93742bfd: {
-    fontFamily: 'Poppins_600SemiBold',
+  TextInputbaf7ad36: {
+    fontFamily: 'System',
+    fontWeight: '400',
     fontSize: 18,
-    paddingRight: 16,
   },
-  View9fa86917: {
-    paddingLeft: 16,
-    paddingRight: 16,
+  Viewc992f941: {
+    flex: 1,
+  },
+  Viewa2581795: {
+    paddingLeft: 12,
+    paddingTop: 10,
+    paddingRight: 12,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 16,
+    width: '75%',
+  },
+  IconButton7245b3d8: {
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  Surface6dba1345: {
+    minHeight: 70,
+    justifyContent: 'space-around',
+    alignContent: 'space-around',
+    overflow: 'hidden',
+    width: '100%',
   },
   Textf90d72c6: {
     fontSize: 24,
@@ -1079,10 +1193,13 @@ const styles = StyleSheet.create({
   Text34e0cb74: {
     marginTop: 10,
   },
-  Image732c54b5: {
+  View9fa86917: {
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  Imagea98db7de: {
     width: '100%',
     height: '100%',
-    opacity: 0.75,
   },
   View1b1f79af: {
     height: '60%',
@@ -1188,43 +1305,66 @@ const styles = StyleSheet.create({
   Viewdf29e2e2: {
     width: '100%',
   },
-  TextInputbaf7ad36: {
-    fontFamily: 'System',
-    fontWeight: '400',
-    fontSize: 18,
+  IconButton5f47a348: {
+    marginRight: 4,
   },
-  Viewc992f941: {
+  StarRating2c3e883b: {
+    marginRight: 16,
+  },
+  Text621d5cae: {
+    fontSize: 12,
+    paddingTop: 4,
+    paddingRight: 20,
+    paddingLeft: 16,
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+  },
+  Viewbbfb22dd: {
+    width: '100%',
+    marginBottom: 70,
+    marginTop: 20,
+  },
+  MapViewc992f941: {
     flex: 1,
   },
-  View9deeaf2f: {
-    paddingLeft: 12,
-    paddingTop: 10,
-    paddingRight: 12,
-    paddingBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: '5%',
-    marginRight: '15%',
-  },
-  IconButtonbcce0fc4: {
-    right: 25,
-  },
-  Surface15b3cc20: {
-    minHeight: 70,
-    justifyContent: 'space-around',
-    alignContent: 'space-around',
+  Surfacec0dec774: {
+    height: '80%',
     overflow: 'hidden',
+  },
+  Text58d1c036: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 26,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 16,
+  },
+  ButtonSolidd6d80f99: {
+    borderRadius: 8,
+    fontFamily: 'System',
+    fontWeight: '700',
+    textAlign: 'center',
+    marginLeft: 16,
+    marginTop: 8,
+    marginRight: 16,
+  },
+  Surface2df1c553: {
+    minHeight: '28%',
+    marginTop: '-8%',
+  },
+  IconButton007f30a6: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 20,
+    right: 20,
   },
-  KeyboardAwareScrollView6559c7e9: {
-    height: '100%',
+  Textd59ae7c0: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 26,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
-  KeyboardAwareScrollView6559c7e9Content: {
-    minHeight: '100%',
-    maxHeight: '100%',
+  View40d56b89: {
+    marginTop: 20,
+    marginBottom: 16,
   },
   Icon6bf74529: {
     width: 40,
@@ -1372,64 +1512,8 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     flexDirection: 'row',
   },
-  Viewac5e8875: {
-    paddingTop: 0,
-    marginTop: 0,
-  },
-  IconButton5f47a348: {
-    marginRight: 4,
-  },
-  Imagea98db7de: {
-    width: '100%',
-    height: '100%',
-  },
-  StarRating2c3e883b: {
-    marginRight: 16,
-  },
-  Text621d5cae: {
-    fontSize: 12,
-    paddingTop: 4,
-    paddingRight: 20,
-    paddingLeft: 16,
-    alignSelf: 'flex-end',
-    textAlign: 'right',
-  },
-  Viewbbfb22dd: {
-    width: '100%',
-    marginBottom: 70,
-    marginTop: 20,
-  },
-  MapViewc992f941: {
-    flex: 1,
-  },
-  Surfacec0dec774: {
-    height: '80%',
-    overflow: 'hidden',
-  },
-  Text58d1c036: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 26,
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 16,
-  },
-  ButtonSolidd6d80f99: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
+  Textb536ac60: {
     textAlign: 'center',
-    marginLeft: 16,
-    marginTop: 8,
-    marginRight: 16,
-  },
-  Surface2df1c553: {
-    minHeight: '28%',
-    marginTop: '-8%',
-  },
-  IconButton007f30a6: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
   },
 });
 

@@ -615,11 +615,11 @@ export const FetchCreateOfferSearchStoresGET = ({
   });
 };
 
-export const getAllStoresGET = (Constants, { UID, onCampus }) =>
+export const getAllStoresGET = (Constants, { UID, onCampus, searchterm }) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/storeList/${UID ?? ''}/${
       onCampus ?? ''
-    }`,
+    }/${searchterm ?? ''}/`,
     {
       headers: {
         Accept: 'application/json',
@@ -649,13 +649,14 @@ export const FetchGetAllStoresGET = ({
   refetchInterval,
   UID,
   onCampus,
+  searchterm,
 }) => {
   const Constants = GlobalVariables.useValues();
   const isFocused = useIsFocused();
   const prevIsFocused = usePrevious(isFocused);
 
   const { loading, data, error, refetch } = useGetAllStoresGET(
-    { UID, onCampus },
+    { UID, onCampus, searchterm },
     { refetchInterval }
   );
 
