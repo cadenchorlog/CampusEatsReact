@@ -3,15 +3,16 @@
     "name": "Campus Eats",
     "slug": "campus-eats",
     "scheme": "campus-eats",
-    "description": "Campus Eats, powered by Draftbit",
+    "owner": "campuseats",
+    "description": "Campus Eats",
     "privacy": "unlisted",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
-    "orientation": "default",
+    "version": "8.1.0",
+    "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -22,10 +23,13 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "net.campusEats.test",
+      "bundleIdentifier": "net.campuseats.test",
       "supportsTablet": false,
-      "buildNumber": "1.0.0",
+      "buildNumber": "8.1.0",
       "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ],
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to review rich media previously added.",
         "NSPhotoLibraryAddUsageDescription": "This app uses the photo library to add rich media shared from others.",
@@ -34,8 +38,8 @@
       "usesIcloudStorage": false
     },
     "android": {
-      "versionCode": 1,
-      "package": "com.draftbit.untitledapp",
+      "versionCode": 9,
+      "package": "net.campuseats.test",
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
@@ -45,6 +49,26 @@
     },
     "notification": {
       "androidMode": "default"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ba437504-794d-4317-8661-e29e44ea18a6"
+      },
+      "oneSignalAppId": "4e88617e-5b78-4fb8-aafe-152255157c2c"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ba437504-794d-4317-8661-e29e44ea18a6"
+    },
+    "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development",
+        }
+      ]
+    ]
   }
 }

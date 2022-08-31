@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { AppState } from 'react-native';
-import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 import {
   SafeAreaProvider,
   initialWindowMetrics,
@@ -13,6 +14,7 @@ import AppNavigator from './AppNavigator';
 import DraftbitTheme from './themes/DraftbitTheme.js';
 import cacheAssetsAsync from './config/cacheAssetsAsync';
 import { GlobalVariableProvider } from './config/GlobalVariableContext';
+
 import { useFonts } from 'expo-font';
 import {
   Inter_400Regular,
@@ -27,6 +29,9 @@ import {
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
+import OneSignal from 'react-native-onesignal';
+import Constants from "expo-constants";
+import registerForPushNotificationsAsync from './utils/getPushToken';
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -82,6 +87,7 @@ const App = () => {
         setIsReady(true);
       }
     }
+    
 
     prepare();
   }, []);
@@ -95,6 +101,8 @@ const App = () => {
   if (!isReady || !fontsLoaded) {
     return null;
   }
+ 
+
 
   return (
     <SafeAreaProvider
