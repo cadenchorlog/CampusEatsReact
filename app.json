@@ -11,7 +11,7 @@
       "web"
     ],
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -26,6 +26,9 @@
       "supportsTablet": false,
       "buildNumber": "1.0.0",
       "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ],
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSPhotoLibraryUsageDescription": "This app uses the photo library to review rich media previously added.",
         "NSPhotoLibraryAddUsageDescription": "This app uses the photo library to add rich media shared from others.",

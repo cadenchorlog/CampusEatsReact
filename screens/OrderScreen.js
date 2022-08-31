@@ -3,7 +3,6 @@ import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import isArrayEmpty from '../custom/isArrayEmpty';
-import { parseBoolean } from '../utils';
 import { MapMarker, MapView } from '@draftbit/maps';
 import {
   ButtonSolid,
@@ -100,93 +99,69 @@ line two` ) and will not work with special characters inside of quotes ( example
         behavior={'padding'}
         keyboardVerticalOffset={45}
       >
-        <Surface
-          style={[
-            styles.Surface6dba1345,
-            { backgroundColor: theme.colors.background },
-          ]}
-        >
-          <Row justifyContent={'space-around'} alignItems={'center'}>
-            {/* Search Field */}
-            <View
-              style={[
-                styles.Viewa2581795,
-                { backgroundColor: theme.colors.divider, borderRadius: 12 },
-              ]}
-            >
-              <View>
-                {/* Search Button */}
-                <IconButton
-                  icon={'MaterialIcons/search'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              </View>
-              <Spacer top={0} right={3} bottom={0} left={3} />
-              <View style={styles.Viewc992f941}>
-                {/* Search Input */}
-                <TextInput
-                  onChangeText={newSearchInputValue => {
-                    const handler = async () => {
-                      try {
-                        setSearchInputValue(newSearchInputValue);
-                        const result = checkSearchField(newSearchInputValue);
-                        if (result) {
-                          return;
-                        }
-                        setSearchInputValue(' ');
-                        await refetchGetAllStores();
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    };
-                    handler();
-                  }}
-                  style={styles.TextInputbaf7ad36}
-                  value={searchInputValue}
-                  placeholder={'Search...'}
-                  returnKeyType={'done'}
-                />
-              </View>
+        <Text style={[styles.Text85b763cf, { color: theme.colors.strong }]}>
+          {'Order'}
+        </Text>
+
+        <Row justifyContent={'space-between'} alignItems={'center'}>
+          {/* Search Field */}
+          <View
+            style={[
+              styles.View64d89b6e,
+              { backgroundColor: theme.colors.divider, borderRadius: 12 },
+            ]}
+          >
+            <View>
+              {/* Search Button */}
+              <IconButton
+                icon={'MaterialIcons/search'}
+                size={32}
+                color={theme.colors.light}
+              />
             </View>
-            {/* showDrawer */}
-            <>
-              {openDrawer ? null : (
-                <IconButton
-                  onPress={() => {
+            <Spacer top={0} right={3} bottom={0} left={3} />
+            <View style={styles.Viewc992f941}>
+              {/* Search Input */}
+              <TextInput
+                onChangeText={newSearchInputValue => {
+                  const handler = async () => {
                     try {
-                      setOpenDrawer(true);
+                      setSearchInputValue(newSearchInputValue);
+                      const result = checkSearchField(newSearchInputValue);
+                      if (result) {
+                        return;
+                      }
+                      setSearchInputValue(' ');
+                      await refetchGetAllStores();
                     } catch (err) {
                       console.error(err);
                     }
-                  }}
-                  style={styles.IconButton7245b3d8}
-                  icon={'Ionicons/grid'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              )}
-            </>
-            {/* hideDrawer */}
-            <>
-              {!openDrawer ? null : (
-                <IconButton
-                  onPress={() => {
-                    try {
-                      setOpenDrawer(false);
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  style={styles.IconButton7245b3d8}
-                  icon={'Entypo/chevron-thin-down'}
-                  size={32}
-                  color={theme.colors.light}
-                />
-              )}
-            </>
-          </Row>
-        </Surface>
+                  };
+                  handler();
+                }}
+                style={styles.TextInputbaf7ad36}
+                value={searchInputValue}
+                placeholder={'Search...'}
+                returnKeyType={'done'}
+                clearButtonMode={'always'}
+              />
+            </View>
+          </View>
+          {/* showDrawer */}
+          <IconButton
+            onPress={() => {
+              try {
+                setOpenDrawer(true);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            style={styles.IconButton28dcfe17}
+            icon={'Ionicons/grid'}
+            size={32}
+            color={theme.colors.light}
+          />
+        </Row>
 
         <ScrollView showsVerticalScrollIndicator={true} bounces={true}>
           <Spacer top={4} right={8} bottom={4} left={8} />
@@ -236,7 +211,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             {/* Primary */}
                             <Text
                               style={[
-                                styles.Textf90d72c6,
+                                styles.Text84b3e508,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -458,7 +433,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                             {/* Primary */}
                             <Text
                               style={[
-                                styles.Textf90d72c6,
+                                styles.Text84b3e508,
                                 { color: theme.colors.strong },
                               ]}
                             >
@@ -628,7 +603,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               );
             }}
           </XanoApi.FetchGetAllStoresGET>
-          <Spacer top={50} right={8} bottom={8} left={8} />
+          <Spacer right={8} bottom={8} left={8} top={110} />
         </ScrollView>
       </KeyboardAvoidingView>
       {/* offerList */}
@@ -639,6 +614,7 @@ line two` ) and will not work with special characters inside of quotes ( example
             <XanoApi.FetchGetAllStoresGET
               UID={Constants['user_id']}
               onCampus={false}
+              searchterm={' '}
             >
               {({ loading, error, data, refetchGetAllStores }) => {
                 const popularPlacesData = data;
@@ -910,6 +886,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                 onPress={() => {
                   try {
                     navigation.navigate('AccountScreen');
+                    setOpenDrawer(false);
                   } catch (err) {
                     console.error(err);
                   }
@@ -969,6 +946,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       screen: 'DriverNav',
                       params: { screen: 'AvailableOrdersScreen' },
                     });
+                    setOpenDrawer(false);
                   } catch (err) {
                     console.error(err);
                   }
@@ -1010,6 +988,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                 onPress={() => {
                   try {
                     navigation.navigate('UserSetAddressScreen');
+                    setOpenDrawer(false);
                   } catch (err) {
                     console.error(err);
                   }
@@ -1067,6 +1046,7 @@ line two` ) and will not work with special characters inside of quotes ( example
                       key: 'user_email',
                       value: '',
                     });
+                    setOpenDrawer(false);
                   } catch (err) {
                     console.error(err);
                   }
@@ -1107,6 +1087,7 @@ line two` ) and will not work with special characters inside of quotes ( example
               <Touchable
                 onPress={() => {
                   try {
+                    setOpenDrawer(false);
                   } catch (err) {
                     console.error(err);
                   }
@@ -1156,6 +1137,15 @@ line two` ) and will not work with special characters inside of quotes ( example
 };
 
 const styles = StyleSheet.create({
+  Text85b763cf: {
+    fontFamily: 'System',
+    fontWeight: '600',
+    fontSize: 30,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
   TextInputbaf7ad36: {
     fontFamily: 'System',
     fontWeight: '400',
@@ -1164,7 +1154,7 @@ const styles = StyleSheet.create({
   Viewc992f941: {
     flex: 1,
   },
-  Viewa2581795: {
+  View64d89b6e: {
     paddingLeft: 12,
     paddingTop: 10,
     paddingRight: 12,
@@ -1173,20 +1163,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 16,
     width: '75%',
+    marginBottom: 16,
   },
-  IconButton7245b3d8: {
+  IconButton28dcfe17: {
     marginLeft: 16,
     marginRight: 16,
+    marginBottom: 16,
   },
-  Surface6dba1345: {
-    minHeight: 70,
-    justifyContent: 'space-around',
-    alignContent: 'space-around',
-    overflow: 'hidden',
-    width: '100%',
-  },
-  Textf90d72c6: {
-    fontSize: 24,
+  Text84b3e508: {
+    fontSize: 20,
     fontFamily: 'System',
     fontWeight: '600',
   },
@@ -1304,6 +1289,11 @@ const styles = StyleSheet.create({
   },
   Viewdf29e2e2: {
     width: '100%',
+  },
+  Textf90d72c6: {
+    fontSize: 24,
+    fontFamily: 'System',
+    fontWeight: '600',
   },
   IconButton5f47a348: {
     marginRight: 4,

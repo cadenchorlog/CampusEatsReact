@@ -58,7 +58,6 @@
     "react-dom": "18.0.0",
     "react-fetch-hook": "1.8.5",
     "react-native": "0.69.4",
-    "react-native-geocoder": "latest",
     "react-native-gesture-handler": "~2.5.0",
     "react-native-keyboard-aware-scroll-view": "~0.9.5",
     "react-native-maps": "0.31.1",
