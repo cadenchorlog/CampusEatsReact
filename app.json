@@ -3,6 +3,7 @@
     "name": "Campus Eats",
     "slug": "campus-eats",
     "scheme": "campus-eats",
+    "owner": "campuseats",
     "description": "Campus Eats, powered by Draftbit",
     "privacy": "unlisted",
     "platforms": [
@@ -10,7 +11,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "10.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -22,9 +23,9 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "net.campusEats.test",
+      "bundleIdentifier": "net.campuseats.test",
       "supportsTablet": false,
-      "buildNumber": "1.0.0",
+      "buildNumber": "10.0.0",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
@@ -37,7 +38,7 @@
       "usesIcloudStorage": false
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 10,
       "package": "com.draftbit.untitledapp",
       "permissions": [
         "ACCESS_FINE_LOCATION"
@@ -48,6 +49,17 @@
     },
     "notification": {
       "androidMode": "default"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ba437504-794d-4317-8661-e29e44ea18a6"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ba437504-794d-4317-8661-e29e44ea18a6"
     }
   }
 }
