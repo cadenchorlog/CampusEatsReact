@@ -3,6 +3,7 @@ import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
 import isArrayEmpty from '../custom/isArrayEmpty';
+import * as Utils from '../utils';
 import { MapMarker, MapView } from '@draftbit/maps';
 import {
   ButtonSolid,
@@ -76,6 +77,38 @@ line two` ) and will not work with special characters inside of quotes ( example
 
   const { theme } = props;
   const { navigation } = props;
+
+  const xanoAddPushTokenPOST = XanoApi.useAddPushTokenPOST();
+
+  const isFocused = useIsFocused();
+  React.useEffect(() => {
+    const handler = async () => {
+      console.log('Screen ON_SCREEN_FOCUS Start');
+      let error = null;
+      try {
+        if (!isFocused) {
+          return;
+        }
+        console.log('Start ON_SCREEN_FOCUS:0 GET_PUSH_TOKEN');
+        const pushToken = await Utils.getPushToken({});
+        console.log('Complete ON_SCREEN_FOCUS:0 GET_PUSH_TOKEN', { pushToken });
+        console.log('Start ON_SCREEN_FOCUS:1 FETCH_REQUEST');
+        await xanoAddPushTokenPOST.mutateAsync({
+          pushToken: pushToken,
+          uid: Constants['user_id'],
+        });
+        console.log('Complete ON_SCREEN_FOCUS:1 FETCH_REQUEST');
+      } catch (err) {
+        console.error(err);
+        error = err.message ?? err;
+      }
+      console.log(
+        'Screen ON_SCREEN_FOCUS Complete',
+        error ? { error } : 'no error'
+      );
+    };
+    handler();
+  }, [isFocused]);
 
   const [campusEmpty, setCampusEmpty] = React.useState(false);
   const [courierEmpty, setCourierEmpty] = React.useState(false);

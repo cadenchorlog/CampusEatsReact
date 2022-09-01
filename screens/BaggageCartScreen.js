@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import * as AddCostApi from '../apis/AddCostApi.js';
 import * as CheckoutApi from '../apis/CheckoutApi.js';
 import * as XanoApi from '../apis/XanoApi.js';
@@ -30,10 +30,15 @@ import {
   View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  CardField,
+  StripeProvider,
+  useStripe,
+} from '@stripe/stripe-react-native';
 import { Fetch } from 'react-request';
 
 const BaggageCartScreen = props => {
-  const Constants = GlobalVariables.useValues();
+    const Constants = GlobalVariables.useValues();
   const Variables = Constants;
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const getTipAmmount = (oneFifty, threeDollar) => {
@@ -78,7 +83,6 @@ line two` ) and will not work with special characters inside of quotes ( example
     /* String line breaks are accomplished with backticks ( example: `line one
 line two` ) and will not work with special characters inside of quotes ( example: "line one line two" ) */
   };
-
   const { theme } = props;
   const { navigation } = props;
 
@@ -88,17 +92,42 @@ line two` ) and will not work with special characters inside of quotes ( example
   const xanoRemoveFromCartPOST = XanoApi.useRemoveFromCartPOST();
 
   const isFocused = useIsFocused();
-  React.useEffect(() => {
+  const [name, setName] = useState("");
+  const stripe = useStripe();
+
+  const subscribe = async  () => {
     try {
-      if (!isFocused) {
-        return;
-      }
-      setShowMessage(false);
+      // sending request
+      const response = await fetch("https://xmux-mtsn-zhrr.n7.xano.io/api:hBvJuMsa/payment_intents", {
+        method: "POST",
+        body: JSON.stringify({ "price": 4000}),
+        headers: {
+          "Content-Type": "application/json",
+          
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) return Alert.alert(data.message);
+      const clientSecret = data.paymentIntent;
+      const initSheet = await stripe.initPaymentSheet({
+        paymentIntentClientSecret: clientSecret,
+        applePay: {
+            merchantCountryCode: 'US',
+          },
+        
+      });
+      
+      if (initSheet.error) return Alert.alert(initSheet.error.message);
+      const presentSheet = await stripe.presentPaymentSheet({
+        clientSecret,
+      });
+      if (presentSheet.error) return Alert.alert(presentSheet.error.message);
+      navigation.navigate('HistoryScreen');
     } catch (err) {
       console.error(err);
+      Alert.alert("Something went wrong, try again later!");
     }
-  }, [isFocused]);
-
+  };
   const [dashOpen, setDashOpen] = React.useState(false);
   const [isCard, setIsCard] = React.useState(true);
   const [isPlan, setIsPlan] = React.useState(false);
@@ -111,7 +140,6 @@ line two` ) and will not work with special characters inside of quotes ( example
   const [textInputValue, setTextInputValue] = React.useState('0');
   const [threeDollar, setThreeDollar] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState(0);
-
   return (
     <ScreenContainer hasTopSafeArea={false}>
       {/* Header */}
@@ -614,9 +642,8 @@ line two` ) and will not work with special characters inside of quotes ( example
                                   console.log(
                                     'Start ON_PRESS:7 NAVIGATE_SCREEN'
                                   );
-                                  navigation.navigate('CheckoutScreen', {
-                                    url: url,
-                                  });
+                                  subscribe();
+                                  setShowModal(false);
                                   console.log(
                                     'Complete ON_PRESS:7 NAVIGATE_SCREEN'
                                   );
@@ -1195,454 +1222,452 @@ line two` ) and will not work with special characters inside of quotes ( example
     </ScreenContainer>
   );
 };
-
 const styles = StyleSheet.create({
-  Textd59ae7c0: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 26,
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  IconButton2c3e883b: {
-    marginRight: 16,
-  },
-  Viewf39cc81f: {
-    marginTop: 60,
-    marginBottom: 20,
-  },
-  IconButton897c6051: {
-    marginLeft: 16,
-  },
-  View7a993fb0: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  Textcd71a0f7: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 16,
-  },
-  View12981c6a: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  Viewa521a992: {
-    justifyContent: 'center',
-    paddingTop: 8,
-    paddingLeft: 8,
-    paddingBottom: 8,
-    paddingRight: 8,
-  },
-  Text14121fc4: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 13,
-  },
-  Viewfeac12d8: {
-    justifyContent: 'center',
-    marginLeft: 12,
-  },
-  View43b593eb: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  View6a955cc3: {
-    justifyContent: 'center',
-  },
-  View1957b5f2: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    flexShrink: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-  },
-  Viewb7eaad51: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginLeft: 12,
-    marginRight: 12,
-    marginBottom: 12,
-  },
-  Text3e74d306: {
-    fontFamily: 'OpenSans_600SemiBold',
-    fontSize: 13,
-  },
-  View80a9a9a9: {
-    flexGrow: 1,
-    flexShrink: 0,
-    justifyContent: 'space-around',
-    paddingTop: 12,
-    paddingBottom: 12,
-  },
-  TextField04c2524d: {
-    fontFamily: 'Poppins_400Regular',
-  },
-  Viewb5c2cefd: {
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  ButtonSolidce4d6f27: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginLeft: -10,
-    width: 120,
-  },
-  View603e5d81: {
-    marginLeft: 12,
-    flexDirection: 'row',
-    flexGrow: 1,
-    flexShrink: 0,
-    marginRight: 12,
-  },
-  Divider79894792: {
-    height: 1,
-    marginTop: 12,
-    marginBottom: 12,
-    marginLeft: 12,
-    marginRight: 12,
-  },
-  Texteafa8587: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 16,
-  },
-  ButtonOutline75c728b2: {
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    borderWidth: 1,
-    textAlign: 'center',
-  },
-  ButtonSolid2d5f6a36: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  View8cb92e19: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginLeft: 12,
-    marginRight: 12,
-    marginTop: 12,
-  },
-  ButtonSolid7d2cfd44: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginLeft: 12,
-    marginRight: 12,
-  },
-  Viewdbf79098: {
-    flexGrow: 0,
-    flexShrink: 0,
-  },
-  View45692adb: {
-    flexGrow: 1,
-    flexShrink: 0,
-    justifyContent: 'flex-end',
-    paddingBottom: 24,
-  },
-  View2200bac7: {
-    height: '100%',
-  },
-  Textbfd3752d: {
-    fontSize: 15,
-    textTransform: 'capitalize',
-    fontFamily: 'Poppins_400Regular',
-  },
-  Textbfd3df7a: {
-    fontSize: 12,
-    fontFamily: 'Poppins_600SemiBold',
-    marginRight: 12,
-  },
-  Textbffce5db: {
-    fontSize: 12,
-    fontFamily: 'Poppins_300Light',
-    marginRight: 12,
-  },
-  Viewc46b8fec: {
-    marginLeft: 10,
-    justifyContent: 'space-between',
-    marginTop: 11,
-    marginBottom: 13,
-    flex: 1,
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  View6ff87234: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  View00740b37: {
-    minHeight: 60,
-    maxHeight: 60,
-    marginLeft: 12,
-    marginRight: 25,
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  Dividerbed2bcba: {
-    height: 1,
-    marginLeft: '5%',
-    marginRight: '5%',
-    marginBottom: 10,
-  },
-  FlatListc992f941Content: {
-    flex: 1,
-  },
-  Text4c56df9c: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 22,
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  View3316e76b: {
-    top: 100,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
-  ScrollViewf26042a5: {
-    flexGrow: 1,
-  },
-  ScrollViewf26042a5Content: {
-    marginTop: 21,
-    flexShrink: 0,
-    paddingBottom: 220,
-  },
-  Dividerde11d607: {
-    height: 1,
-  },
-  Textf7bbdd1d: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 12,
-  },
-  Text86ce3ba5: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 12,
-  },
-  View0ae50d17: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-  },
-  View88c44c3e: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  Divider0e02aada: {
-    height: 1,
-    marginTop: 10,
-  },
-  Text5528eed5: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 16,
-  },
-  Text4036ef9a: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 16,
-  },
-  Viewddd27fdd: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12,
-  },
-  ButtonSolidf0b1de94: {
-    borderRadius: 8,
-    fontFamily: 'System',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  View7bb6e4d9: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginTop: 18,
-  },
-  Viewad2d300f: {
-    flexGrow: 1,
-    flexShrink: 0,
-    marginLeft: 12,
-    marginRight: 12,
-    justifyContent: 'flex-end',
-  },
-  Viewe515c9dd: {
-    paddingBottom: 20,
-    bottom: 0,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
-  Fetch431eb058: {
-    minHeight: 40,
-  },
-  View40d56b89: {
-    marginTop: 20,
-    marginBottom: 16,
-  },
-  Icon6bf74529: {
-    width: 40,
-    height: 40,
-  },
-  Text8a1d4f88: {
-    textAlign: 'left',
-    fontSize: 20,
-  },
-  Text058e2418: {
-    textAlign: 'left',
-    fontSize: 14,
-  },
-  View1aef42d9: {
-    width: '100%',
-    height: 90,
-    paddingBottom: 14,
-    paddingTop: 14,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    flexDirection: 'row',
-    paddingLeft: 14,
-    paddingRight: 14,
-  },
-  Touchableaf6910bf: {
-    width: '100%',
-    marginBottom: 14,
-    marginTop: 14,
-    alignSelf: 'stretch',
-    height: 75,
-  },
-  Textca4d6164: {
-    textAlign: 'left',
-  },
-  Icon84575dc9: {
-    width: 32,
-    height: 32,
-  },
-  View94ee2e18: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  View0f4451f3: {
-    width: '100%',
-    borderRightWidth: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    paddingRight: 14,
-    paddingBottom: 14,
-    paddingTop: 14,
-    borderBottomWidth: 1,
-    paddingLeft: 14,
-    height: 80,
-  },
-  Touchable2e5bf580: {
-    alignSelf: 'stretch',
-    marginBottom: 10,
-    width: '48%',
-    marginTop: 14,
-  },
-  Text4b62e5ec: {
-    textAlign: 'left',
-  },
-  Icon013300ec: {
-    width: 26,
-    height: 26,
-  },
-  View837d8621: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-  },
-  View57ac46a1: {
-    borderLeftWidth: 1,
-    borderTopWidth: 1,
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    borderBottomWidth: 1,
-    height: 80,
-    width: '100%',
-    borderRightWidth: 1,
-    paddingLeft: 14,
-    paddingTop: 14,
-    paddingRight: 14,
-    paddingBottom: 14,
-  },
-  Touchableb3269bed: {
-    alignSelf: 'stretch',
-    marginBottom: 10,
-    width: '48%',
-    marginTop: 14,
-    marginLeft: 10,
-  },
-  Icon9e5973b7: {
-    width: 24,
-    height: 24,
-  },
-  View3b106cac: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  View075ba974: {
-    width: '100%',
-    borderRightWidth: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    paddingRight: 14,
-    paddingBottom: 14,
-    paddingTop: 14,
-    borderBottomWidth: 1,
-    paddingLeft: 14,
-    height: 60,
-  },
-  Touchablec4f3901b: {
-    alignSelf: 'stretch',
-    marginBottom: 14,
-    width: '48%',
-    marginTop: 4,
-  },
-  Touchable1b2cb320: {
-    alignSelf: 'stretch',
-    marginBottom: 10,
-    width: '48%',
-    marginTop: 4,
-    marginLeft: 10,
-  },
-  View1acef5e2: {
-    justifyContent: 'space-evenly',
-    paddingLeft: 12,
-    alignItems: 'flex-start',
-    paddingRight: 12,
-    flexWrap: 'wrap',
-    paddingBottom: 14,
-    flexDirection: 'row',
-  },
-  Textb536ac60: {
-    textAlign: 'center',
-  },
-});
-
-export default withTheme(BaggageCartScreen);
+    Textd59ae7c0: {
+      fontFamily: 'Poppins_600SemiBold',
+      fontSize: 26,
+      paddingLeft: 16,
+      paddingRight: 16,
+    },
+    IconButton2c3e883b: {
+      marginRight: 16,
+    },
+    Viewf39cc81f: {
+      marginTop: 60,
+      marginBottom: 20,
+    },
+    IconButton897c6051: {
+      marginLeft: 16,
+    },
+    View7a993fb0: {
+      marginTop: 20,
+      marginBottom: 20,
+    },
+    Textcd71a0f7: {
+      fontFamily: 'Poppins_600SemiBold',
+      fontSize: 16,
+    },
+    View12981c6a: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingTop: 12,
+      paddingBottom: 12,
+      paddingLeft: 12,
+      paddingRight: 12,
+    },
+    Viewa521a992: {
+      justifyContent: 'center',
+      paddingTop: 8,
+      paddingLeft: 8,
+      paddingBottom: 8,
+      paddingRight: 8,
+    },
+    Text14121fc4: {
+      fontFamily: 'Poppins_600SemiBold',
+      fontSize: 13,
+    },
+    Viewfeac12d8: {
+      justifyContent: 'center',
+      marginLeft: 12,
+    },
+    View43b593eb: {
+      flexDirection: 'row',
+      flexGrow: 1,
+      flexShrink: 0,
+    },
+    View6a955cc3: {
+      justifyContent: 'center',
+    },
+    View1957b5f2: {
+      flexDirection: 'row',
+      flexGrow: 1,
+      flexShrink: 0,
+      paddingLeft: 12,
+      paddingRight: 12,
+      paddingTop: 12,
+      paddingBottom: 12,
+      borderBottomWidth: 1,
+      borderLeftWidth: 1,
+      borderTopWidth: 1,
+      borderRightWidth: 1,
+    },
+    Viewb7eaad51: {
+      flexGrow: 1,
+      flexShrink: 0,
+      marginLeft: 12,
+      marginRight: 12,
+      marginBottom: 12,
+    },
+    Text3e74d306: {
+      fontFamily: 'OpenSans_600SemiBold',
+      fontSize: 13,
+    },
+    View80a9a9a9: {
+      flexGrow: 1,
+      flexShrink: 0,
+      justifyContent: 'space-around',
+      paddingTop: 12,
+      paddingBottom: 12,
+    },
+    TextField04c2524d: {
+      fontFamily: 'Poppins_400Regular',
+    },
+    Viewb5c2cefd: {
+      flexGrow: 1,
+      flexShrink: 0,
+    },
+    ButtonSolidce4d6f27: {
+      borderRadius: 8,
+      fontFamily: 'System',
+      fontWeight: '700',
+      textAlign: 'center',
+      marginLeft: -10,
+      width: 120,
+    },
+    View603e5d81: {
+      marginLeft: 12,
+      flexDirection: 'row',
+      flexGrow: 1,
+      flexShrink: 0,
+      marginRight: 12,
+    },
+    Divider79894792: {
+      height: 1,
+      marginTop: 12,
+      marginBottom: 12,
+      marginLeft: 12,
+      marginRight: 12,
+    },
+    Texteafa8587: {
+      fontFamily: 'Poppins_600SemiBold',
+      fontSize: 16,
+    },
+    ButtonOutline75c728b2: {
+      backgroundColor: 'transparent',
+      borderRadius: 8,
+      fontFamily: 'System',
+      fontWeight: '700',
+      borderWidth: 1,
+      textAlign: 'center',
+    },
+    ButtonSolid2d5f6a36: {
+      borderRadius: 8,
+      fontFamily: 'System',
+      fontWeight: '700',
+      textAlign: 'center',
+    },
+    View8cb92e19: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      marginLeft: 12,
+      marginRight: 12,
+      marginTop: 12,
+    },
+    ButtonSolid7d2cfd44: {
+      borderRadius: 8,
+      fontFamily: 'System',
+      fontWeight: '700',
+      textAlign: 'center',
+      marginLeft: 12,
+      marginRight: 12,
+    },
+    Viewdbf79098: {
+      flexGrow: 0,
+      flexShrink: 0,
+    },
+    View45692adb: {
+      flexGrow: 1,
+      flexShrink: 0,
+      justifyContent: 'flex-end',
+      paddingBottom: 24,
+    },
+    View2200bac7: {
+      height: '100%',
+    },
+    Textbfd3752d: {
+      fontSize: 15,
+      textTransform: 'capitalize',
+      fontFamily: 'Poppins_400Regular',
+    },
+    Textbfd3df7a: {
+      fontSize: 12,
+      fontFamily: 'Poppins_600SemiBold',
+      marginRight: 12,
+    },
+    Textbffce5db: {
+      fontSize: 12,
+      fontFamily: 'Poppins_300Light',
+      marginRight: 12,
+    },
+    Viewc46b8fec: {
+      marginLeft: 10,
+      justifyContent: 'space-between',
+      marginTop: 11,
+      marginBottom: 13,
+      flex: 1,
+      flexGrow: 1,
+      flexShrink: 0,
+    },
+    View6ff87234: {
+      justifyContent: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    View00740b37: {
+      minHeight: 60,
+      maxHeight: 60,
+      marginLeft: 12,
+      marginRight: 25,
+      flexDirection: 'row',
+      marginBottom: 12,
+    },
+    Dividerbed2bcba: {
+      height: 1,
+      marginLeft: '5%',
+      marginRight: '5%',
+      marginBottom: 10,
+    },
+    FlatListc992f941Content: {
+      flex: 1,
+    },
+    Text4c56df9c: {
+      fontFamily: 'Poppins_400Regular',
+      fontSize: 22,
+      paddingLeft: 16,
+      paddingRight: 16,
+    },
+    View3316e76b: {
+      top: 100,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+    },
+    ScrollViewf26042a5: {
+      flexGrow: 1,
+    },
+    ScrollViewf26042a5Content: {
+      marginTop: 21,
+      flexShrink: 0,
+      paddingBottom: 220,
+    },
+    Dividerde11d607: {
+      height: 1,
+    },
+    Textf7bbdd1d: {
+      fontFamily: 'Poppins_400Regular',
+      fontSize: 12,
+    },
+    Text86ce3ba5: {
+      fontFamily: 'Poppins_700Bold',
+      fontSize: 12,
+    },
+    View0ae50d17: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 12,
+    },
+    View88c44c3e: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    Divider0e02aada: {
+      height: 1,
+      marginTop: 10,
+    },
+    Text5528eed5: {
+      fontFamily: 'Poppins_400Regular',
+      fontSize: 16,
+    },
+    Text4036ef9a: {
+      fontFamily: 'Poppins_700Bold',
+      fontSize: 16,
+    },
+    Viewddd27fdd: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingTop: 12,
+    },
+    ButtonSolidf0b1de94: {
+      borderRadius: 8,
+      fontFamily: 'System',
+      fontWeight: '700',
+      textAlign: 'center',
+    },
+    View7bb6e4d9: {
+      flexGrow: 1,
+      flexShrink: 0,
+      marginTop: 18,
+    },
+    Viewad2d300f: {
+      flexGrow: 1,
+      flexShrink: 0,
+      marginLeft: 12,
+      marginRight: 12,
+      justifyContent: 'flex-end',
+    },
+    Viewe515c9dd: {
+      paddingBottom: 20,
+      bottom: 0,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+    },
+    Fetch431eb058: {
+      minHeight: 40,
+    },
+    View40d56b89: {
+      marginTop: 20,
+      marginBottom: 16,
+    },
+    Icon6bf74529: {
+      width: 40,
+      height: 40,
+    },
+    Text8a1d4f88: {
+      textAlign: 'left',
+      fontSize: 20,
+    },
+    Text058e2418: {
+      textAlign: 'left',
+      fontSize: 14,
+    },
+    View1aef42d9: {
+      width: '100%',
+      height: 90,
+      paddingBottom: 14,
+      paddingTop: 14,
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderLeftWidth: 1,
+      borderTopWidth: 1,
+      borderRightWidth: 1,
+      flexDirection: 'row',
+      paddingLeft: 14,
+      paddingRight: 14,
+    },
+    Touchableaf6910bf: {
+      width: '100%',
+      marginBottom: 14,
+      marginTop: 14,
+      alignSelf: 'stretch',
+      height: 75,
+    },
+    Textca4d6164: {
+      textAlign: 'left',
+    },
+    Icon84575dc9: {
+      width: 32,
+      height: 32,
+    },
+    View94ee2e18: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    View0f4451f3: {
+      width: '100%',
+      borderRightWidth: 1,
+      alignItems: 'flex-start',
+      justifyContent: 'space-around',
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      paddingRight: 14,
+      paddingBottom: 14,
+      paddingTop: 14,
+      borderBottomWidth: 1,
+      paddingLeft: 14,
+      height: 80,
+    },
+    Touchable2e5bf580: {
+      alignSelf: 'stretch',
+      marginBottom: 10,
+      width: '48%',
+      marginTop: 14,
+    },
+    Text4b62e5ec: {
+      textAlign: 'left',
+    },
+    Icon013300ec: {
+      width: 26,
+      height: 26,
+    },
+    View837d8621: {
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      width: '100%',
+    },
+    View57ac46a1: {
+      borderLeftWidth: 1,
+      borderTopWidth: 1,
+      justifyContent: 'space-around',
+      alignItems: 'flex-start',
+      borderBottomWidth: 1,
+      height: 80,
+      width: '100%',
+      borderRightWidth: 1,
+      paddingLeft: 14,
+      paddingTop: 14,
+      paddingRight: 14,
+      paddingBottom: 14,
+    },
+    Touchableb3269bed: {
+      alignSelf: 'stretch',
+      marginBottom: 10,
+      width: '48%',
+      marginTop: 14,
+      marginLeft: 10,
+    },
+    Icon9e5973b7: {
+      width: 24,
+      height: 24,
+    },
+    View3b106cac: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    View075ba974: {
+      width: '100%',
+      borderRightWidth: 1,
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      paddingRight: 14,
+      paddingBottom: 14,
+      paddingTop: 14,
+      borderBottomWidth: 1,
+      paddingLeft: 14,
+      height: 60,
+    },
+    Touchablec4f3901b: {
+      alignSelf: 'stretch',
+      marginBottom: 14,
+      width: '48%',
+      marginTop: 4,
+    },
+    Touchable1b2cb320: {
+      alignSelf: 'stretch',
+      marginBottom: 10,
+      width: '48%',
+      marginTop: 4,
+      marginLeft: 10,
+    },
+    View1acef5e2: {
+      justifyContent: 'space-evenly',
+      paddingLeft: 12,
+      alignItems: 'flex-start',
+      paddingRight: 12,
+      flexWrap: 'wrap',
+      paddingBottom: 14,
+      flexDirection: 'row',
+    },
+    Textb536ac60: {
+      textAlign: 'center',
+    },
+  });
+  export default withTheme(BaggageCartScreen);

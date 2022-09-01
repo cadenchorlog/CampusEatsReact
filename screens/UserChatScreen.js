@@ -2,6 +2,7 @@ import React from 'react';
 import * as XanoApi from '../apis/XanoApi.js';
 import * as CustomCode from '../components.js';
 import * as GlobalVariables from '../config/GlobalVariableContext';
+import * as Notifications from 'expo-notifications';
 import {
   IconButton,
   Row,
@@ -35,7 +36,7 @@ const UserChatScreen = props => {
   const xanoAddChatPOST = XanoApi.useAddChatPOST();
 
   const [textInputValue, setTextInputValue] = React.useState('');
-
+ 
   return (
     <ScreenContainer
       style={{ backgroundColor: theme.colors.divider }}
@@ -77,11 +78,12 @@ const UserChatScreen = props => {
           enableAutomaticScroll={true}
         >
           <XanoApi.FetchChatGET
-            refetchInterval={1000}
+          refetchInterval={1000}
             session_id={props.route?.params?.orderID ?? 67}
           >
             {({ loading, error, data, refetchChat }) => {
               const fetchData = data;
+              
               if (!fetchData || loading) {
                 return <ActivityIndicator />;
               }

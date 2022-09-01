@@ -9,7 +9,6 @@ import {
 } from 'react-native-safe-area-context';
 import { Provider as ThemeProvider } from '@draftbit/ui';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
 import AppNavigator from './AppNavigator';
 import DraftbitTheme from './themes/DraftbitTheme.js';
 import cacheAssetsAsync from './config/cacheAssetsAsync';
@@ -31,6 +30,7 @@ import {
 } from '@expo-google-fonts/poppins';
 import Constants from "expo-constants";
 import registerForPushNotificationsAsync from './utils/getPushToken';
+import { StripeProvider } from "@stripe/stripe-react-native";
 SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
@@ -90,6 +90,7 @@ const App = () => {
 
     prepare();
   }, []);
+  
 
   const onLayoutRootView = React.useCallback(async () => {
     if (isReady && fontsLoaded) {
@@ -103,7 +104,78 @@ const App = () => {
  
 
   registerForPushNotificationsAsync();
+  function CheckoutScreen() {
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+    const [loading, setLoading] = useState(false);
+  
+    const fetchPaymentSheetParams = async () => {
+      const response = await fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:hBvJuMsa/payment_intents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { paymentIntent, ephemeralKey, customer} = await response.json();
+  
+      return {
+        paymentIntent,
+        ephemeralKey,
+        customer,
+      };
+    };
+  
+    const initializePaymentSheet = async () => {
+      const {
+        paymentIntent,
+        ephemeralKey,
+        customer,
+        publishableKey,
+      } = await fetchPaymentSheetParams();
+  
+      const { error } = await initPaymentSheet({
+        customerId: customer,
+        customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+        //methods that complete payment after a delay, like SEPA Debit and Sofort.
+        allowsDelayedPaymentMethods: true,
+      });
+      if (!error) {
+        setLoading(true);
+      }
+    };
+  
+    const openPaymentSheet = async () => {
+      const { error } = await presentPaymentSheet();
+  
+      if (error) {
+        Alert.alert(`Error code: ${error.code}`, error.message);
+      } else {
+        Alert.alert('Success', 'Your order is confirmed!');
+      }
+    };
+  
+    useEffect(() => {
+      initializePaymentSheet();
+    }, []);
+  
+    return (
+      <CheckoutScreen>
+        <Button
+          variant="primary"
+          disabled={!loading}
+          title="Checkout"
+          onPress={openPaymentSheet}
+        />
+      </CheckoutScreen>
+    );
+  }
   return (
+    <StripeProvider
+      publishableKey="pk_test_51LO2SYBwsDz1it0i7ggJBhk7TxeVTpHgoPeQuk0yl3QE9e02ZdZ4zR30fddiZqTCvqXlLxIXty0RQHNqEP8IybMY00ZlUmG26K"
+      urlScheme="https://campuseats.net/redirected" // required for 3D Secure and bank redirects
+      merchantIdentifier="merchant.campuseats.test" // required for Apple Pay
+    >
     <SafeAreaProvider
       initialMetrics={initialWindowMetrics}
       onLayout={onLayoutRootView}
@@ -116,6 +188,7 @@ const App = () => {
         </QueryClientProvider>
       </GlobalVariableProvider>
     </SafeAreaProvider>
+    </StripeProvider>
   );
 };
 

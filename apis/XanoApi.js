@@ -253,6 +253,41 @@ export const useAddDriverPOST = initialArgs => {
   );
 };
 
+export const addPushTokenPOST = (Constants, { pushToken, uid }) =>
+  fetch(`https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/pushtokens`, {
+    body: JSON.stringify({ UID: uid, pushToken: pushToken }),
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    method: 'POST',
+  })
+    .then(res => {
+      if (!res.ok) {
+        console.error('Fetch error: ' + res.status + ' ' + res.statusText);
+      }
+      return res;
+    })
+    .then(res => res.json())
+    .catch(() => {});
+
+export const useAddPushTokenPOST = initialArgs => {
+  const queryClient = useQueryClient();
+  const Constants = GlobalVariables.useValues();
+
+  return useMutation(
+    args => addPushTokenPOST(Constants, { ...initialArgs, ...args }),
+    {
+      onError: (err, variables, { previousValue }) => {
+        if (previousValue) {
+          return queryClient.setQueryData('user', previousValue);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('user');
+        queryClient.invalidateQueries('users');
+      },
+    }
+  );
+};
+
 export const addTipPOST = (Constants, { tip, user_id }) =>
   fetch(
     `https://xmux-mtsn-zhrr.n7.xano.io/api:lCsAPjHl/user/${

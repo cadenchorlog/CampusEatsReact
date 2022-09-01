@@ -4,14 +4,14 @@
     "slug": "campus-eats",
     "scheme": "campus-eats",
     "owner": "campuseats",
-    "description": "Campus Eats, powered by Draftbit",
+    "description": "Campus Eats",
     "privacy": "unlisted",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "10.0.0",
+    "version": "11.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -25,7 +25,7 @@
     "ios": {
       "bundleIdentifier": "net.campuseats.test",
       "supportsTablet": false,
-      "buildNumber": "10.0.0",
+      "buildNumber": "11.0.0",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
@@ -38,8 +38,8 @@
       "usesIcloudStorage": false
     },
     "android": {
-      "versionCode": 10,
-      "package": "com.draftbit.untitledapp",
+      "versionCode": 11,
+      "package": "net.campuseats.test",
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
