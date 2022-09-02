@@ -28,6 +28,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -39,6 +40,7 @@ import { Fetch } from 'react-request';
 
 const BaggageCartScreen = props => {
     const Constants = GlobalVariables.useValues();
+  var stripePaymentAmount = 0;
   const Variables = Constants;
   const setGlobalVariableValue = GlobalVariables.useSetValue();
   const getTipAmmount = (oneFifty, threeDollar) => {
@@ -100,7 +102,8 @@ line two` ) and will not work with special characters inside of quotes ( example
       // sending request
       const response = await fetch("https://xmux-mtsn-zhrr.n7.xano.io/api:hBvJuMsa/payment_intents", {
         method: "POST",
-        body: JSON.stringify({ "price": 4000}),
+        body: JSON.stringify({ "price": stripePaymentAmount,
+        "UID": Constants['user_id']}),
         headers: {
           "Content-Type": "application/json",
           
@@ -111,13 +114,14 @@ line two` ) and will not work with special characters inside of quotes ( example
       const clientSecret = data.paymentIntent;
       const initSheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: clientSecret,
+        style: 'alwaysLight',
         applePay: {
             merchantCountryCode: 'US',
           },
         
       });
       
-      if (initSheet.error) return Alert.alert(initSheet.error.message);
+      
       const presentSheet = await stripe.presentPaymentSheet({
         clientSecret,
       });
@@ -607,73 +611,11 @@ line two` ) and will not work with special characters inside of quotes ( example
                                     'Complete ON_PRESS:2 CUSTOM_FUNCTION',
                                     { newTotalPrice }
                                   );
-                                  console.log('Start ON_PRESS:3 FETCH_REQUEST');
-                                  const cost =
-                                    await addCostSetPricePOST.mutateAsync({
-                                      price: newTotalPrice,
-                                      priceID: 299,
-                                    });
-                                  console.log(
-                                    'Complete ON_PRESS:3 FETCH_REQUEST',
-                                    { cost }
-                                  );
-                                  console.log('Start ON_PRESS:4 EXTRACT_KEY');
-                                  const prodID = cost.id;
-                                  console.log(
-                                    'Complete ON_PRESS:4 EXTRACT_KEY',
-                                    { prodID }
-                                  );
-                                  console.log('Start ON_PRESS:5 FETCH_REQUEST');
-                                  const check =
-                                    await checkoutCheckoutPOST.mutateAsync({
-                                      UID: Constants['user_id'],
-                                      priceID: prodID,
-                                    });
-                                  console.log(
-                                    'Complete ON_PRESS:5 FETCH_REQUEST',
-                                    { check }
-                                  );
-                                  console.log('Start ON_PRESS:6 EXTRACT_KEY');
-                                  const url = check.url;
-                                  console.log(
-                                    'Complete ON_PRESS:6 EXTRACT_KEY',
-                                    { url }
-                                  );
-                                  console.log(
-                                    'Start ON_PRESS:7 NAVIGATE_SCREEN'
-                                  );
+                                  stripePaymentAmount = newTotalPrice;
+                                  
                                   subscribe();
                                   setShowModal(false);
-                                  console.log(
-                                    'Complete ON_PRESS:7 NAVIGATE_SCREEN'
-                                  );
-                                  console.log('Start ON_PRESS:8 CONSOLE_LOG');
-                                  console.log(Constants['checkoutURL']);
-                                  console.log(
-                                    'Complete ON_PRESS:8 CONSOLE_LOG'
-                                  );
-                                  console.log('Start ON_PRESS:9 CONSOLE_LOG');
-                                  console.log(url);
-                                  console.log(
-                                    'Complete ON_PRESS:9 CONSOLE_LOG'
-                                  );
-                                  console.log(
-                                    'Start ON_PRESS:10 SET_SCREEN_LOCAL_STATE'
-                                  );
-                                  setShowModal(false);
-                                  console.log(
-                                    'Complete ON_PRESS:10 SET_SCREEN_LOCAL_STATE'
-                                  );
-                                  console.log('Start ON_PRESS:11 CONSOLE_LOG');
-                                  console.log(logAddTip);
-                                  console.log(
-                                    'Complete ON_PRESS:11 CONSOLE_LOG'
-                                  );
-                                  console.log('Start ON_PRESS:12 CONSOLE_LOG');
-                                  console.log(numberInputValue);
-                                  console.log(
-                                    'Complete ON_PRESS:12 CONSOLE_LOG'
-                                  );
+                                  
                                 } catch (err) {
                                   console.error(err);
                                   error = err.message ?? err;
